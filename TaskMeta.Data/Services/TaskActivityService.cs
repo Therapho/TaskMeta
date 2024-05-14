@@ -38,11 +38,12 @@ public class TaskActivityService : ITaskActivityService
                 };
                 result.Add(taskActivity);
             }
-
+            await _taskActivityRepository.AddAsync(result);
         }
+
         return result;
     }
-    public async Task<TaskActivity> GetByIdAsync(int id)
+    public async Task<TaskActivity?> GetByIdAsync(int id)
     {
         return await _taskActivityRepository.GetByIdAsync(id);
     }

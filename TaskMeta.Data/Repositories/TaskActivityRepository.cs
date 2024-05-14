@@ -40,7 +40,7 @@ public class TaskActivityRepository : ITaskActivityRepository
             throw;
         }
     }
-    public async Task<TaskActivity> GetByIdAsync(int id)
+    public async Task<TaskActivity?> GetByIdAsync(int id)
     {
         try
         {
@@ -52,7 +52,20 @@ public class TaskActivityRepository : ITaskActivityRepository
             throw;
         }
     }
+    public async Task AddAsync(List<TaskActivity> taskActivityList)
+    {
+        try 
+        {
+            await _context.TaskActivities.AddRangeAsync(taskActivityList.ToArray());
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
 
+            _logger.LogError(ex, "An error occurred while adding a set of TaskActivities");
+            throw;
+        }
+    }
     public async Task AddAsync(TaskActivity taskActivity)
     {
         try
