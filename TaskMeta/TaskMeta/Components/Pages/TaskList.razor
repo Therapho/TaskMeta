@@ -1,0 +1,37 @@
+﻿@page "/tasklist"
+@rendermode InteractiveServer
+
+@using TaskMeta.Data.Services
+@using TaskMeta.Data.Models
+
+@inject ITaskActivityService TaskActivityService
+
+<PageTitle>Task Meta - Task List</PageTitle>
+<h3>Task List</h3>
+
+<FluentStack Orientation="Orientation.Vertical">
+    @if(taskActivities != null)
+    {
+        foreach (var taskActivity in taskActivities)
+        {
+            <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" @bind-value:after="HandleChange" />
+        }
+    }
+</FluentStack>
+
+@code {
+
+        List<TaskActivity>? taskActivities;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+        taskActivities = await TaskActivityService.GetByDate(today);
+    }
+
+    private void HandleChange()
+    {
+        
+    }
+}
