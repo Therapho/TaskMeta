@@ -1,68 +1,72 @@
-using TaskMeta.Data.Models;
-using TaskMeta.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TaskMeta.Shared.Interfaces;
+using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Data.Services;
-public class TaskActivityService : ITaskActivityService
+public class TaskActivityService : EntityService<TaskActivity>, ITaskActivityService
 {
-    private readonly ITaskActivityRepository _taskActivityRepository;
-    private readonly ITaskDefinitionRepository _taskDefinitionRepository;
+    public ITaskDefinitionService TaskDefinitionService { get; set; }
 
-    public TaskActivityService(ITaskActivityRepository taskActivityRepository, ITaskDefinitionRepository taskDefinitionRepository)
+    public TaskActivityService(ITaskDefinitionService taskDefinitionService, ApplicationDbContext applicationDbContext, 
+        IUserService userService, ILogger<EntityService<TaskActivity>> logger)
+        : base(applicationDbContext, userService, logger) 
     {
-        _taskActivityRepository = taskActivityRepository;
-        _taskDefinitionRepository = taskDefinitionRepository;
+        TaskDefinitionService = taskDefinitionService;
     }
-
-    public async Task<List<TaskActivity>> GetAllAsync()
+    public async Task AddAsync(List<TaskActivity> taskActivityList)
     {
-        return await _taskActivityRepository.GetAllAsync();
-    }
-    public async Task<List<TaskActivity>> GetByDate(DateOnly date)
-    {
-        var list = await _taskActivityRepository.GetByDate(date);
-        List<TaskActivity> result = list.OrderBy(t => t.Sequence).ToList();
-     
-        if (result == null || result.Count == 0)
+        try
         {
-            result = new List<TaskActivity>();
-            List<TaskDefinition> taskDefinitions = await _taskDefinitionRepository.GetAllAsync();
+            await Context.TaskActivities.AddRangeAsync(taskActivityList.ToArray());
+            await Context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+
+            //Logger.LogError(ex, "An error occurred while adding a set of TaskActivities");
+            throw;
+        }
+    }
+    public async Task<List<TaskActivity>> GetOrCreateTaskActivities(TaskWeek taskWeek)
+    {
+        var list = await GetByTaskWeek(taskWeek);
+
+        if (list == null || list.Count == 0)
+        {
+            list = new List<TaskActivity>();
+            List<TaskDefinition> taskDefinitions = await TaskDefinitionService.GetAllAsync();
+
+            var currentDate = taskWeek!.WeekStartDate;
+
             foreach (var taskDefinition in taskDefinitions)
             {
                 TaskActivity taskActivity = new TaskActivity
                 {
                     Sequence = taskDefinition.Sequence,
                     TaskDefinitionId = taskDefinition.Id,
-                    TaskDate = date,
+                    TaskDate = currentDate,
                     Complete = false,
-                    Description = taskDefinition.Description
+                    Description = taskDefinition.Description,
+                    TaskWeek = taskWeek
                 };
-                result.Add(taskActivity);
+                list.Add(taskActivity);
+                currentDate = currentDate.AddDays(1);
             }
-            await _taskActivityRepository.AddAsync(result);
+            await AddAsync(list);
+        }
+        return list;
+    }
+    public async Task<List<TaskActivity>> GetByTaskWeek(TaskWeek taskWeek)
+    {
+        List<TaskActivity>? list = null;
+
+        if(taskWeek != null)
+        {
+            var set = Context.TaskActivities.Where(t=>t.TaskWeekId == taskWeek.Id);
+            list = await set.OrderBy(t => t.Sequence).ToListAsync();
         }
 
-        return result;
-    }
-    public async Task<TaskActivity?> GetByIdAsync(int id)
-    {
-        return await _taskActivityRepository.GetByIdAsync(id);
-    }
-
-    public async Task AddAsync(TaskActivity taskActivity)
-    {
-        // Add any business logic or validation here
-        await _taskActivityRepository.AddAsync(taskActivity);
-    }
-
-    public async Task UpdateAsync(TaskActivity taskActivity)
-    {
-        // Add any business logic or validation here
-        await _taskActivityRepository.UpdateAsync(taskActivity);
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        // Add any business logic or validation here
-        await _taskActivityRepository.DeleteAsync(id);
+        return list!;
     }
 }

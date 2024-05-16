@@ -3,7 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
-@using TaskMeta.Data.Model
+@using TaskMeta.Shared.Models
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
@@ -78,6 +78,8 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
+
+                
             RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.RequiresTwoFactor)

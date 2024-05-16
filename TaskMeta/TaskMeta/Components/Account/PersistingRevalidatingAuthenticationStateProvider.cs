@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Security.Claims;
 using TaskMeta.Client;
-using TaskMeta.Data.Model;
+using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Components.Account
 {

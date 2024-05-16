@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TaskMeta.Data.Repositories;
+using TaskMeta.Shared.Interfaces;
 using TaskMeta.Data.Services;
 
 namespace TaskMeta.Data
@@ -8,11 +8,10 @@ namespace TaskMeta.Data
     {
         public static void Build(IServiceCollection services)
         {
-            services
-                .AddScoped<ITaskActivityRepository, TaskActivityRepository>()
+            services             
                 .AddScoped<ITaskActivityService, TaskActivityService>()
-                .AddScoped<ITaskDefinitionRepository, TaskDefinitionRepository>()
-                .AddScoped<ITaskDefinitionService, TaskDefinitionService>();
+                .AddScoped<ITaskDefinitionService, TaskDefinitionService>()
+                .AddScoped<ITaskWeekService, TaskWeekService>();
         }
     }
 }

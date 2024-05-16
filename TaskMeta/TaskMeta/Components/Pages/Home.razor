@@ -1,18 +1,27 @@
 ﻿@page "/"
+@using TaskMeta.Shared.Models
+@using TaskMeta.Shared.Interfaces
+@using TaskMeta.Utilities
+@inject IUserService UserService
 
 <PageTitle>Home</PageTitle>
 <FluentGrid AdaptiveRendering="true">
     <FluentGridItem sm="6" xs="12">
 
         <FluentCard>
-            <p>One</p>
+            <p>UserService.IsAdmin</p>
         </FluentCard>
     </FluentGridItem>
     <FluentGridItem sm="6" xs="12">
 
         <FluentCard>
-            <p>Two</p>
+            <p>UserService.CurrentUser.UserName</p>
         </FluentCard>
     </FluentGridItem>
 </FluentGrid>
 
+@code
+{
+    
+
+}

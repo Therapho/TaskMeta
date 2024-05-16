@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using TaskMeta.Data.Model;
+using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Components.Account
 {

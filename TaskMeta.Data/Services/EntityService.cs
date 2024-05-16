@@ -1,37 +1,32 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskMeta.Data.Models;
+using TaskMeta.Shared.Interfaces;
 
-namespace TaskMeta.Data.Repositories
+namespace TaskMeta.Data.Services
 {
-    public class EntityRepository<E> : IEntityRepository<E> where E : class
-    {     
+    public class EntityService<E> : IEntityService<E> where E : class
+    {
+        protected ApplicationDbContext Context { get; private set; }
+        protected IUserService UserService { get; private set; }
+        protected ILogger<EntityService<E>> Logger { get; private set; }
 
-        protected ApplicationDbContext Context { get; set; }
-        protected ILogger<EntityRepository<E>> Logger { get; set; }
-
-        public EntityRepository(ApplicationDbContext context, ILogger<EntityRepository<E>> logger)
+        public EntityService(ApplicationDbContext applicationDbContext, IUserService userService, ILogger<EntityService<E>> logger)
         {
-            Context = context;
+            Context = applicationDbContext;
+            UserService = userService;
             Logger = logger;
         }
 
         public async Task<List<E>> GetAllAsync()
         {
-
             try
             {
-                return await Context.Set<E>().ToListAsync<E>();
+                var set = Context.Set<E>();
+                return await set.ToListAsync<E>();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "An error occurred while getting Es");
+                Logger.LogError(ex, "An error occurred while getting all entities");
                 throw;
             }
         }
@@ -44,7 +39,7 @@ namespace TaskMeta.Data.Repositories
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"An error occurred while getting E with id {id}");
+                Logger.LogError(ex, $"An error occurred while getting an entity by id: {id}");
                 throw;
             }
         }
@@ -53,12 +48,13 @@ namespace TaskMeta.Data.Repositories
         {
             try
             {
-                await Context.AddAsync<E>(entity);
+                // Add any business logic or validation here
+                await Context.Set<E>().AddAsync(entity);
                 await Context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "An error occurred while adding a entity");
+                Logger.LogError(ex, "An error occurred while adding an entity");
                 throw;
             }
         }
@@ -67,12 +63,13 @@ namespace TaskMeta.Data.Repositories
         {
             try
             {
-                Context.Update<E>(entity);
+                // Add any business logic or validation here
+                Context.Set<E>().Update(entity);
                 await Context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"An error occurred while updating entity  {entity}");
+                Logger.LogError(ex, "An error occurred while updating an entity");
                 throw;
             }
         }
@@ -81,6 +78,7 @@ namespace TaskMeta.Data.Repositories
         {
             try
             {
+                // Add any business logic or validation here
                 var entity = await Context.FindAsync<E>(id);
                 if (entity != null)
                 {
@@ -90,11 +88,9 @@ namespace TaskMeta.Data.Repositories
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"An error occurred while deleting E with id {id}");
+                Logger.LogError(ex, $"An error occurred while deleting an entity with id: {id}");
                 throw;
             }
         }
     }
-
 }
-

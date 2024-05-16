@@ -2,9 +2,12 @@
 @rendermode InteractiveServer
 
 @using TaskMeta.Data.Services
-@using TaskMeta.Data.Models
+@using TaskMeta.Shared.Models
+@using TaskMeta.Shared.Interfaces
 
-@inject ITaskActivityService TaskActivityService
+@* @inject ITaskActivityService TaskActivityService
+@inject ITaskWeekService TaskWeekService
+@inject IUserService UserService *@
 
 <PageTitle>Task Meta - Task List</PageTitle>
 <h3>Task List</h3>
@@ -14,24 +17,11 @@
     {
         foreach (var taskActivity in taskActivities)
         {
-            <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" @bind-value:after="HandleChange" />
+            <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" 
+                @bind-value:after="()=>HandleChange(taskActivity)" />
         }
     }
 </FluentStack>
 
-@code {
-
-        List<TaskActivity>? taskActivities;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-        taskActivities = await TaskActivityService.GetByDate(today);
-    }
-
-    private void HandleChange()
-    {
-        
-    }
-}
+Total: @if(taskWeek != null) @taskWeek.Value
+    

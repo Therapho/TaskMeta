@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using TaskMeta.Components;
 using TaskMeta.Components.Account;
 using TaskMeta.Data;
-using TaskMeta.Data.Model;
-using TaskMeta.Data.Models;
+using TaskMeta.Data.Services;
+using TaskMeta.Shared.Interfaces;
+using TaskMeta.Shared.Models;
+using TaskMeta.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,15 +37,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
+    .AddRoles<IdentityRole>()
+    .AddRoleManager<RoleManager<IdentityRole>>()
+    .AddRoleStore<RoleStore<IdentityRole, ApplicationDbContext>>()
     .AddDefaultTokenProviders();
+
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 // Add Application Insights logging
-builder.Services.AddApplicationInsightsTelemetry();
-builder.Services.AddSnapshotCollector();
+//builder.Services.AddApplicationInsightsTelemetry();
+//builder.Services.AddSnapshotCollector();
+builder.Services.AddScoped<IUserService, UserService>();
 
 DataModule.Build(builder.Services);
 
