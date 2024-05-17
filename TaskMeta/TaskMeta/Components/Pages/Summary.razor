@@ -1,6 +1,64 @@
 ﻿@page "/summary"
+
 <h3>Summary</h3>
 
-@code {
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentCard>
+        <table class="taskChart">
+            <tr>
+                <th> </th>
+                <th>S</th>
+                <th>M</th>
+                <th>T</th>
+                <th>W</th>
+                <th>T</th>
+                <th>F</th>
+                <th>S</th>
+            </tr>
+            @if(taskDefinitions != null)
+            {
+                for(int s = 1; s <= taskDefinitions!.Count; s++)
+                {
+                    <tr>    
+                        <td>
+                            @{
+                                var taskDefinition = taskDefinitions!.Where(t => t.Sequence == s ).FirstOrDefault();
+                                if(taskDefinition != null)
+                                {
+                                    <span>@taskDefinition.Description</span>
+                                }
+                            }
+                        </td>
+                        @for(int d = 0; d < 7; d++)
+                        {           
+                            {
+                                DateOnly currentDay = startOfWeek.AddDays(d);
+                
+                                var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
+                                {  
+                                    <td>
+                                    @if(task != null)
+                                    { 
+                                
+                                            <FluentCheckbox @bind-Value="task.Complete"  ReadOnly/>
 
+                                        }
+                                        else
+                                        {
+                                            <FluentCheckbox Disabled/>
+                                        }
+                                    </td>
+                                }
+                            }  
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    </FluentCard>
+
+@if (taskWeek != null)
+{
+    <FluentCard><strong>Total:</strong> @taskWeek.Value</FluentCard>
 }
+</FluentStack>

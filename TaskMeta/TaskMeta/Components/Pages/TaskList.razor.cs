@@ -18,8 +18,14 @@ namespace TaskMeta.Components.Pages
         [Inject] 
         private ITaskActivityService? TaskActivityService { get; set; }
 
+        private decimal totalValue = 0;
+
         protected override async Task OnInitializedAsync()
         {
+            Debug.Assert(TaskWeekService != null, "TaskWeekService != null");
+            Debug.Assert(TaskActivityService != null, "TaskActivityService != null");
+            Debug.Assert(UserService != null, "UserService != null");
+
             var user = await UserService.GetCurrentUser();
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
             taskWeek = await TaskWeekService.GetOrCreateCurrentWeek(user.Id);
@@ -28,16 +34,21 @@ namespace TaskMeta.Components.Pages
 
         private async void HandleChange(TaskActivity task)
         {
+            if(taskWeek == null) throw new InvalidOperationException("TaskWeek is null");
+   
+
             if(task.Complete)
             {
                 taskWeek.Value += task.Value;
+                totalValue += task.Value;
             }
             else
             {
                 taskWeek.Value -= task.Value;
+                totalValue -= task.Value;
             }
-            await TaskActivityService.UpdateAsync(task);
-            await TaskWeekService.UpdateAsync(taskWeek);
+            await TaskActivityService!.UpdateAsync(task);
+            await TaskWeekService!.UpdateAsync(taskWeek);
         }
     }
 }

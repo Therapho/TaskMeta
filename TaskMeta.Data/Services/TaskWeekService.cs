@@ -16,14 +16,18 @@ namespace TaskMeta.Data.Services
         }
         public async Task<TaskWeek> GetOrCreateCurrentWeek(string userId)
         {
-            var currentWeekStart = DateOnly.FromDateTime(DateTime.Now.StartOfWeek());
+            var currentWeekStart = Tools.StartOfWeek;
+            return await GetOrCreate(userId, currentWeekStart);
+        }
 
+        public async Task<TaskWeek> GetOrCreate(string userId, DateOnly currentWeekStart)
+        { 
             var currentWeek = await Get(userId, currentWeekStart);
             if (currentWeek == null)
             {
                 currentWeek = new TaskWeek()
                 {
-                    WeekStartDate = DateOnly.FromDateTime(DateTime.Now.StartOfWeek()),
+                    WeekStartDate = Tools.StartOfWeek,
                     UserId = userId,
                     StatusId = 1,
                     Value = 0
@@ -32,6 +36,9 @@ namespace TaskMeta.Data.Services
             }
             return currentWeek;
         }
+
+        // generate comments for this method
+
         public async Task<TaskWeek?> Get(string userId, DateOnly weekStart)
         {
 
@@ -39,6 +46,6 @@ namespace TaskMeta.Data.Services
                 .Where(x => x.WeekStartDate == weekStart && x.UserId == userId).FirstOrDefaultAsync();
 
             return currentWeek;
-        }
+        }    
     }
 }

@@ -13,15 +13,23 @@
 <h3>Task List</h3>
 
 <FluentStack Orientation="Orientation.Vertical">
-    @if(taskActivities != null)
-    {
-        foreach (var taskActivity in taskActivities)
-        {
-            <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" 
-                @bind-value:after="()=>HandleChange(taskActivity)" />
-        }
-    }
+    <FluentCard Class="Panel">
+        <FluentStack Orientation="Orientation.Vertical">
+            @if(taskActivities != null)
+            {
+                totalValue = 0;
+                foreach (var taskActivity in taskActivities)
+                {
+                    <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" 
+                    @bind-value:after="()=>HandleChange(taskActivity)" />
+            
+                    if(taskActivity.Complete) totalValue = totalValue + taskActivity.Value;
+            
+                }
+            }
+        </FluentStack>
+    </FluentCard>
+    <FluentCard Class="panel" >
+        <strong>Total:</strong> @totalValue
+    </FluentCard>
 </FluentStack>
-
-Total: @if(taskWeek != null) @taskWeek.Value
-    
