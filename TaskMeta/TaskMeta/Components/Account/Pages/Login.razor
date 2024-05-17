@@ -1,5 +1,6 @@
 ﻿@page "/Account/Login"
 
+
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
@@ -28,7 +29,7 @@
                 <FluentValidationMessage For="() => Input.Password" class="text-danger" />
                 <FluentCheckbox Name="Input.RememberMe" @bind-Value="Input.RememberMe" Label="Remember me" />
                 <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%">Log in</FluentButton>
-                <div>
+                @* <div>
                     <p>
                         <FluentAnchor Appearance="Appearance.Hypertext" Href="Account/ForgotPassword">Forgot your password?</FluentAnchor>
                     </p>
@@ -38,16 +39,13 @@
                     <p>
                         <FluentAnchor Appearance="Appearance.Hypertext" Href="Account/ResendEmailConfirmation">Resend email confirmation</FluentAnchor>
                     </p>
-                </div>
+                </div> *@
             </FluentStack>
         </EditForm>
     </FluentGridItem>
-    <FluentGridItem xs="12" sm="8">
-        <h3>Use another service to log in.</h3>
-        <hr />
-        <ExternalLoginPicker />
-    </FluentGridItem>
+    
 </FluentGrid>
+@Input.Email
 
 @code {
     private string? errorMessage;

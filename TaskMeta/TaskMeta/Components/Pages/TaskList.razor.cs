@@ -18,7 +18,7 @@ namespace TaskMeta.Components.Pages
         [Inject] 
         private ITaskActivityService? TaskActivityService { get; set; }
 
-        private decimal totalValue = 0;
+        public decimal totalValue = 0;
 
         protected override async Task OnInitializedAsync()
         {
@@ -30,6 +30,8 @@ namespace TaskMeta.Components.Pages
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
             taskWeek = await TaskWeekService.GetOrCreateCurrentWeek(user.Id);
             taskActivities = await TaskActivityService.GetOrCreateTaskActivities(taskWeek);
+
+            totalValue = taskActivities.Sum(t => t.Value);
         }
 
         private async void HandleChange(TaskActivity task)

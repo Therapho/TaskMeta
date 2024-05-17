@@ -1,9 +1,11 @@
 ﻿@page "/summary"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <h3>Summary</h3>
 
 <FluentStack Orientation="Orientation.Vertical">
-    <FluentCard>
+    <FluentCard >
         <table class="taskChart">
             <tr>
                 <th> </th>
@@ -59,6 +61,6 @@
 
 @if (taskWeek != null)
 {
-    <FluentCard><strong>Total:</strong> @taskWeek.Value</FluentCard>
+    <FluentCard Class="panel"><strong>Total:</strong> @taskWeek.Value.ToString("C")</FluentCard>
 }
 </FluentStack>

@@ -49,8 +49,7 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
         {
             list = new List<TaskActivity>();
             List<TaskDefinition> taskDefinitions = await TaskDefinitionService.GetAllAsync();
-
-            var currentDate = taskWeek!.WeekStartDate;
+            var today = Tools.Today;
 
             foreach (var taskDefinition in taskDefinitions)
             {
@@ -58,13 +57,13 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
                 {
                     Sequence = taskDefinition.Sequence,
                     TaskDefinitionId = taskDefinition.Id,
-                    TaskDate = currentDate,
+                    TaskDate = today,
                     Complete = false,
+                    Value = taskDefinition.Value,
                     Description = taskDefinition.Description,
                     TaskWeek = taskWeek
                 };
                 list.Add(taskActivity);
-                currentDate = currentDate.AddDays(1);
             }
 
             await AddAsync(list);

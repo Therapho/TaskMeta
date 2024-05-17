@@ -46,5 +46,11 @@ namespace TaskMeta.Utilities
             var user = await GetCurrentUser();
             return await IsAdmin(user);
         }
+        public async Task<bool> IsLoggedIn()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            //var user = await _userManager.GetUserAsync(authState!.User);
+            return authState!.User != null;
+        }
     }
 }

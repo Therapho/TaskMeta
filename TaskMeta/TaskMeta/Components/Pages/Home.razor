@@ -1,27 +1,34 @@
 ﻿@page "/"
-@using TaskMeta.Shared.Models
 @using TaskMeta.Shared.Interfaces
-@using TaskMeta.Utilities
+@inject NavigationManager NavigationManager
 @inject IUserService UserService
-
 <PageTitle>Home</PageTitle>
-<FluentGrid AdaptiveRendering="true">
-    <FluentGridItem sm="6" xs="12">
 
-        <FluentCard>
-            <p>UserService.IsAdmin</p>
-        </FluentCard>
-    </FluentGridItem>
-    <FluentGridItem sm="6" xs="12">
-
-        <FluentCard>
-            <p>UserService.CurrentUser.UserName</p>
-        </FluentCard>
-    </FluentGridItem>
-</FluentGrid>
-
-@code
+@if (!loggedIn)
 {
-    
+    <FluentButton @onclick="RedirectToLogin">Go to Login</FluentButton>
+}
+
+
+@code {
+    bool loggedIn;
+
+
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/Account/Login");
+    }
+
+
+    override protected async Task OnInitializedAsync()
+    {
+        loggedIn = await UserService.IsLoggedIn();
+        if (loggedIn)
+        {
+            NavigationManager.NavigateTo("/tasklist");
+        }
+        await base.OnInitializedAsync();
+
+    }
 
 }
