@@ -1,0 +1,56 @@
+﻿@if(TaskActivities != null && TaskWeek != null)
+{
+    <FluentCard>
+        <table class="taskChart">
+            <tr>
+                <th> </th>
+                <th>S</th>
+                <th>M</th>
+                <th>T</th>
+                <th>W</th>
+                <th>T</th>
+                <th>F</th>
+                <th>S</th>
+            </tr>
+            @if (TaskDefinitions != null)
+            {
+                for (int s = 1; s <= TaskDefinitions!.Count; s++)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                var taskDefinition = TaskDefinitions!.Where(t => t.Sequence == s).FirstOrDefault();
+                                if (taskDefinition != null)
+                                {
+                                    <span>@taskDefinition.Description</span>
+                                }
+                            }
+                        </td>
+                        @for (int d = 0; d < 7; d++)
+                        {
+                            {
+                                DateOnly currentDay = TaskWeek.WeekStartDate.AddDays(d);
+
+                                var task = TaskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
+                                {
+                                    <td>
+                                        @if (task != null)
+                                        {
+                                            <FluentCheckbox @bind-Value="task.Complete" ReadOnly />
+                                        }
+                                        else
+                                        {
+                                            <FluentCheckbox Disabled />
+                                        }
+                                    </td>
+                                }
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </table>
+        <hr/>
+        <strong>Total:</strong> @TaskWeek.Value.ToString("C")</FluentCard>
+}
+

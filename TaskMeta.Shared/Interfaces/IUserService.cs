@@ -8,4 +8,5 @@ public interface IUserService
     Task<bool> IsAdmin();
     Task<bool> IsAdmin(ApplicationUser user);
     Task<bool> IsLoggedIn();
+    Task<List<ApplicationUser>> GetContributors();
 }

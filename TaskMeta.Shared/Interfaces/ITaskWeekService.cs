@@ -6,5 +6,6 @@ namespace TaskMeta.Shared.Interfaces
     {
         Task<TaskWeek> GetOrCreateCurrentWeek(string userId);
         Task<TaskWeek?> Get(string userId, DateOnly weekStart);
+        Task<(TaskWeek? previousWeek, TaskWeek? nextWeek)> GetAdjacent(TaskWeek currentTaskWeek);
     }
 }

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskMeta.Client", "TaskMeta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskMeta.Data", "TaskMeta.Data\TaskMeta.Data.csproj", "{1402EC12-14C1-477B-8711-6D2E7EB162CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskMeta.Shared", "TaskMeta.Shared\TaskMeta.Shared.csproj", "{60682A28-A8C7-4519-BA9D-08791D0F8469}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskMeta.Shared", "TaskMeta.Shared\TaskMeta.Shared.csproj", "{60682A28-A8C7-4519-BA9D-08791D0F8469}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

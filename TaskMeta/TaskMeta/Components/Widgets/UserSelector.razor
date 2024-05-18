@@ -1,0 +1,9 @@
+﻿@if(Users != null)
+{
+    <FluentCard>
+        @foreach (var user in Users)
+        {
+            <FluentButton @onclick="(()=>HandleButtonClick(user))">@user.UserName</FluentButton>
+        }
+    </FluentCard>
+}

@@ -47,5 +47,14 @@ namespace TaskMeta.Data.Services
 
             return currentWeek;
         }    
+        public async Task<(TaskWeek? previousWeek, TaskWeek? nextWeek)> GetAdjacent(TaskWeek currentTaskWeek)
+        {
+            DateOnly previousStartDate = currentTaskWeek.WeekStartDate.AddDays(-7);
+            DateOnly nextStartDate = currentTaskWeek.WeekStartDate.AddDays(7);
+            
+            var previousWeek = await Get(currentTaskWeek.UserId, previousStartDate);
+            var nextWeek = await Get(currentTaskWeek.UserId, nextStartDate);
+            return (previousWeek, nextWeek);
+        }
     }
 }

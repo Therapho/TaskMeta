@@ -29,12 +29,17 @@ namespace TaskMeta.Utilities
 
 
             var user = await _userManager.GetUserAsync(authState!.User);
-
+        
             if (user == null)
             {
                 throw new InvalidOperationException("Unable to get user.");
             }
             return user;
+        }
+        public async Task<List<ApplicationUser>> GetContributors()
+        {
+            var users = await _userManager.GetUsersInRoleAsync("Contributor");
+            return users.ToList();
         }
         public async Task<bool> IsAdmin(ApplicationUser user)
         {

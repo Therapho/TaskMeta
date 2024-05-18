@@ -1,66 +1,17 @@
 ﻿@page "/summary"
 @using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Widgets
+@using TaskMeta.Shared.Models
+
+@rendermode InteractiveServer
 @attribute [Authorize]
 
+<PageTitle>TaskMeta - Summary</PageTitle>
 <h3>Summary</h3>
 
 <FluentStack Orientation="Orientation.Vertical">
-    <FluentCard >
-        <table class="taskChart">
-            <tr>
-                <th> </th>
-                <th>S</th>
-                <th>M</th>
-                <th>T</th>
-                <th>W</th>
-                <th>T</th>
-                <th>F</th>
-                <th>S</th>
-            </tr>
-            @if(taskDefinitions != null)
-            {
-                for(int s = 1; s <= taskDefinitions!.Count; s++)
-                {
-                    <tr>    
-                        <td>
-                            @{
-                                var taskDefinition = taskDefinitions!.Where(t => t.Sequence == s ).FirstOrDefault();
-                                if(taskDefinition != null)
-                                {
-                                    <span>@taskDefinition.Description</span>
-                                }
-                            }
-                        </td>
-                        @for(int d = 0; d < 7; d++)
-                        {           
-                            {
-                                DateOnly currentDay = startOfWeek.AddDays(d);
-                
-                                var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
-                                {  
-                                    <td>
-                                    @if(task != null)
-                                    { 
-                                
-                                            <FluentCheckbox @bind-Value="task.Complete"  ReadOnly/>
-
-                                        }
-                                        else
-                                        {
-                                            <FluentCheckbox Disabled/>
-                                        }
-                                    </td>
-                                }
-                            }  
-                        }
-                    </tr>
-                }
-            }
-        </table>
-    </FluentCard>
-
-@if (taskWeek != null)
-{
-    <FluentCard Class="panel"><strong>Total:</strong> @taskWeek.Value.ToString("C")</FluentCard>
-}
+    <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
+    <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" TaskActivities="@taskActivities"/>
+    <WeekSelector CurrentWeek="taskWeek" NextWeek="nextWeek" PreviousWeek="previousWeek" 
+        OnNextWeek="@(()=>LoadWeek(nextWeek!))" OnPreviousWeek="@(()=>LoadWeek(previousWeek!))" />    
 </FluentStack>

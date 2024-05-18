@@ -37,4 +37,5 @@
   <ItemGroup>
     <_GlobalJsonStartingDir Remove="Data\**" />
   </ItemGroup>
+
 </Project>

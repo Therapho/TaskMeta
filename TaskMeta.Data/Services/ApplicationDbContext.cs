@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TaskMeta.Shared.Models;
-using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Data.Services;
 

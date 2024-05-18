@@ -31,7 +31,7 @@ namespace TaskMeta.Components.Pages
             taskWeek = await TaskWeekService.GetOrCreateCurrentWeek(user.Id);
             taskActivities = await TaskActivityService.GetOrCreateTaskActivities(taskWeek);
 
-            totalValue = taskActivities.Sum(t => t.Value);
+            totalValue = taskActivities.Where(t=>t.Complete).Sum(t => t.Value);
         }
 
         private async void HandleChange(TaskActivity task)

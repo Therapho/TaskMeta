@@ -15,7 +15,6 @@
         <FluentStack Orientation="Orientation.Vertical">
             @if(taskActivities != null)
             {
-                totalValue = 0;
                 foreach (var taskActivity in taskActivities)
                 {
                     <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" 

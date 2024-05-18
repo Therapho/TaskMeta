@@ -17,6 +17,11 @@ namespace TaskMeta.Shared.Utilities
                 return DateOnly.FromDateTime(dt.AddDays(-1 * diff).Date);
             }
         }
+        public static DateOnly CalculateStartOfWeek(DateOnly date)
+        {
+            int diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
+            return date.AddDays(-1 * diff);
+        }
         public static DateOnly Today
         {
             get
