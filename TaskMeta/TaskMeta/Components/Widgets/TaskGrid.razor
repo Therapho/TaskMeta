@@ -1,6 +1,6 @@
-﻿@if(TaskActivities != null && TaskWeek != null)
+﻿@if(taskActivities != null && taskWeek != null)
 {
-    <FluentCard>
+   
         <table class="taskChart">
             <tr>
                 <th> </th>
@@ -29,9 +29,9 @@
                         @for (int d = 0; d < 7; d++)
                         {
                             {
-                                DateOnly currentDay = TaskWeek.WeekStartDate.AddDays(d);
+                                DateOnly currentDay = taskWeek.WeekStartDate.AddDays(d);
 
-                                var task = TaskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
+                                var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
                                 {
                                     <td>
                                         @if (task != null)
@@ -51,6 +51,11 @@
             }
         </table>
         <hr/>
-        <strong>Total:</strong> @TaskWeek.Value.ToString("C")</FluentCard>
+        <strong>Total: </strong> @taskWeek.Value.ToString("C")
+        @if(CanApprove)
+        {
+            <FluentButton @onclick="HandleApprove">Approve</FluentButton>
+        }
+        
 }
 

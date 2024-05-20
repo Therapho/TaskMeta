@@ -30,6 +30,7 @@ public partial class Summary : ComponentBase
     private ApplicationUser? selectedUser;
     private bool isAdmin;
     private List<ApplicationUser>? contributors;
+    private bool canApprove = false;
     protected override async Task OnInitializedAsync()
     {
         taskDefinitions = await TaskDefinitionService!.GetAllAsync();
@@ -40,31 +41,56 @@ public partial class Summary : ComponentBase
         if (!isAdmin)
         {
             
-            await LoadWeek(user);
+            await LoadThisWeek(user);
         }
         else
         {
             contributors = await UserService!.GetContributors();
+
         }
         
         await base.OnInitializedAsync();
     }
-    async Task LoadWeek(ApplicationUser user)
+    async Task LoadThisWeek(ApplicationUser user)
     {
-        taskWeek = await TaskWeekService!.GetOrCreateCurrentWeek(user!.Id);
-        await LoadWeek(taskWeek);
         selectedUser = user;
+        var newTaskWeek = await TaskWeekService!.GetOrCreateCurrentWeek(user!.Id);
+        Console.WriteLine("This week loaded/created");
+        await LoadActivitiesk(newTaskWeek);
+        
     }
     async void HandleUserSelected(ApplicationUser user)
     {
-        await LoadWeek(user);
+        Console.WriteLine("User select handled.");
+        await LoadThisWeek(user);
+
     }
-    async Task LoadWeek(TaskWeek newTaskWeek)
+    async void HandleApproval()
     {
-        taskActivities = await TaskActivityService!.GetByTaskWeek(newTaskWeek);
-        //taskActivities = newTaskWeek.TaskActivities.ToList();
-        (previousWeek, nextWeek) = await TaskWeekService!.GetAdjacent(newTaskWeek);
+        if (taskWeek != null)
+        {
+            taskWeek.StatusId = 2;
+            await TaskWeekService!.UpdateAsync(taskWeek);
+            canApprove = false;
+        }
+    }
+    async Task LoadActivitiesk(TaskWeek newTaskWeek)
+    {
         taskWeek = newTaskWeek;
+        taskActivities = await TaskActivityService!.GetByTaskWeek(taskWeek);
+        Console.WriteLine($"{taskActivities.Count} Activities Loaded");
+        //taskActivities = newTaskWeek.TaskActivities.ToList();
+        (previousWeek, nextWeek) = await TaskWeekService!.GetAdjacent(taskWeek);
+        
         startOfWeek = taskWeek.WeekStartDate;
+        if(isAdmin && taskWeek.StatusId == 1)
+        {
+            canApprove = true;
+        }
+        else
+        {
+            canApprove = false;
+        }
+        StateHasChanged();
     }
 }

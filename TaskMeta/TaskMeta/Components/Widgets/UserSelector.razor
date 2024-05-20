@@ -1,9 +1,9 @@
 ﻿@if(Users != null)
 {
-    <FluentCard>
-        @foreach (var user in Users)
-        {
-            <FluentButton @onclick="(()=>HandleButtonClick(user))">@user.UserName</FluentButton>
-        }
-    </FluentCard>
+  <FluentStack Orientation="Orientation.Horizontal">
+    @foreach (var user in Users)
+    {
+        <FluentButton class="selector" Appearance="@(user==selectedUser?Appearance.Accent:Appearance.Neutral)" @onclick="(()=>HandleButtonClick(user))" >@user.UserName</FluentButton>
+    }
+    </FluentStack>
 }

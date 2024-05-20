@@ -10,8 +10,11 @@
 <h3>Summary</h3>
 
 <FluentStack Orientation="Orientation.Vertical">
-    <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
-    <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" TaskActivities="@taskActivities"/>
-    <WeekSelector CurrentWeek="taskWeek" NextWeek="nextWeek" PreviousWeek="previousWeek" 
-        OnNextWeek="@(()=>LoadWeek(nextWeek!))" OnPreviousWeek="@(()=>LoadWeek(previousWeek!))" />    
+     <FluentCard>
+        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
+        <hr/>
+        <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" CanApprove="@canApprove" OnApproved="HandleApproval"/>
+    </FluentCard>
+    <WeekSelector CurrentWeek="taskWeek" NextWeek="nextWeek" PreviousWeek="previousWeek"
+                  OnNextWeek="@(()=>LoadActivitiesk(nextWeek!))" OnPreviousWeek="@(()=>LoadActivitiesk(previousWeek!))" />
 </FluentStack>

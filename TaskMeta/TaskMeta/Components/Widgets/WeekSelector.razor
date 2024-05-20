@@ -1,26 +1,19 @@
 ﻿@if(CurrentWeek != null)
 {
-    <FluentCard>    
-
-
+    <FluentCard>
         @if(CurrentWeek != null)
         {
-            <div style="width:120px; display:inline-block;text-align:center;">
-                @if (PreviousWeek != null)
-                {
-                    <FluentButton @onclick="HandlePreviousWeek">Previous Week</FluentButton>
-                }
+            <div class="column">           
+                <FluentButton @onclick="HandlePreviousWeek" Disabled=@(PreviousWeek==null)>Previous Week</FluentButton>                
             </div>
 
-            <div style="width:120px;display:inline-block;vertical-align:middle;text-align:center;">
-                            @CurrentWeek!.WeekStartDate.ToString("D")
-                </div>
-            <div style="width:120px;display:inline-block;text-align:center;">
-                @if (NextWeek != null)
-                {
-                    <FluentButton OnClick="HandleNextWeek">Next Week</FluentButton>
-                }
+            <div class="column">
+                <strong>@CurrentWeek!.WeekStartDate.ToString("D")</strong>
             </div>
+                 
+            <div class="column">               
+                <FluentButton OnClick="HandleNextWeek" Disabled=@(NextWeek == null)>Next Week</FluentButton>                
+            </div>        
         }
     </FluentCard>
 }

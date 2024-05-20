@@ -5,15 +5,33 @@ namespace TaskMeta.Components.Widgets
 {
     public partial class TaskGrid : ComponentBase
     {
+        private TaskWeek? taskWeek;
+        private List<TaskActivity>? taskActivities;
+
         [Parameter]
         public List<TaskDefinition>? TaskDefinitions { get; set; }
 
         [Parameter]
-        public List<TaskActivity>? TaskActivities { get; set; }
+        public TaskWeek? TaskWeek { get => taskWeek; set => taskWeek = value; }
+        [Parameter]
+        public bool CanApprove { get; set; }
 
         [Parameter]
-        public TaskWeek? TaskWeek { get; set; }
+        public EventCallback OnApproved { get; set; }
 
+        protected override void OnParametersSet()
+        {
+            Console.WriteLine("TaskGrid parameters set");
+            if (TaskWeek != null)
+            {
+                taskWeek = TaskWeek;
+                taskActivities = TaskWeek.TaskActivities.ToList();
 
+            }
+        }
+        private void HandleApprove(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+        {
+            OnApproved.InvokeAsync();
+        }
     }
 }
