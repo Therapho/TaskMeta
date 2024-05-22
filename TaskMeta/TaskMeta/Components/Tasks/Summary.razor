@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using TaskMeta.Components.Widgets
 @using TaskMeta.Shared.Models
+@namespace TaskMeta.Components.Tasks
 
 @rendermode InteractiveServer
 @attribute [Authorize]
@@ -13,8 +14,10 @@
      <FluentCard>
         <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
         <hr/>
-        <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" CanApprove="@canApprove" OnApproved="HandleApproval"/>
+        <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" 
+            CanApprove="@canApprove" OnApproved="HandleApproval"/>
     </FluentCard>
     <WeekSelector CurrentWeek="taskWeek" NextWeek="nextWeek" PreviousWeek="previousWeek"
-                  OnNextWeek="@(()=>LoadActivitiesk(nextWeek!))" OnPreviousWeek="@(()=>LoadActivitiesk(previousWeek!))" />
+                  OnNextWeek="@(()=>LoadActivities(nextWeek!))" 
+                  OnPreviousWeek="@(()=>LoadActivities(previousWeek!))" />
 </FluentStack>

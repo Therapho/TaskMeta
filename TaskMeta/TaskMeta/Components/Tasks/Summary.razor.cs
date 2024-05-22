@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.FluentUI.AspNetCore.Components.Extensions;
-using Microsoft.IdentityModel.Tokens;
-using TaskMeta.Data.Services;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
-using TaskMeta.Shared.Utilities;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
-namespace TaskMeta.Components.Pages;
+namespace TaskMeta.Components.Tasks;
 
 public partial class Summary : ComponentBase
 {
@@ -36,19 +31,16 @@ public partial class Summary : ComponentBase
         taskDefinitions = await TaskDefinitionService!.GetAllAsync();
 
         var user = await UserService!.GetCurrentUser();
-        if(user == null) throw new InvalidOperationException("User is null");
+        if (user == null) throw new InvalidOperationException("User is null");
         isAdmin = await UserService!.IsAdmin(user);
         if (!isAdmin)
         {
-            
-            await LoadThisWeek(user);
-        }
+            await LoadThisWeek(user);        }
         else
         {
             contributors = await UserService!.GetContributors();
-
         }
-        
+
         await base.OnInitializedAsync();
     }
     async Task LoadThisWeek(ApplicationUser user)
@@ -56,14 +48,11 @@ public partial class Summary : ComponentBase
         selectedUser = user;
         var newTaskWeek = await TaskWeekService!.GetOrCreateCurrentWeek(user!.Id);
         Console.WriteLine("This week loaded/created");
-        await LoadActivitiesk(newTaskWeek);
-        
+        await LoadActivities(newTaskWeek);
     }
     async void HandleUserSelected(ApplicationUser user)
     {
-        Console.WriteLine("User select handled.");
         await LoadThisWeek(user);
-
     }
     async void HandleApproval()
     {
@@ -74,16 +63,16 @@ public partial class Summary : ComponentBase
             canApprove = false;
         }
     }
-    async Task LoadActivitiesk(TaskWeek newTaskWeek)
+    async Task LoadActivities(TaskWeek newTaskWeek)
     {
         taskWeek = newTaskWeek;
         taskActivities = await TaskActivityService!.GetByTaskWeek(taskWeek);
         Console.WriteLine($"{taskActivities.Count} Activities Loaded");
         //taskActivities = newTaskWeek.TaskActivities.ToList();
         (previousWeek, nextWeek) = await TaskWeekService!.GetAdjacent(taskWeek);
-        
+
         startOfWeek = taskWeek.WeekStartDate;
-        if(isAdmin && taskWeek.StatusId == 1)
+        if (isAdmin && taskWeek.StatusId == 1)
         {
             canApprove = true;
         }

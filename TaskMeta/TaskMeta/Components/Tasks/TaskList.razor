@@ -4,8 +4,10 @@
 @using TaskMeta.Shared.Models
 @using TaskMeta.Shared.Interfaces
 
+@namespace TaskMeta.Components.Tasks
+
 @rendermode InteractiveServer
-@attribute [Authorize]
+@attribute [Authorize(Roles ="Contributor")]
 
 <PageTitle>Task Meta - Task List</PageTitle>
 <h3>Task List</h3>

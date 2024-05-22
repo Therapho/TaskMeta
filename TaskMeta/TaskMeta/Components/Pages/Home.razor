@@ -25,7 +25,11 @@
         loggedIn = await UserService.IsLoggedIn();
         if (loggedIn)
         {
-            NavigationManager.NavigateTo("/tasklist");
+            if(await UserService.IsAdmin())
+            {
+                NavigationManager.NavigateTo("/summary");
+            }
+            else NavigationManager.NavigateTo("/tasklist");
         }
         await base.OnInitializedAsync();
 

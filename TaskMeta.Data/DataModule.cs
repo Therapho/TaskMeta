@@ -6,12 +6,14 @@ namespace TaskMeta.Data
 {
     public static class DataModule
     {
-        public static void Build(IServiceCollection services)
+        public static IServiceCollection AddDataModule(this IServiceCollection services)
         {
             services             
                 .AddScoped<ITaskActivityService, TaskActivityService>()
                 .AddScoped<ITaskDefinitionService, TaskDefinitionService>()
-                .AddScoped<ITaskWeekService, TaskWeekService>();
+                .AddScoped<ITaskWeekService, TaskWeekService>()
+                .AddScoped<IFundService, FundService>();
+            return services;
         }
     }
 }

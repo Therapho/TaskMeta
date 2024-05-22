@@ -1,0 +1,15 @@
+﻿.button{
+    cursor:grabbing;
+}
+table{
+    width:100%;
+}
+th,td{
+    width:250px;
+}
+::deep > fluent-button::part(control) {
+    font-weight: 1000;
+    font-size: 1.2rem;
+    color: #036EC9;
+    border: none;
+}

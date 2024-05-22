@@ -53,7 +53,8 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 //builder.Services.AddSnapshotCollector();
 builder.Services.AddScoped<IUserService, UserService>();
 
-DataModule.Build(builder.Services);
+builder.Services.AddDataModule();
+
 
 var app = builder.Build();
 
