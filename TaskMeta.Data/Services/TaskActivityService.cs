@@ -37,7 +37,7 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
         List<TaskActivity>? list = null;
         try
         {
-            list = await GetByDate(Tools.Today, taskWeek.UserId);
+            list = await GetByDate(DateTime.Now.ToDateOnly(), taskWeek.UserId);
         }
         catch (Exception ex)
         {
@@ -49,7 +49,7 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
         {
             list = new List<TaskActivity>();
             List<TaskDefinition> taskDefinitions = await TaskDefinitionService.GetAllAsync();
-            var today = Tools.Today;
+            var today = DateTime.Now.ToDateOnly();
 
             foreach (var taskDefinition in taskDefinitions)
             {

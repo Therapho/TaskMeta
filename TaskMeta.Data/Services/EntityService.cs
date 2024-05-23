@@ -44,13 +44,13 @@ namespace TaskMeta.Data.Services
             }
         }
 
-        public async Task AddAsync(E entity)
+        public async Task AddAsync(E entity, bool commit = true)
         {
             try
             {
                 // Add any business logic or validation here
                 await Context.Set<E>().AddAsync(entity);
-                await Context.SaveChangesAsync();
+                if (commit) await Commit();
             }
             catch (Exception ex)
             {
@@ -59,13 +59,13 @@ namespace TaskMeta.Data.Services
             }
         }
 
-        public async Task UpdateAsync(E entity)
+        public async Task UpdateAsync(E entity, bool commit = true)
         {
             try
             {
                 // Add any business logic or validation here
                 Context.Set<E>().Update(entity);
-                await Context.SaveChangesAsync();
+                if (commit) await Commit();
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace TaskMeta.Data.Services
             }
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, bool commit = true)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace TaskMeta.Data.Services
                 if (entity != null)
                 {
                     Context.Remove<E>(entity);
-                    await Context.SaveChangesAsync();
+                    if (commit) await Commit();
                 }
             }
             catch (Exception ex)
@@ -91,6 +91,10 @@ namespace TaskMeta.Data.Services
                 Logger.LogError(ex, $"An error occurred while deleting an entity with id: {id}");
                 throw;
             }
+        }
+        public async Task Commit()
+        {
+            await Context.SaveChangesAsync();
         }
     }
 }

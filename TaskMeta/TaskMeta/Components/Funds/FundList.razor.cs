@@ -1,26 +1,23 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Microsoft.IdentityModel.Tokens;
-using TaskMeta.Components.Widgets;
-using TaskMeta.Data.Services;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
 
 namespace TaskMeta.Components.Funds;
 
-public partial class FundList : ComponentBase
+public partial class FundList : ComponentBase, IDisposable
 {
     private bool isAdmin;
     private List<ApplicationUser>? contributors;
     private ApplicationUser? selectedUser;
-    private List<Fund>? funds;
+    private List<Fund>? fundList;
     private bool editMode = false;
-    private Fund? editFund;
+    
 
     [SupplyParameterFromForm]
-    private FundDTO? fundDTO { get; set; }
+    private Fund? EditFund { get; set; }
   
 
     [Inject]
@@ -30,6 +27,10 @@ public partial class FundList : ComponentBase
     [Inject]
     public IDialogService? DialogService { get; set; }
     private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+
+    int fundAllocationTotal;
+    private string warningMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,7 +47,7 @@ public partial class FundList : ComponentBase
             contributors = await UserService!.GetContributors();
 
         }
-
+        editContext = new(new Fund());
         await base.OnInitializedAsync();
     }
 
@@ -60,60 +61,46 @@ public partial class FundList : ComponentBase
     {
         selectedUser = user;
 
-        funds = await FundService!.GetFundsByUser(user.Id);
+        fundList = await FundService!.GetFundsByUser(user.Id);
+        RecalculatePage();
     }
     private void HandleAddFund(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
     {
-        fundDTO = new FundDTO()
+        var fund = new Fund()
         {
             UserId = selectedUser!.Id,
-            TargetDate = Tools.Today,
+            TargetDate = DateTime.Now.ToDateOnly(),
             Balance = 0,
             TargetBalance = 0,
             Allocation = 0,
             Description = ""
 
         };
-        editMode = true;
+        SetupEdit(fund);
     }
     private void HandleEditFund(Fund fund)
     {
-        editFund = fund;
-
-        fundDTO = new FundDTO()
-        {
-            Id = fund.Id,
-            Name = fund.Name,   
-            UserId = fund.UserId,
-            TargetDate = fund.TargetDate,
-            Balance = fund.Balance,
-            TargetBalance = fund.TargetBalance,
-            Allocation = fund.Allocation,
-            Description = fund.Description
-        };
-        editMode = true;
+        SetupEdit(fund);
     }
     private async void HandleSaveFund()
     {
         editMode = false;
 
-        if (fundDTO != null || fundDTO!.Id == 0)
+        if (EditFund == null) throw new NullReferenceException("EditFund is null");
+
+        if (EditFund!.Id == 0)
         {
-            await FundService!.AddAsync(fundDTO);
-            funds!.Add(fundDTO);
+            await FundService!.AddAsync(EditFund);
+            fundList!.Add(EditFund);
         }
         else
         {            
-            editFund!.Name = fundDTO!.Name;
-            editFund.Description = fundDTO!.Description;
-            editFund.Balance = fundDTO!.Balance;
-            editFund.TargetBalance = fundDTO!.TargetBalance;
-            editFund.Allocation = fundDTO!.Allocation;
-            editFund.TargetDate = fundDTO!.TargetDate;
-
-            await FundService!.UpdateAsync(editFund);
-        }      
-        StateHasChanged();
+            
+            await FundService!.UpdateAsync(EditFund);
+        }
+        
+        ClearEdit();
+        RecalculatePage();
     }
     private async void HandleDeleteFund(Fund fund)
     {
@@ -128,14 +115,71 @@ public partial class FundList : ComponentBase
         if (result != null && !result.Cancelled)
         {
             await FundService!.DeleteAsync(fund.Id);
-            funds!.Remove(fund);
-            StateHasChanged();
+            fundList!.Remove(fund);
+            RecalculatePage();
         }
     }
-    private void HandleCancelEdit(Fund fund)
+    public void RecalculatePage()
+    {
+        fundAllocationTotal = fundList!.Sum(f => f.Allocation.GetValueOrDefault());
+        if (fundAllocationTotal != 100) warningMessage = "Fund allocation total is not 100%.";
+        else warningMessage = string.Empty;
+        StateHasChanged();
+
+    }
+    private void HandleCancelEdit()
     {
         editMode = false;
-        fundDTO = null;
+        EditFund = null;
     }
-  
+    private void HandleValidationRequested(object? sender,
+      ValidationRequestedEventArgs args)
+    {
+        messageStore?.Clear();
+
+        if(String.IsNullOrEmpty(EditFund?.Name))
+        {
+            messageStore?.Add(() => EditFund!.Name, "Name is required.");
+        }
+
+        var total = 0;
+        foreach (var fund in fundList!)
+        {
+            if(fund.Id == EditFund!.Id)
+            {
+                total += EditFund.Allocation.GetValueOrDefault();
+            }
+            else
+            {
+                total += fund.Allocation.GetValueOrDefault();
+            }
+        }
+        if(total > 100)
+        {
+            messageStore?.Add(() => EditFund!.Allocation!, "Total allocation cannot exceed 100%.");
+        }
+ 
+    }
+    private void SetupEdit(Fund fund)
+    {
+        EditFund = fund;
+        editContext = new(EditFund);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+        editMode = true;
+    }
+    private void ClearEdit()
+    {
+        editMode = false;
+        if (editContext is not null)
+        {
+            editContext.OnValidationRequested -= HandleValidationRequested;
+        }
+        
+
+    }
+    public void Dispose()
+    {
+        ClearEdit();
+    }
 }

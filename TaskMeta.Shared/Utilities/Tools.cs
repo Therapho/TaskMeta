@@ -8,27 +8,37 @@ namespace TaskMeta.Shared.Utilities
 {
     public static class Tools
     {
-        public static DateOnly StartOfWeek
-        {
-            get
-            {
-                var dt = DateTime.Now;
-                int diff = (7 + (dt.DayOfWeek - DayOfWeek.Sunday)) % 7;
-                return DateOnly.FromDateTime(dt.AddDays(-1 * diff).Date);
-            }
-        }
-        public static DateOnly CalculateStartOfWeek(DateOnly date)
+        public static DateOnly StartOfWeek(this DateOnly date)
         {
             int diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
             return date.AddDays(-1 * diff);
         }
-        public static DateOnly Today
+        public static DateOnly StartOfWeek(this DateTime date)
         {
-            get
-            {
-                var dt = DateTime.Now;
-                return DateOnly.FromDateTime(dt);
-            }
+            int diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
+            return date.AddDays(-1 * diff).ToDateOnly();
+        }
+        public static DateOnly? ToDateOnly(this DateTime? dateTime)
+        {
+            if (dateTime == null) return null;
+            return DateOnly.FromDateTime(dateTime.Value);
+            
+        }
+        public static DateOnly ToDateOnly(this DateTime dateTime)
+        {
+            return DateOnly.FromDateTime(dateTime);
+        }
+        public static DateTime? ToDateTime(this DateOnly? dateOnly)
+        {
+            if (dateOnly == null) return null;
+            var result = dateOnly.Value.ToDateTime(TimeOnly.FromDateTime(DateTime.MinValue));
+            return result;
+        }
+        public static DateTime ToDateTime(this DateOnly dateOnly)
+        {
+            var result = dateOnly.ToDateTime(TimeOnly.FromDateTime(DateTime.MinValue));
+            return result;
         }
     }
+
 }

@@ -54,8 +54,10 @@ namespace TaskMeta.Utilities
         public async Task<bool> IsLoggedIn()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-            //var user = await _userManager.GetUserAsync(authState!.User);
-            return authState!.User != null;
+            
+            var isLoggedIn = authState != null && authState.User != null && authState.User.Identity != null 
+                && authState.User.Identity.IsAuthenticated;
+            return isLoggedIn;
         }
     }
 }

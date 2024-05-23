@@ -12,10 +12,10 @@
         <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
         <hr />
 
-        @if (funds != null)
+        @if (fundList != null)
         {
-            <EditForm EditContext="editContext" OnValidSubmit="@HandleSaveFund" FormName="fundEntry">
-                <DataAnnotationsValidator />
+            <EditForm OnValidSubmit="@HandleSaveFund" FormName="fundEntry" EditContext="editContext">
+
                 <FluentValidationSummary />
 
                 <table>
@@ -28,34 +28,34 @@
                         <th>Allocation</th>
                         <th></th>
                     </tr>
-                    @foreach (var fund in funds)
+                    @foreach (var fund in fundList)
                     {
 
-                        @if (editMode && fundDTO != null && fundDTO.Id == fund.Id)
+                        @if (editMode && EditFund != null && fund.Id == EditFund.Id)
                         {
 
                             <tr>
-                                <td><FluentTextField @bind-Value="fundDTO.Name" /></td>
-                                <td><FluentTextField @bind-Value="fundDTO.Description" /></td>
-                                <td><FluentDatePicker @bind-Value="fundDTO.TargetDateTime" /></td>
-                                <td><FluentNumberField @bind-Value="fundDTO.Balance" /></td>
-                                <td><FluentNumberField @bind-Value="fundDTO.TargetBalance" /></td>
-                                <td><FluentNumberField @bind-Value="fundDTO.Allocation" /></td>
+                                <td><FluentTextField @bind-Value="fund.Name" /></td>
+                                <td><FluentTextField @bind-Value="fund.Description" /></td>
+                                <td><FluentDatePicker @bind-Value="fund.TargetDateTime" /></td>
+                                <td><FluentNumberField @bind-Value="fund.Balance" /></td>
+                                <td><FluentNumberField @bind-Value="fund.TargetBalance" /></td>
+                                <td><FluentNumberField @bind-Value="fund.Allocation" /></td>
                                 <td>
-                                    <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())"/>
-                                    <FluentButton OnClick="@(()=>HandleCancelEdit(fundDTO))">X</FluentButton>
+                                    <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())" />
+                                    <FluentButton OnClick="HandleCancelEdit">X</FluentButton>
                                 </td>
                             </tr>
                         }
                         else
                         {
                             <tr>
-                                <td>@fund.Name</td>
-                                <td>@fund.Description</td>
-                                <td>@fund.TargetDate</td>
-                                <td>@fund.Balance</td>
-                                <td>@fund.TargetBalance</td>
-                                <td>@fund.Allocation</td>
+                                <td>@fund!.Name</td>
+                                <td>@fund!.Description</td>
+                                <td>@fund!.TargetDate</td>
+                                <td>@fund!.Balance</td>
+                                <td>@fund!.TargetBalance</td>
+                                <td>@fund!.Allocation</td>
                                 <td>
                                     <FluentButton IconStart="@(new Icons.Regular.Size24.Edit())"
                                                   OnClick="@(()=>HandleEditFund(fund))" />
@@ -66,27 +66,32 @@
                         }
                     }
 
-                    @if (editMode && fundDTO != null && fundDTO.Id == 0)
+                    @if (editMode && EditFund != null && EditFund.Id == 0)
                     {
 
                         <tr>
-                            <td><FluentTextField @bind-Value="fundDTO.Name" /></td>
-                            <td><FluentTextField @bind-Value="fundDTO.Description" /></td>
-                            <td><FluentDatePicker @bind-Value="fundDTO.TargetDateTime" /></td>
-                            <td><FluentNumberField @bind-Value="fundDTO.Balance" /></td>
-                            <td><FluentNumberField @bind-Value="fundDTO.TargetBalance" /></td>
-                            <td><FluentNumberField @bind-Value="fundDTO.Allocation" /></td>
+                            <td><FluentTextField @bind-Value="EditFund.Name" /></td>
+                            <td><FluentTextField @bind-Value="EditFund.Description" /></td>
+                            <td><FluentDatePicker @bind-Value="EditFund.TargetDateTime" /></td>
+                            <td><FluentNumberField @bind-Value="EditFund.Balance" /></td>
+                            <td><FluentNumberField @bind-Value="EditFund.TargetBalance" /></td>
+                            <td><FluentNumberField @bind-Value="EditFund.Allocation" /></td>
                             <td>
-                                <FluentButton Type="ButtonType.Submit"  IconStart="@(new Icons.Regular.Size24.Checkmark())"/>
-                                <FluentButton OnClick="@(()=>HandleCancelEdit(fundDTO))">X</FluentButton>
+                                <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())" />
+                                <FluentButton OnClick="HandleCancelEdit">X</FluentButton>
                             </td>
                         </tr>
 
                     }
                 </table>
             </EditForm>
+            <FluentLabel>Allocation total: @fundAllocationTotal</FluentLabel>
+            @if (!String.IsNullOrEmpty(warningMessage))
+            {
+                <div class="warning">@warningMessage</div>
+            }
             <hr />
-            <FluentButton @onclick="HandleAddFund" Disabled="@editMode">Add Fund</FluentButton>
+            <FluentButton  @onclick="HandleAddFund" Disabled="@editMode">Add Fund</FluentButton>
         }
 
 

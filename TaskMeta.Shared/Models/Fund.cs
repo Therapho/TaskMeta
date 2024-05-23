@@ -38,14 +38,13 @@ public partial class Fund
 
     [InverseProperty("TargetFund")]
     public virtual ICollection<TransactionLog> TransactionLogTargetFunds { get; set; } = new List<TransactionLog>();
-}
 
-public class FundDTO : Fund
-{
+    [NotMapped]
     public DateTime? TargetDateTime
     {
         get
         {
+            if(TargetDate == null) return null;
             return TargetDate!.Value.ToDateTime(TimeOnly.FromDateTime(DateTime.MinValue));
         }
         set

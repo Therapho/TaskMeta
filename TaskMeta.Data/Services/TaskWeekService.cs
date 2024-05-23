@@ -16,23 +16,23 @@ namespace TaskMeta.Data.Services
         }
         public async Task<TaskWeek> GetOrCreateCurrentWeek(string userId)
         {
-            var currentWeekStart = Tools.StartOfWeek;
+            var currentWeekStart = Tools.StartOfWeek(DateTime.Now);
             return await GetOrCreate(userId, currentWeekStart);
         }
 
-        public async Task<TaskWeek> GetOrCreate(string userId, DateOnly currentWeekStart)
+        public async Task<TaskWeek> GetOrCreate(string userId, DateOnly currentWeekStart, bool commit = true)
         { 
             var currentWeek = await Get(userId, currentWeekStart);
             if (currentWeek == null)
             {
                 currentWeek = new TaskWeek()
                 {
-                    WeekStartDate = Tools.StartOfWeek,
+                    WeekStartDate = Tools.StartOfWeek(DateTime.Now),
                     UserId = userId,
                     StatusId = 1,
                     Value = 0
                 };
-                await AddAsync(currentWeek);
+                await AddAsync(currentWeek, commit);
             }
             return currentWeek;
         }
