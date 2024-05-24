@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
+using TaskMeta.Shared.Utilities;
 
 namespace TaskMeta.Components.Tasks;
 
@@ -16,13 +17,15 @@ public partial class Summary : ComponentBase
     [Inject]
     public IUserService? UserService { get; set; }
 
+    [Inject]
+    public State? State { get; set; }
+
     private List<TaskActivity>? taskActivities;
     private List<TaskDefinition>? taskDefinitions;
     private TaskWeek? taskWeek;
     private DateOnly startOfWeek;
     private TaskWeek? previousWeek;
     private TaskWeek? nextWeek;
-    private ApplicationUser? selectedUser;
     private bool isAdmin;
     private List<ApplicationUser>? contributors;
     private bool canApprove = false;
@@ -35,17 +38,22 @@ public partial class Summary : ComponentBase
         isAdmin = await UserService!.IsAdmin(user);
         if (!isAdmin)
         {
-            await LoadThisWeek(user);        }
+            await LoadThisWeek(user);        
+        }
         else
         {
             contributors = await UserService!.GetContributors();
+            if (State?.SelectedUser != null)
+            {
+                await LoadThisWeek(State.SelectedUser);
+            }
         }
 
         await base.OnInitializedAsync();
     }
     async Task LoadThisWeek(ApplicationUser user)
     {
-        selectedUser = user;
+        State!.SelectedUser = user;
         var newTaskWeek = await TaskWeekService!.GetOrCreateCurrentWeek(user!.Id);
         Console.WriteLine("This week loaded/created");
         await LoadActivities(newTaskWeek);

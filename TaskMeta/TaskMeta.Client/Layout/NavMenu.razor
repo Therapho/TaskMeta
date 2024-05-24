@@ -9,13 +9,16 @@
     <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
     <nav class="sitenav" aria-labelledby="main-menu" onclick="document.getElementById('navmenu-toggle').click();">
         <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded">
+            <AuthorizeView Roles="Contributor">
+                <Authorized >
+
+                    <FluentNavLink Href="tasklist" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListLtr())" IconColor="Color.Accent">Task List</FluentNavLink>
+                </Authorized>
+            </AuthorizeView>
             <AuthorizeView>
                 <Authorized>
-                    <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">Home</FluentNavLink>
-
-                    <FluentNavLink Href="tasklist" Icon="@(new Icons.Regular.Size20.TaskListLtr())" IconColor="Color.Accent">Task List</FluentNavLink>
-                    <FluentNavLink Href="summary" Icon="@(new Icons.Regular.Size20.GridDots())" IconColor="Color.Accent">Summary</FluentNavLink>
-                    <FluentNavLink Href="funds" Icon="@(new Icons.Regular.Size20.Money())" IconColor="Color.Accent">Funds</FluentNavLink>
+                    <FluentNavLink Href="summary" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.GridDots())" IconColor="Color.Accent">Summary</FluentNavLink>
+                    <FluentNavLink Href="funds" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Money())" IconColor="Color.Accent">Funds</FluentNavLink>
 
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
@@ -23,7 +26,7 @@
                         <FluentButton Type="ButtonType.Submit" Style="width: 100%;">Logout</FluentButton>
                     </form>
                 </Authorized>
-                <NotAuthorized>                   
+                <NotAuthorized>
                     <FluentNavLink Href="Account/Login">Login</FluentNavLink>
                 </NotAuthorized>
             </AuthorizeView>

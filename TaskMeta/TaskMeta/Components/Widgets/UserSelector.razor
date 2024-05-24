@@ -3,7 +3,7 @@
   <FluentStack Orientation="Orientation.Horizontal">
     @foreach (var user in Users)
     {
-        <FluentButton class="selector" Appearance="@(user==selectedUser?Appearance.Accent:Appearance.Neutral)" @onclick="(()=>HandleButtonClick(user))" >@user.UserName</FluentButton>
+        <FluentButton class="selector" Appearance="@(user==SelectedUser?Appearance.Accent:Appearance.Neutral)" @onclick="(()=>HandleButtonClick(user))" >@user.UserName</FluentButton>
     }
     </FluentStack>
 }

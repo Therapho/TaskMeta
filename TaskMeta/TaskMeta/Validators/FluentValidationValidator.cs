@@ -93,11 +93,11 @@ namespace CustomValidation.Components
         {
             // We need to know when to validate the whole object, this
             // is triggered when the EditForm is submitted
-            EditContext.OnValidationRequested += ValidationRequested;
+            EditContext!.OnValidationRequested += ValidationRequested;
 
             // We need to know when to validate an individual property, this
             // is triggered when the user edits something
-            EditContext.OnFieldChanged += FieldChanged;
+            EditContext!.OnFieldChanged += FieldChanged;
 
             System.Diagnostics.Debug.WriteLine("Hooked up EditContext events (OnValidationRequested and OnFieldChanged)");
         }

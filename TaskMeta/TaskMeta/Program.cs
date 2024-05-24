@@ -9,6 +9,7 @@ using TaskMeta.Data;
 using TaskMeta.Data.Services;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
+using TaskMeta.Shared.Utilities;
 using TaskMeta.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,7 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 //builder.Services.AddApplicationInsightsTelemetry();
 //builder.Services.AddSnapshotCollector();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<State>();
 
 builder.Services.AddDataModule();
 

@@ -4,6 +4,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace TaskMeta.Components.Funds;
 
@@ -11,7 +12,6 @@ public partial class FundList : ComponentBase, IDisposable
 {
     private bool isAdmin;
     private List<ApplicationUser>? contributors;
-    private ApplicationUser? selectedUser;
     private List<Fund>? fundList;
     private bool editMode = false;
     
@@ -26,6 +26,9 @@ public partial class FundList : ComponentBase, IDisposable
     public IFundService? FundService { get; set; }
     [Inject]
     public IDialogService? DialogService { get; set; }
+    [Inject]
+    public State? State { get; set; }
+
     private EditContext? editContext;
     private ValidationMessageStore? messageStore;
 
@@ -34,33 +37,39 @@ public partial class FundList : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        editContext = new(new Fund());
+
+
+        
+        await base.OnInitializedAsync();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
         var user = await UserService!.GetCurrentUser();
         if (user == null) throw new InvalidOperationException("User is null");
         isAdmin = await UserService!.IsAdmin(user);
+
         if (!isAdmin)
         {
 
-           await LoadFunds(user);
+            await LoadFunds(user);
         }
         else
         {
             contributors = await UserService!.GetContributors();
-
+            if (State?.SelectedUser != null) await LoadFunds(State.SelectedUser);
         }
-        editContext = new(new Fund());
-        await base.OnInitializedAsync();
+        await base.OnParametersSetAsync();
     }
-
     async void HandleUserSelected(ApplicationUser user)
     {
+        State!.SelectedUser = user;
         await LoadFunds(user);
 
     }
 
     private async Task LoadFunds(ApplicationUser user)
     {
-        selectedUser = user;
-
         fundList = await FundService!.GetFundsByUser(user.Id);
         RecalculatePage();
     }
@@ -68,7 +77,7 @@ public partial class FundList : ComponentBase, IDisposable
     {
         var fund = new Fund()
         {
-            UserId = selectedUser!.Id,
+            UserId = State!.SelectedUser!.Id,
             TargetDate = DateTime.Now.ToDateOnly(),
             Balance = 0,
             TargetBalance = 0,

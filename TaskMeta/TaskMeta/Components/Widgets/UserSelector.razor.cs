@@ -8,15 +8,16 @@ namespace TaskMeta.Components.Widgets
     {
         [Parameter]
         public List<ApplicationUser>? Users { get; set; }
-        
-        private ApplicationUser? selectedUser;
+
+        [Parameter]
+        public ApplicationUser? SelectedUser { get; set; }
 
         [Parameter]
         public EventCallback<ApplicationUser> OnSelect { get; set; }
 
         private async Task HandleButtonClick(ApplicationUser user)
         {
-            selectedUser = user;
+            SelectedUser = user;
             await OnSelect.InvokeAsync(user);
             
         }

@@ -9,7 +9,7 @@
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentCard>
-        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
+        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" />
         <hr />
 
         @if (fundList != null)

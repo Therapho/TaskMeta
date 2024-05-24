@@ -9,9 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="Data\**" />
+    <Compile Remove="Validators\**" />
     <Content Remove="Data\**" />
+    <Content Remove="Validators\**" />
     <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Validators\**" />
     <None Remove="Data\**" />
+    <None Remove="Validators\**" />
   </ItemGroup>
 
   <ItemGroup>

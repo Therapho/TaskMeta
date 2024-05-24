@@ -21,7 +21,6 @@ namespace TaskMeta.Components.Widgets
 
         protected override void OnParametersSet()
         {
-            Console.WriteLine("TaskGrid parameters set");
             if (TaskWeek != null)
             {
                 taskWeek = TaskWeek;

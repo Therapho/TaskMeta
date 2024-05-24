@@ -12,7 +12,7 @@
 
 <FluentStack Orientation="Orientation.Vertical">
      <FluentCard>
-        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" />
+        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" />
         <hr/>
         <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" 
             CanApprove="@canApprove" OnApproved="HandleApproval"/>
