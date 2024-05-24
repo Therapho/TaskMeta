@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Diagnostics;
+using TaskMeta.Shared;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
@@ -19,6 +20,8 @@ public partial class TaskList : ComponentBase
 
     public decimal totalValue = 0;
 
+    public bool locked = false;
+
     protected override async Task OnInitializedAsync()
     {
         Debug.Assert(TaskWeekService != null, "TaskWeekService != null");
@@ -30,7 +33,8 @@ public partial class TaskList : ComponentBase
         taskWeek = await TaskWeekService.GetOrCreateCurrentWeek(user.Id);
         taskActivities = await TaskActivityService.GetOrCreateTaskActivities(taskWeek);
 
-        totalValue = taskActivities.Where(t=>t.Complete).Sum(t => t.Value);            
+        totalValue = taskActivities.Where(t=>t.Complete).Sum(t => t.Value);
+        locked = taskWeek.StatusId == Constants.Status.Accepted;
     }
 
     private async void HandleChange(TaskActivity task)

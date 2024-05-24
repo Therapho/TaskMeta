@@ -8,11 +8,12 @@ namespace TaskMeta.Data
     {
         public static IServiceCollection AddDataModule(this IServiceCollection services)
         {
-            services             
+            services
                 .AddScoped<ITaskActivityService, TaskActivityService>()
                 .AddScoped<ITaskDefinitionService, TaskDefinitionService>()
                 .AddScoped<ITaskWeekService, TaskWeekService>()
-                .AddScoped<IFundService, FundService>();
+                .AddScoped<IFundService, FundService>()
+                .AddScoped<ITransactionLogService, TransactionLogService>();
             return services;
         }
     }

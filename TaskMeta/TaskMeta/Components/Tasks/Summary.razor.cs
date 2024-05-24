@@ -66,9 +66,10 @@ public partial class Summary : ComponentBase
     {
         if (taskWeek != null)
         {
-            taskWeek.StatusId = 2;
-            await TaskWeekService!.UpdateAsync(taskWeek);
+            await TaskWeekService!.AcceptWeek(taskWeek);
+
             canApprove = false;
+            StateHasChanged();
         }
     }
     async Task LoadActivities(TaskWeek newTaskWeek)

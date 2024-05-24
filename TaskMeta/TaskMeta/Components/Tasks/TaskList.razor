@@ -19,7 +19,7 @@
             {
                 foreach (var taskActivity in taskActivities)
                 {
-                    <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" 
+                    <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" ReadOnly="@locked"
                     @bind-value:after="()=>HandleChange(taskActivity)" />
                 }
             }
