@@ -86,9 +86,8 @@ namespace TaskMeta.Data.Services
                 // Calculate the deposit amount based on the task week value and fund allocation
                 var depositAmount = taskWeek.Value * fund.Allocation.GetValueOrDefault() / 100;
 
-                // Update the fund balance by adding the deposit amount
-                fund.Balance += depositAmount;
-                await _fundService.UpdateAsync(fund, false);
+
+               
 
                 // Create a transaction log for the deposit
                 TransactionLog transactionLog = new TransactionLog
@@ -96,6 +95,7 @@ namespace TaskMeta.Data.Services
                     SourceFundId = null,
                     TargetFundId = fund.Id,
                     Amount = depositAmount,
+                    PreviousAmount = fund.Balance,
                     CategoryId = Constants.Category.Deposit,
                     CallingUserId = currentUser.Id,
                     TargetUserId = taskWeek.UserId,
@@ -103,6 +103,10 @@ namespace TaskMeta.Data.Services
                     Description = "Weekly deposit from accepted tasks."
                 };
                 await _transactionLogService.AddAsync(transactionLog, false);
+
+                // Update the fund balance by adding the deposit amount
+                fund.Balance += depositAmount;
+                await _fundService.UpdateAsync(fund, false);
             }
 
             // Update the status of the task week to "Accepted"

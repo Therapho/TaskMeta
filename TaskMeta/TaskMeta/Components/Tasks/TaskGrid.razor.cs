@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Components.Widgets
+namespace TaskMeta.Components.Tasks
 {
     public partial class TaskGrid : ComponentBase
     {

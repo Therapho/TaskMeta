@@ -4,9 +4,9 @@ using TaskMeta.Data.Services;
 
 namespace TaskMeta.Data
 {
-    public static class DataModule
+    public static class DataAccessLayer
     {
-        public static IServiceCollection AddDataModule(this IServiceCollection services)
+        public static IServiceCollection AddDataAccessLayer(this IServiceCollection services)
         {
             services
                 .AddScoped<ITaskActivityService, TaskActivityService>()

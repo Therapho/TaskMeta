@@ -10,5 +10,6 @@ namespace TaskMeta.Shared.Interfaces
     public interface IFundService : IEntityService<Fund>
     {
         Task<List<Fund>> GetFundsByUser(string userId);
+        Task Process(Transaction transaction);
     }
 }

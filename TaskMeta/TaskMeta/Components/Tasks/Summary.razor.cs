@@ -53,13 +53,14 @@ public partial class Summary : ComponentBase
     }
     async Task LoadThisWeek(ApplicationUser user)
     {
-        State!.SelectedUser = user;
+        
         var newTaskWeek = await TaskWeekService!.GetOrCreateCurrentWeek(user!.Id);
         Console.WriteLine("This week loaded/created");
         await LoadActivities(newTaskWeek);
     }
     async void HandleUserSelected(ApplicationUser user)
     {
+        State!.SelectedUser = user;
         await LoadThisWeek(user);
     }
     async void HandleApproval()
@@ -77,7 +78,6 @@ public partial class Summary : ComponentBase
         taskWeek = newTaskWeek;
         taskActivities = await TaskActivityService!.GetByTaskWeek(taskWeek);
         Console.WriteLine($"{taskActivities.Count} Activities Loaded");
-        //taskActivities = newTaskWeek.TaskActivities.ToList();
         (previousWeek, nextWeek) = await TaskWeekService!.GetAdjacent(taskWeek);
 
         startOfWeek = taskWeek.WeekStartDate;

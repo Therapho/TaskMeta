@@ -87,6 +87,8 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.SourceFund).WithMany(p => p.TransactionLogSourceFunds).HasConstraintName("FK_TransactionLog_SourceFund");
 
             entity.HasOne(d => d.TargetFund).WithMany(p => p.TransactionLogTargetFunds).HasConstraintName("FK_TransactionLog_TargetFund");
+            entity.HasOne(d => d.Category).WithMany(p => p.TransactionLogs).OnDelete(DeleteBehavior.ClientSetNull)
+             .HasConstraintName("FK_TransactionLog_Category");
         });
 
         OnModelCreatingPartial(modelBuilder);

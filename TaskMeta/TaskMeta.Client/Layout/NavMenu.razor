@@ -11,7 +11,6 @@
         <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded">
             <AuthorizeView Roles="Contributor">
                 <Authorized >
-
                     <FluentNavLink Href="tasklist" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListLtr())" IconColor="Color.Accent">Task List</FluentNavLink>
                 </Authorized>
             </AuthorizeView>
@@ -19,6 +18,7 @@
                 <Authorized>
                     <FluentNavLink Href="summary" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.GridDots())" IconColor="Color.Accent">Summary</FluentNavLink>
                     <FluentNavLink Href="funds" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Money())" IconColor="Color.Accent">Funds</FluentNavLink>
+                    <FluentNavLink Href="transactions" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.List())" IconColor="Color.Accent">Transactions</FluentNavLink>
 
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
