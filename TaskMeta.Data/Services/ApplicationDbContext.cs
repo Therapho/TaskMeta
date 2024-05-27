@@ -69,6 +69,7 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasKey(e => e.Id).HasName("PK__TaskDefinition");
 
             entity.Property(e => e.Active).HasDefaultValue(true);
+            entity.HasOne(d => d.User).WithMany(p => p.TaskDefinitionUsers).HasConstraintName("FK_TaskDefinitions_AspNetUsers");
         });
 
         modelBuilder.Entity<TransactionCategory>(entity =>

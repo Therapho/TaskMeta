@@ -26,7 +26,7 @@ namespace TaskMeta.Utilities
         }
         public async Task<bool> IsAdmin(ApplicationUser user)
         {
-            ;
+            
             return await _userManager.IsInRoleAsync(user, "Admin");
         }
         public async Task<bool> IsAdmin()

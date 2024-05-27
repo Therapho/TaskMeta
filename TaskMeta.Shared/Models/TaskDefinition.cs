@@ -24,4 +24,8 @@ public partial class TaskDefinition
     [Required]
     [StringLength(450)]
     public string UserId { get; set; }
+
+    [ForeignKey("UserId")]
+    [InverseProperty("TaskDefinitionUsers")]
+    public virtual ApplicationUser User { get; set; }
 }
