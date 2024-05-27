@@ -4,18 +4,11 @@ using TaskMeta.Shared.Interfaces;
 
 namespace TaskMeta.Data.Services
 {
-    public class EntityService<E> : IEntityService<E> where E : class
+    public class EntityService<E>(ApplicationDbContext applicationDbContext, IUserService userService, ILogger<EntityService<E>> logger) : IEntityService<E> where E : class
     {
-        protected ApplicationDbContext Context { get; private set; }
-        protected IUserService UserService { get; private set; }
-        protected ILogger<EntityService<E>> Logger { get; private set; }
-
-        public EntityService(ApplicationDbContext applicationDbContext, IUserService userService, ILogger<EntityService<E>> logger)
-        {
-            Context = applicationDbContext;
-            UserService = userService;
-            Logger = logger;
-        }
+        protected ApplicationDbContext Context { get; private set; } = applicationDbContext;
+        protected IUserService UserService { get; private set; } = userService;
+        protected ILogger<EntityService<E>> Logger { get; private set; } = logger;
 
         public async Task<List<E>> GetAllAsync()
         {

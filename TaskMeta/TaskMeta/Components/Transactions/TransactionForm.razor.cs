@@ -66,13 +66,13 @@ namespace TaskMeta.Components.Transactions
                     break;
 
             }
-            
+
             transaction.TargetUserId = User!.Id;
             transaction.CallingUserId = CallingUser!.Id;
             editContext = new(transaction);
 
             editContext.OnValidationRequested += HandleValidationRequested;
-            
+
             messageStore = new(editContext);
         }
         private void HandleValidationRequested(object? sender, ValidationRequestedEventArgs args)
@@ -99,7 +99,7 @@ namespace TaskMeta.Components.Transactions
                 if (transaction?.Amount > sourceFund!.Balance)
                 {
                     messageStore?.Add(() => transaction!.Amount,
-                        $"Source fund has {sourceFund.Balance}, insufficient to {EditMode} {transaction!.Amount}");
+                        $"Source fund has {sourceFund.Balance:C}, insufficient to {EditMode} {transaction!.Amount:C}");
                 }
             }
 
@@ -111,9 +111,9 @@ namespace TaskMeta.Components.Transactions
                 }
             }
 
-            if(EditMode == EditMode.Transfer)
+            if (EditMode == EditMode.Transfer)
             {
-                if(transaction?.SourceFund == transaction?.TargetFund)
+                if (transaction?.SourceFund == transaction?.TargetFund)
                 {
                     messageStore?.Add(() => transaction!.TargetFund!, "Source and target funds cannot be the same.");
                 }
@@ -134,16 +134,16 @@ namespace TaskMeta.Components.Transactions
         }
         async void HandleSave()
         {
-            if( editContext!.Validate())
-            { 
+            if (editContext!.Validate())
+            {
                 await FundService!.Process(transaction);
                 await OnClose.InvokeAsync();
-                if(OnSave.HasDelegate)
+                if (OnSave.HasDelegate)
                 {
                     await OnSave.InvokeAsync();
                 }
             }
-            
+
         }
         async void HandleCancel()
         {

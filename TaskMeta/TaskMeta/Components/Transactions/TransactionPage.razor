@@ -12,7 +12,7 @@
 <FluentStack Orientation="Orientation.Vertical">
 
     <FluentCard>
-        <UserSelector Users="@contributorList" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" OnSave="HandleTransactionSaved"/>
+        <UserSelector Users="@contributorList" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" />
         <hr />
         @if (isAdmin && State!.SelectedUser != null)
         {
@@ -23,8 +23,8 @@
             </FluentStack>
             @if (editMode != EditMode.None)
             {
-                <TransactionForm User="@State!.SelectedUser" CallingUser="@loggedInUser" 
-                    OnClose="HandleFormClose" EditMode="@editMode" />
+                <TransactionForm User="@State!.SelectedUser" CallingUser="@loggedInUser"
+                                 OnClose="HandleFormClose" EditMode="@editMode" OnSave="HandleTransactionSaved" />
             }
             <hr />
         }        

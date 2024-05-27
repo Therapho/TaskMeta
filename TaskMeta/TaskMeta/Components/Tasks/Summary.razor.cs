@@ -33,8 +33,7 @@ public partial class Summary : ComponentBase
     {
         taskDefinitions = await TaskDefinitionService!.GetAllAsync();
 
-        var user = await UserService!.GetCurrentUser();
-        if (user == null) throw new InvalidOperationException("User is null");
+        var user = await UserService!.GetCurrentUser() ?? throw new InvalidOperationException("User is null");
         isAdmin = await UserService!.IsAdmin(user);
         if (!isAdmin)
         {

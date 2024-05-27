@@ -48,37 +48,43 @@ public class FundService : EntityService<Fund>, IFundService
         {
             case Constants.Category.Deposit:
                 {
-                    var targetFund = transaction.TargetFund!;
-                    targetFund.Balance += transaction.Amount;
+                    await Deposit(transaction);
                     break;
                 }
             case Constants.Category.Withdrawal:
                 {
-                    var sourceFund = transaction.SourceFund!;
-                    if (sourceFund.Balance < transaction.Amount)
-                    {
-                        throw new InvalidOperationException("Insufficient funds.");
-                    }
-                    sourceFund.Balance -= transaction.Amount;
+                    await Withdraw(transaction);
                     break;
                 }
             case Constants.Category.Transfer:
                 {
-                    var sourceFund = transaction.TargetFund!;
-                    var targetFund = transaction.TargetFund!;
-                    if (sourceFund.Balance < transaction.Amount)
-                    {
-                        throw new InvalidOperationException("Insufficient funds.");
-                    }
-                    sourceFund.Balance -= transaction.Amount;
-                    targetFund.Balance += transaction.Amount;
+                    await Deposit(transaction);
+                    await Withdraw(transaction);
                     break;
                 }
         }
-        await _transactionLogService!.LogTransaction(transaction, false);
+        
 
         await Commit();
     }
 
+    private async Task Withdraw(Transaction transaction)
+    {
+        var sourceFund = transaction.SourceFund!;
+        if (sourceFund.Balance < transaction.Amount)
+        {
+            throw new InvalidOperationException("Insufficient funds.");
+        }
+        transaction.PreviousAmount = sourceFund.Balance;
+        sourceFund.Balance -= transaction.Amount;
+        await _transactionLogService!.LogTransaction(transaction, false);
+    }
 
+    private async Task Deposit(Transaction transaction)
+    {
+        var targetFund = transaction.TargetFund!;
+        transaction.PreviousAmount = targetFund.Balance;
+        targetFund.Balance += transaction.Amount;
+        await _transactionLogService!.LogTransaction(transaction, false);
+    }
 }

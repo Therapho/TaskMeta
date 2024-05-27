@@ -45,8 +45,7 @@ public partial class FundList : ComponentBase, IDisposable
     }
     protected override async Task OnParametersSetAsync()
     {
-        var user = await UserService!.GetCurrentUser();
-        if (user == null) throw new InvalidOperationException("User is null");
+        var user = await UserService!.GetCurrentUser() ?? throw new InvalidOperationException("User is null");
         isAdmin = await UserService!.IsAdmin(user);
 
         if (!isAdmin)
@@ -190,5 +189,6 @@ public partial class FundList : ComponentBase, IDisposable
     public void Dispose()
     {
         ClearEdit();
+        GC.SuppressFinalize(this);
     }
 }

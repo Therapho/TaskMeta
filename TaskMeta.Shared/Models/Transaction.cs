@@ -17,5 +17,7 @@ namespace TaskMeta.Shared.Models
         public Fund? SourceFund { get; set; }
         public Fund? TargetFund { get; set; }
 
+        public decimal PreviousAmount { get; set; }
+
     }
 }

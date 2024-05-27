@@ -36,7 +36,7 @@
                                     <td>
                                         @if (task != null)
                                         {
-                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly Class="checkbox" Style="--base-height-multiplier: 20;" />
+                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly="@locked" Class="checkbox" Style="--base-height-multiplier: 20;" />
                                         }
                                         else
                                         {

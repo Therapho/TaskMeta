@@ -6,40 +6,23 @@ using TaskMeta.Shared.Models;
 namespace TaskMeta.Utilities
 {
 
-    public class UserService : IUserService
+    public class UserService(AuthenticationStateProvider authenticationStateProvider, UserManager<ApplicationUser> userManager) : IUserService
     {
+        private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
-
-        AuthenticationStateProvider _authenticationStateProvider;
-        UserManager<ApplicationUser> _userManager;
-        public UserService(AuthenticationStateProvider authenticationStateProvider, UserManager<ApplicationUser> userManager)
-        {
-            _authenticationStateProvider = authenticationStateProvider;
-            _userManager = userManager;
-        }
         public async Task<ApplicationUser> GetCurrentUser()
         {
 
-            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-
-            if (authState == null)
-            {
-                throw new InvalidOperationException("Unable to get authentication state.");
-            }
-
-
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync() ?? throw new InvalidOperationException("Unable to get authentication state.");
             var user = await _userManager.GetUserAsync(authState!.User);
-        
-            if (user == null)
-            {
-                throw new InvalidOperationException("Unable to get user.");
-            }
-            return user;
+
+            return user ?? throw new InvalidOperationException("Unable to get user.");
         }
         public async Task<List<ApplicationUser>> GetContributors()
         {
             var users = await _userManager.GetUsersInRoleAsync("Contributor");
-            return users.ToList();
+            return [.. users];
         }
         public async Task<bool> IsAdmin(ApplicationUser user)
         {

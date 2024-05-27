@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using TaskMeta.Shared;
 using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Components.Tasks
@@ -19,15 +20,25 @@ namespace TaskMeta.Components.Tasks
         [Parameter]
         public EventCallback OnApproved { get; set; }
 
+        [Parameter]
+        public bool CanEdit { get; set; }
+
+        [Parameter]
+        public EventCallback<TaskActivity> OnChange { get; set; }
+
+        private bool locked = true;
         protected override void OnParametersSet()
         {
             if (TaskWeek != null)
             {
                 taskWeek = TaskWeek;
-                taskActivities = TaskWeek.TaskActivities.ToList();
-
+                taskActivities = [.. TaskWeek.TaskActivities];
+                locked = TaskWeek.StatusId == Constants.Status.Accepted || !CanEdit;
             }
+            
         }
+
+        private async void HandleChange(TaskActivity task) => await OnChange.InvokeAsync(task);
         private void HandleApprove(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
         {
             OnApproved.InvokeAsync();
