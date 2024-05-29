@@ -4,7 +4,9 @@ using TaskMeta.Shared.Interfaces;
 
 namespace TaskMeta.Data.Services
 {
-    public class EntityService<E>(ApplicationDbContext applicationDbContext, IUserService userService, ILogger<EntityService<E>> logger) : IEntityService<E> where E : class
+    public class EntityService<E>
+        (ApplicationDbContext applicationDbContext, IUserService userService, ILogger<EntityService<E>> logger) : 
+        IEntityService<E> where E : class
     {
         protected ApplicationDbContext Context { get; private set; } = applicationDbContext;
         protected IUserService UserService { get; private set; } = userService;
@@ -32,7 +34,8 @@ namespace TaskMeta.Data.Services
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"An error occurred while getting an entity by id: {id}");
+                string message = $"An error occurred while getting an entity by id: {id}";
+                Logger.LogError(ex, $"{message}");
                 throw;
             }
         }
@@ -81,7 +84,8 @@ namespace TaskMeta.Data.Services
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"An error occurred while deleting an entity with id: {id}");
+                string message = $"An error occurred while deleting an entity with id: {id}";
+                Logger.LogError(ex, $"{message}");
                 throw;
             }
         }

@@ -72,6 +72,18 @@ public partial class Summary : ComponentBase
             StateHasChanged();
         }
     }
+    async void HandleTaskChange(TaskActivity task)
+    {
+        if(task.Id == 0)
+        {
+            await TaskActivityService!.AddAsync(task);
+        }
+        else
+        {
+            await TaskActivityService!.UpdateAsync(task);
+            StateHasChanged();
+        }
+    }
     async Task LoadActivities(TaskWeek newTaskWeek)
     {
         taskWeek = newTaskWeek;

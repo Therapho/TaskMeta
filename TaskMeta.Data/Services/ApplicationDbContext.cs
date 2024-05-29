@@ -39,25 +39,26 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<TransactionCategory> TransactionCategories { get; set; }
 
     public virtual DbSet<TransactionLog> TransactionLogs { get; set; }
+    public virtual DbSet<Job> Jobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Fund>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07A56E5A2D");
+            entity.HasKey(e => e.Id).HasName("PK__Funds");
 
             entity.Property(e => e.TargetBalance).HasDefaultValue(0.0m);
         });
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Status__3214EC070AA3A213");
+            entity.HasKey(e => e.Id).HasName("PK__Status");
         });
 
         modelBuilder.Entity<TaskActivity>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC0772780ACB");
+            entity.HasKey(e => e.Id).HasName("PK__TaskActivities");
 
             entity.HasOne(d => d.TaskWeek).WithMany(p => p.TaskActivities)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -74,14 +75,14 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<TransactionCategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC0735F1E75C");
+            entity.HasKey(e => e.Id).HasName("PK__TransactionCategories");
 
             entity.Property(e => e.Name).IsFixedLength();
         });
 
         modelBuilder.Entity<TransactionLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07B4738D25");
+            entity.HasKey(e => e.Id).HasName("PK__TransactionLog");
 
             entity.Property(e => e.Date).HasDefaultValueSql("(getdate())");
 
@@ -90,6 +91,13 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.TargetFund).WithMany(p => p.TransactionLogTargetFunds).HasConstraintName("FK_TransactionLog_TargetFund");
             entity.HasOne(d => d.Category).WithMany(p => p.TransactionLogs).OnDelete(DeleteBehavior.ClientSetNull)
              .HasConstraintName("FK_TransactionLog_Category");
+        });
+        modelBuilder.Entity<Job>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Jobs");
+            entity.Property(e => e.DateAssigned).HasDefaultValueSql("(getdate())");
+            entity.HasOne(d => d.User).WithMany(p => p.JobUsers).HasConstraintName("FK_Jobs_AspNetUsers");
+
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -9,25 +9,21 @@ using TaskMeta.Shared.Utilities;
 
 namespace TaskMeta.Data.Services
 {
-    public class TaskWeekService : EntityService<TaskWeek>, ITaskWeekService
+    public class TaskWeekService(ApplicationDbContext applicationDbContext, IFundService fundService,
+        ITransactionLogService transactionLogService, IUserService userService, ILogger<EntityService<TaskWeek>> logger,
+        ITaskActivityService taskActivityService) : EntityService<TaskWeek>(applicationDbContext, userService, logger), ITaskWeekService
     {
-        private IFundService _fundService;
-        private ITransactionLogService _transactionLogService;
+        private readonly IFundService _fundService = fundService;
+        private readonly ITransactionLogService _transactionLogService = transactionLogService;
+        private readonly ITaskActivityService _taskActivityService = taskActivityService;
 
-        public TaskWeekService(ApplicationDbContext applicationDbContext, IFundService fundService,
-            ITransactionLogService transactionLogService, IUserService userService,ILogger<EntityService<TaskWeek>> logger)
-        : base(applicationDbContext, userService, logger)
-        {
-            _fundService = fundService;
-            _transactionLogService = transactionLogService;
-        }
         public async Task<TaskWeek> GetOrCreateCurrentWeek(string userId)
         {
             var currentWeekStart = Tools.StartOfWeek(DateTime.Now);
             return await GetOrCreate(userId, currentWeekStart);
         }
 
-        public async Task<TaskWeek> GetOrCreate(string userId, DateOnly currentWeekStart, bool commit = true)
+        private async Task<TaskWeek> GetOrCreate(string userId, DateOnly currentWeekStart, bool commit = true)
         { 
             var currentWeek = await Get(userId, currentWeekStart);
             if (currentWeek == null)
@@ -39,8 +35,14 @@ namespace TaskMeta.Data.Services
                     StatusId = 1,
                     Value = 0
                 };
-                await AddAsync(currentWeek, commit);
+                await AddAsync(currentWeek, false);
+                for(int day = 0; day < 7; day++)
+                {
+                    var currentDate = currentWeek.WeekStartDate.AddDays(day);
+                    await _taskActivityService.GetOrCreateTaskActivities(currentWeek, currentDate, false);
+                }
             }
+            if (commit) await Commit();
             return currentWeek;
         }
 
@@ -90,7 +92,7 @@ namespace TaskMeta.Data.Services
                
 
                 // Create a transaction log for the deposit
-                TransactionLog transactionLog = new TransactionLog
+                TransactionLog transactionLog = new()
                 {
                     SourceFundId = null,
                     TargetFundId = fund.Id,

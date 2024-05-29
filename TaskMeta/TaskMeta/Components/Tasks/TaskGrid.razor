@@ -30,17 +30,17 @@
                     {
                         {
                             DateOnly currentDay = taskWeek.WeekStartDate.AddDays(d);
-
+                            
                             var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
                             {
                                 <td>
                                     @if (task != null)
                                     {
-                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly="@locked" Class="checkbox" Style="--base-height-multiplier: 20;" />
+                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly="@locked" Class="checkbox" Style="--base-height-multiplier: 20;" bind-Value:afterChange="@(()=>HandleCheckChange(task))" />
                                     }
                                     else
                                     {
-                                        <FluentCheckbox Disabled Style="--base-height-multiplier: 20;" />
+                                        <FluentCheckbox Disabled Style="--base-height-multiplier: 20;" CheckStateChanged="()=>HandleCheckChange(s, currentDay)" />
                                     }
                                 </td>
                             }

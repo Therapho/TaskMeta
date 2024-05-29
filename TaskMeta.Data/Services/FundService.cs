@@ -1,24 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaskMeta.Shared;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Data.Services;
 
-public class FundService : EntityService<Fund>, IFundService
+public class FundService(ApplicationDbContext applicationDbContext, IUserService userService,
+    ITransactionLogService transactionLogService, ILogger<EntityService<Fund>> logger) : 
+    EntityService<Fund>(applicationDbContext, userService, logger), IFundService
 {
-    private readonly ITransactionLogService _transactionLogService;
-
-    public FundService(ApplicationDbContext applicationDbContext, IUserService userService, 
-        ITransactionLogService transactionLogService, ILogger<EntityService<Fund>> logger)
-        : base(applicationDbContext, userService, logger) { 
-        _transactionLogService = transactionLogService;
-    }
+    private readonly ITransactionLogService _transactionLogService = transactionLogService;
 
     /// <summary>
     /// Retrieves a list of funds associated with a specific user.

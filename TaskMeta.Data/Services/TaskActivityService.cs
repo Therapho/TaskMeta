@@ -5,26 +5,21 @@ using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
 
 namespace TaskMeta.Data.Services;
-public class TaskActivityService : EntityService<TaskActivity>, ITaskActivityService
+public class TaskActivityService(ITaskDefinitionService taskDefinitionService, ApplicationDbContext applicationDbContext,
+    IUserService userService, ILogger<EntityService<TaskActivity>> logger) : EntityService<TaskActivity>(applicationDbContext, userService, logger), ITaskActivityService
 {
-    public ITaskDefinitionService TaskDefinitionService { get; set; }
+    public ITaskDefinitionService TaskDefinitionService { get; set; } = taskDefinitionService;
 
-    public TaskActivityService(ITaskDefinitionService taskDefinitionService, ApplicationDbContext applicationDbContext,
-        IUserService userService, ILogger<EntityService<TaskActivity>> logger)
-        : base(applicationDbContext, userService, logger)
-    {
-        TaskDefinitionService = taskDefinitionService;
-    }
     /// <summary>
     /// Adds a list of TaskActivities asynchronously.
     /// </summary>
     /// <param name="taskActivityList">The list of TaskActivities to add.</param>
-    public async Task AddAsync(List<TaskActivity> taskActivityList)
+    public async Task AddAsync(List<TaskActivity> taskActivityList, bool commit = true)
     {
         try
         {
-            await Context.TaskActivities.AddRangeAsync(taskActivityList.ToArray());
-            await Context.SaveChangesAsync();
+            await Context.TaskActivities.AddRangeAsync([.. taskActivityList]);
+            if (commit) await Commit();
         }
         catch (Exception ex)
         {
@@ -32,12 +27,13 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
             throw;
         }
     }
-    public async Task<List<TaskActivity>> GetOrCreateTaskActivities(TaskWeek taskWeek)
+  
+    public async Task<List<TaskActivity>> GetOrCreateTaskActivities(TaskWeek taskWeek, DateOnly date, bool commit = true)
     {
-        List<TaskActivity>? list = null;
+        List<TaskActivity>? list;
         try
         {
-            list = await GetByDate(DateTime.Now.ToDateOnly(), taskWeek.UserId);
+            list = await GetByDate(date, taskWeek.UserId);
         }
         catch (Exception ex)
         {
@@ -47,13 +43,13 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
 
         if (list == null || list.Count == 0)
         {
-            list = new List<TaskActivity>();
+            list = [];
             List<TaskDefinition> taskDefinitions = await TaskDefinitionService.GetAllAsync();
             var today = DateTime.Now.ToDateOnly();
 
             foreach (var taskDefinition in taskDefinitions)
             {
-                TaskActivity taskActivity = new TaskActivity
+                TaskActivity taskActivity = new()
                 {
                     Sequence = taskDefinition.Sequence,
                     TaskDefinitionId = taskDefinition.Id,
@@ -66,7 +62,7 @@ public class TaskActivityService : EntityService<TaskActivity>, ITaskActivitySer
                 list.Add(taskActivity);
             }
 
-            await AddAsync(list);
+            await AddAsync(list, commit);
         }
         return list;
     }

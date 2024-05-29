@@ -7,8 +7,11 @@ namespace TaskMeta.Shared.Models
     public class ApplicationUser : IdentityUser
     {
         [InverseProperty("User")]
-        public virtual ICollection<TaskDefinition> TaskDefinitionUsers { get; set; } = new List<TaskDefinition>();
-    
+        public virtual ICollection<TaskDefinition> TaskDefinitionUsers { get; set; } = [];
+
+        [InverseProperty("User")]
+        public virtual ICollection<Job> JobUsers { get; set; } = [];
+
     }
 
 }

@@ -156,6 +156,7 @@ namespace TaskMeta.Components.Transactions
             {
                 editContext.OnValidationRequested -= HandleValidationRequested;
             }
+            GC.SuppressFinalize(this);
         }
     }
 

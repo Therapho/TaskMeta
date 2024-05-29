@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace TaskMeta.Data.Models;
+namespace TaskMeta.Shared.Models;
 
 public partial class aspnetAllowance_Blazorba503dd58dc0418c97827d9976eb9f08Context : DbContext
 {
@@ -13,28 +13,15 @@ public partial class aspnetAllowance_Blazorba503dd58dc0418c97827d9976eb9f08Conte
     {
     }
 
-    public virtual DbSet<TransactionCategory> TransactionCategories { get; set; }
-
-    public virtual DbSet<TransactionLog> TransactionLogs { get; set; }
+    public virtual DbSet<Job> Jobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TransactionCategory>(entity =>
+        modelBuilder.Entity<Job>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC0735F1E75C");
+            entity.HasKey(e => e.Id).HasName("PK__Jobs");
 
-            entity.Property(e => e.Name).IsFixedLength();
-        });
-
-        modelBuilder.Entity<TransactionLog>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07B4738D25");
-
-            entity.Property(e => e.Date).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.Category).WithMany(p => p.TransactionLogs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TransactionLog_Category");
+            entity.Property(e => e.DateAssigned).HasDefaultValueSql("(getdate())");
         });
 
         OnModelCreatingPartial(modelBuilder);

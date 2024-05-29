@@ -12,9 +12,9 @@
 
 <FluentStack Orientation="Orientation.Vertical">
      <FluentCard>
-        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" />
+        <UserSelector Users="@contributors" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser"  />
         <hr/>
-        <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" 
+        <TaskGrid TaskWeek="@taskWeek" TaskDefinitions="@taskDefinitions" OnChange="HandleTaskChange"
             CanApprove="@canApprove" OnApproved="HandleApproval"/>
     </FluentCard>
     <WeekSelector CurrentWeek="taskWeek" NextWeek="nextWeek" PreviousWeek="previousWeek"

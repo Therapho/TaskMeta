@@ -14,7 +14,8 @@ namespace TaskMeta.Data
                 .AddScoped<ITaskDefinitionService, TaskDefinitionService>()
                 .AddScoped<ITaskWeekService, TaskWeekService>()
                 .AddScoped<IFundService, FundService>()
-                .AddScoped<ITransactionLogService, TransactionLogService>();
+                .AddScoped<ITransactionLogService, TransactionLogService>()
+                .AddScoped<IJobService, JobService>();
             return services;
             
         }

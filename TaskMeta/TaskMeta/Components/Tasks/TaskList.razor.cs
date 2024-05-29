@@ -3,6 +3,7 @@ using System.Diagnostics;
 using TaskMeta.Shared;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
+using TaskMeta.Shared.Utilities;
 
 namespace TaskMeta.Components.Tasks;
 
@@ -31,7 +32,7 @@ public partial class TaskList : ComponentBase
         var user = await UserService.GetCurrentUser();
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
         taskWeek = await TaskWeekService.GetOrCreateCurrentWeek(user.Id);
-        taskActivities = await TaskActivityService.GetOrCreateTaskActivities(taskWeek);
+        taskActivities = await TaskActivityService.GetOrCreateTaskActivities(taskWeek, DateTime.Now.ToDateOnly());
 
         totalValue = taskActivities.Where(t=>t.Complete).Sum(t => t.Value);
         locked = taskWeek.StatusId == Constants.Status.Accepted;
