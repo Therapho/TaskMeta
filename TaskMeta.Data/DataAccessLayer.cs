@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Data.Services;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace TaskMeta.Data
 {
@@ -15,6 +16,8 @@ namespace TaskMeta.Data
                 .AddScoped<IFundService, FundService>()
                 .AddScoped<ITransactionLogService, TransactionLogService>();
             return services;
+            
         }
+
     }
 }

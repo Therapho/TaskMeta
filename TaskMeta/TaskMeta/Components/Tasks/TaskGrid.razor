@@ -1,61 +1,67 @@
-﻿@if(taskActivities != null && taskWeek != null)
+﻿@if (taskActivities != null && taskWeek != null)
 {
-   
-        <table class="taskChart">
-            <tr>
-                <th> </th>
-                <th>S</th>
-                <th>M</th>
-                <th>T</th>
-                <th>W</th>
-                <th>T</th>
-                <th>F</th>
-                <th>S</th>
-            </tr>
-            @if (TaskDefinitions != null)
-            {
-                for (int s = 1; s <= TaskDefinitions!.Count; s++)
-                {
-                    <tr>
-                        <td>
-                            @{
-                                var taskDefinition = TaskDefinitions!.Where(t => t.Sequence == s).FirstOrDefault();
-                                if (taskDefinition != null)
-                                {
-                                    <span>@taskDefinition.Description</span>
-                                }
-                            }
-                        </td>
-                        @for (int d = 0; d < 7; d++)
-                        {
-                            {
-                                DateOnly currentDay = taskWeek.WeekStartDate.AddDays(d);
 
-                                var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
-                                {
-                                    <td>
-                                        @if (task != null)
-                                        {
-                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly="@locked" Class="checkbox" Style="--base-height-multiplier: 20;" />
-                                        }
-                                        else
-                                        {
-                                        <FluentCheckbox Disabled Style="--base-height-multiplier: 20;" />
-                                        }
-                                    </td>
-                                }
+    <table class="taskChart">
+        <tr>
+            <th> </th>
+            <th>S</th>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>T</th>
+            <th>F</th>
+            <th>S</th>
+        </tr>
+        @if (TaskDefinitions != null)
+        {
+            for (int s = 1; s <= TaskDefinitions!.Count; s++)
+            {
+                <tr>
+                    <td>
+                        @{
+                            var taskDefinition = TaskDefinitions!.Where(t => t.Sequence == s).FirstOrDefault();
+                            if (taskDefinition != null)
+                            {
+                                <span>@taskDefinition.Description</span>
                             }
                         }
-                    </tr>
-                }
+                    </td>
+                    @for (int d = 0; d < 7; d++)
+                    {
+                        {
+                            DateOnly currentDay = taskWeek.WeekStartDate.AddDays(d);
+
+                            var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
+                            {
+                                <td>
+                                    @if (task != null)
+                                    {
+                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly="@locked" Class="checkbox" Style="--base-height-multiplier: 20;" />
+                                    }
+                                    else
+                                    {
+                                        <FluentCheckbox Disabled Style="--base-height-multiplier: 20;" />
+                                    }
+                                </td>
+                            }
+                        }
+                    }
+                </tr>
             }
-        </table>
-        <hr/>
+        }
+    </table>
+    <hr />
+    <FluentGrid>
+        <FluentGridItem xs="6">
         <strong>Total: </strong> @taskWeek.Value.ToString("C")
-        @if(CanApprove)
+        </FluentGridItem>
+        <FluentGridItem xs="6">
+        @if (CanApprove)
         {
             <FluentButton @onclick="HandleApprove">Approve</FluentButton>
         }
-        
+        </FluentGridItem>
+    </FluentGrid>
+
 }
 

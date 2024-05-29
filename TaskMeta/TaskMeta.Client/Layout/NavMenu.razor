@@ -18,24 +18,33 @@
             <AuthorizeView>
                 <Authorized>
                     <FluentNavLink Href="summary" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.GridDots())" IconColor="Color.Accent">Summary</FluentNavLink>
-                    <FluentNavLink Href="funds" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Money())" IconColor="Color.Accent">Funds</FluentNavLink>
+                   
                     <FluentNavLink Href="transactions" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.List())" IconColor="Color.Accent">Transactions</FluentNavLink>
 
+
+                </Authorized>
+
+            </AuthorizeView>
+            <AuthorizeView Roles="Admin">
+                
+                <Authorized>
+                    <hr/>
+                    <FluentNavLink Href="funds" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Money())" IconColor="Color.Accent">Funds</FluentNavLink>
+                    <FluentNavLink Href="tasks/admin" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListAdd())" IconColor="Color.Accent">Task Admin</FluentNavLink>
+                    @* <FluentNavLink Href="tasks/jobs" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListSquarePerson ())" IconColor="Color.Accent">Jobs</FluentNavLink>
+               *@  </Authorized>
+            </AuthorizeView>
+            <AuthorizeView>
+                <Authorized>
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                         <FluentButton Type="ButtonType.Submit" Style="width: 100%;">Logout</FluentButton>
                     </form>
                 </Authorized>
-
                 <NotAuthorized>
                     <FluentNavLink Href="Account/Login">Login</FluentNavLink>
                 </NotAuthorized>
-            </AuthorizeView>
-            <AuthorizeView Roles="Admin">
-                <Authorized>
-                    <FluentNavLink Href="tasks/admin" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListSquareDatabase())" IconColor="Color.Accent">Task Admin</FluentNavLink>
-                </Authorized>
             </AuthorizeView>
         </FluentNavMenu>
     </nav>

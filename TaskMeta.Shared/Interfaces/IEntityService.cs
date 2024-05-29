@@ -8,4 +8,6 @@ public interface IEntityService<E> where E : class
     Task<List<E>> GetAllAsync();
     Task<E?> GetByIdAsync(int id);
     Task UpdateAsync(E entity, bool commit = true);
+
+    Task Commit();
 }

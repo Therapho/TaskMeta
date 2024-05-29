@@ -12,12 +12,12 @@ public class TaskDefinitionService(ApplicationDbContext applicationDbContext, IU
     /// Retrieves the queryable collection of task definitions.
     /// </summary>
     /// <returns>The queryable collection of task definitions.</returns>
-    public IQueryable<TaskDefinition> GetTaskDefinitionsQuery()
+    public async Task<List<TaskDefinition>> GetTaskDefinitionList()
     {
         try
         {
-            return Context.TaskDefinitions.AsQueryable<TaskDefinition>()
-                .Include(t=>t.User);
+            var result = await Context.TaskDefinitions.Include(t=>t.User).ToListAsync();
+            return result;
         }
         catch (Exception ex)
         {

@@ -14,9 +14,17 @@ namespace TaskMeta.Components.Widgets
 
         [Parameter]
         public EventCallback<ApplicationUser> OnSelect { get; set; }
+        [Parameter]
+        public bool CanClear { get; set; }
 
         private async Task HandleButtonClick(ApplicationUser user)
         {
+            if(CanClear && SelectedUser == user)
+            {
+                SelectedUser = null;
+                await OnSelect.InvokeAsync(null);
+                return;
+            }
             SelectedUser = user;
             await OnSelect.InvokeAsync(user);
             

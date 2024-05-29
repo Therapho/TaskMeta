@@ -4,5 +4,5 @@ using TaskMeta.Shared.Models;
 namespace TaskMeta.Shared.Interfaces;
 public interface ITaskDefinitionService : IEntityService<TaskDefinition>
 {
-    IQueryable<TaskDefinition> GetTaskDefinitionsQuery();
+    Task<List<TaskDefinition>> GetTaskDefinitionList();
 }

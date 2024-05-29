@@ -6,23 +6,87 @@
 
 <h3>Task Administration</h3>
 <PageTitle>TaskMeta - Task Administration</PageTitle>
-<FluentStack Orientation="Orientation.Vertical">
-    <FluentCard>
-        <UserSelector Users="@_contributors" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" />
-        <hr/>
-        <FluentDataGrid Items="@_taskDefinitionQuery" ResizableColumns=true Virtualize="true" ItemSize="54" Pagination="@_pagination"
-                        GridTemplateColumns="2fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr" Style="height: 100%;">
-            <PropertyColumn Property="@(t=>t.Description)" Sortable="true" />
-            <PropertyColumn Property="@(t=>t.Value)" Format="C" Title="Amount" Sortable="true" />
-            <PropertyColumn Property="@(t=>t.Sequence)" Title="Sequence" Sortable="true" />
-            <PropertyColumn Property="@(t=>t.User.UserName)" Title="User" Sortable="true" />
-            <TemplateColumn>
-                <FluentButton IconStart="@(new Icons.Regular.Size24.Edit())"
-                              OnClick="@(()=>HandleEdit(context))" />
-                <FluentButton IconStart="@(new Icons.Regular.Size24.EyeOff())"
-                              OnClick="@(()=>HandleEdit(context))" />
-            </TemplateColumn>
-                    
-        </FluentDataGrid>
-    </FluentCard>
-</FluentStack>
+
+<UserSelector Users="@_contributors" OnSelect="HandleUserSelected" SelectedUser="State?.SelectedUser" CanClear="true" />
+<hr />
+    @if (_taskDefinitionListFiltered != null)
+{
+    <EditForm OnValidSubmit="@HandleSave" FormName="TaskForm" EditContext="editContext">
+
+        <div class="table">
+            <div class="row topLabel">
+                <div class="cell">Description</div>
+                <div class="cell">Value</div>
+                <div class="cell">Sequence</div>
+                <div class="cell">User</div>
+                <div class="cell">&nbsp;</div>
+            </div>
+
+            @foreach (var task in _taskDefinitionListFiltered!)
+            {
+                @if (_editTask != null && _editTask == task)
+                {
+                    <div class="row">
+                        <div class="cell">
+                            <div class="sideLabel">Description</div>
+                            <FluentTextField @bind-Value="task.Description" form="TaskForm" Style="width:100%" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Value</div>
+                            <FluentTextField InputMode="InputMode.Decimal" @bind-Value="task.ValueString" Style="width:100%" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Sequence</div>
+                            <FluentNumberField @bind-Value="task.Sequence" Style="width:100%" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">User</div>
+                            <FluentSelect Items="_contributors" OptionText="@(u=>u.UserName)"
+                                          OptionValue="@(u=>u.Id)" @bind-Value="task.UserId" Style="width:100%" />
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())" />
+                            <FluentButton OnClick="@(()=>HandleCancel())" IconStart="@(new Icons.Regular.Size24.EditOff())" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row @(!task.Active.GetValueOrDefault() ? "inactive" : "")">
+                        <div class="cell">
+                            <div class="sideLabel">Description</div>
+                            @task.Description
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Value</div>
+                            @task.Value.ToString("C")
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Sequence</div>
+                            @task.Sequence
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">User</div>
+                            @task.User?.UserName
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton IconStart="@(new Icons.Regular.Size24.Edit())" OnClick="@(()=>HandleEdit(task))" />
+                            @if (task.Active.GetValueOrDefault())
+                            {
+                                <FluentButton IconStart="@(new Icons.Regular.Size24.EyeOff())" OnClick="@(()=>HandleUpdateActive(task, false))" />
+                            }
+                            else
+                            {
+                                <FluentButton IconStart="@(new Icons.Regular.Size24.Eye())" OnClick="@(()=>HandleUpdateActive(task,true))" />
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </EditForm>
+    <hr />
+    <div><FluentButton OnClick="HandleAdd">Add</FluentButton></div>
+}
+
