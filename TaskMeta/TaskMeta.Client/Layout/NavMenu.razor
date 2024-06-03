@@ -11,7 +11,7 @@
         <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded">
             <AuthorizeView Roles="Contributor">
                 <Authorized >
-                    <FluentNavLink Href="tasks/list" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListLtr())" IconColor="Color.Accent">Task List</FluentNavLink>
+                    <FluentNavLink Href="/checklist" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListLtr())" IconColor="Color.Accent">Checklist</FluentNavLink>
                 </Authorized>
             </AuthorizeView>
            

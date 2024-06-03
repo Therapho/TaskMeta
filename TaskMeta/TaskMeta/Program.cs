@@ -11,6 +11,7 @@ using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
 using TaskMeta.Utilities;
+using TaskMeta.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,7 +58,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<State>();
 
 builder.Services.AddDataAccessLayer();
-
+builder.Services.AddViewModels();
 
 var app = builder.Build();
 

@@ -44,8 +44,7 @@ public class TaskActivityService(ITaskDefinitionService taskDefinitionService, A
         if (list == null || list.Count == 0)
         {
             list = [];
-            List<TaskDefinition> taskDefinitions = await TaskDefinitionService.GetAllAsync();
-            var today = DateTime.Now.ToDateOnly();
+            List<TaskDefinition> taskDefinitions = await TaskDefinitionService.GetListByUser(taskWeek.UserId);
 
             foreach (var taskDefinition in taskDefinitions)
             {
@@ -53,7 +52,7 @@ public class TaskActivityService(ITaskDefinitionService taskDefinitionService, A
                 {
                     Sequence = taskDefinition.Sequence,
                     TaskDefinitionId = taskDefinition.Id,
-                    TaskDate = today,
+                    TaskDate = date,
                     Complete = false,
                     Value = taskDefinition.Value,
                     Description = taskDefinition.Description,

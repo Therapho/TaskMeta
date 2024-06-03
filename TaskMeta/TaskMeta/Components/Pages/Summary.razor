@@ -1,0 +1,25 @@
+﻿@page "/summary"
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Tasks
+@using TaskMeta.Components.Widgets
+@using TaskMeta.Shared.Models
+@namespace TaskMeta.Components.Pages
+
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<PageTitle>TaskMeta - Summary</PageTitle>
+<h3>Summary</h3>
+
+<FluentStack Orientation="Orientation.Vertical">
+     <FluentCard>
+        <UserSelector Users="@ViewModel!.ContributorList" OnSelect="HandleUserSelected" 
+            SelectedUser="ViewModel!.State?.SelectedUser" />
+        <hr/>
+        <TaskGrid TaskWeek="@ViewModel!.TaskWeek" TaskDefinitionList="@ViewModel!.TaskDefinitionFilteredList" 
+            OnChange="HandleTaskChange" CanApprove="@ViewModel!.CanApprove" OnApproved="HandleApproval" />
+    </FluentCard>
+    <WeekSelector CurrentWeek="ViewModel!.TaskWeek" NextWeek="ViewModel!.NextWeek" PreviousWeek="ViewModel!.PreviousWeek"
+                  OnNextWeek="HandleNextWeekClicked"
+                  OnPreviousWeek="HandlePreviousWeekClicked" />
+</FluentStack>

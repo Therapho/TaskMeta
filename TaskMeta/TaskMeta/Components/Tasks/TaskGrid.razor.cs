@@ -7,14 +7,14 @@ namespace TaskMeta.Components.Tasks
 {
     public partial class TaskGrid : ComponentBase
     {
-        private TaskWeek? taskWeek;
-        private List<TaskActivity>? taskActivities;
+        private TaskWeek? _taskWeek;
+        private List<TaskActivity>? _taskActivityList;
 
         [Parameter]
-        public List<TaskDefinition>? TaskDefinitions { get; set; }
+        public List<TaskDefinition>? TaskDefinitionList { get; set; }
 
         [Parameter]
-        public TaskWeek? TaskWeek { get => taskWeek; set => taskWeek = value; }
+        public TaskWeek? TaskWeek { get => _taskWeek; set => _taskWeek = value; }
         [Parameter]
         public bool CanApprove { get; set; }
 
@@ -29,40 +29,25 @@ namespace TaskMeta.Components.Tasks
         {
             if (TaskWeek != null)
             {
-                taskWeek = TaskWeek;
-                taskActivities = [.. TaskWeek.TaskActivities];
+                _taskWeek = TaskWeek;
+                _taskActivityList = [.. _taskWeek.TaskActivityList];
                 locked = TaskWeek.StatusId == Constants.Status.Accepted || !CanApprove;
             }
 
         }
 
-        private async void HandleChange(TaskActivity task) => await OnChange.InvokeAsync(task);
+        private async void HandleChange(TaskActivity task)
+        {
+            // Add informational logging
+            Console.WriteLine("Handling task change: " + task.ToString());
+
+            await OnChange.InvokeAsync(task);
+        }
+
         private void HandleApprove(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
         {
             OnApproved.InvokeAsync();
         }
-        private void HandleCheckChange(TaskActivity task)
-        {
-
-            task.Complete = !task.Complete;
-            HandleChange(task);
-
-        }
-        private void HandleCheckChange(int sequence, DateOnly date)
-        {
-            var definition = TaskDefinitions!.Where(d => d.Sequence == sequence).First();
-            TaskActivity task = new ()
-            {
-                Complete = true,
-                Description = definition.Description,
-                Sequence = definition.Sequence,
-                TaskDate = date,
-                TaskDefinitionId = definition.Id,
-                TaskWeekId = taskWeek!.Id,
-                Value = definition.Value
-
-            };
-            HandleChange(task);
-        }
+       
     }
 }

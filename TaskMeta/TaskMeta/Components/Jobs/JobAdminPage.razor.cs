@@ -29,9 +29,9 @@ public partial class JobAdminPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _jobList = await JobService!.GetIncompleteJobs();
+        _jobList = await JobService!.GetCurrentJobs();
         _contributorList = await UserService!.GetContributors();
-        _userList = _contributorList.ToList();
+        _userList = [.. _contributorList];
         _userList.Insert(0, new ApplicationUser() { UserName = "Assign to user...." });
         if (State?.SelectedUser != null && _jobList != null)
         {
@@ -94,6 +94,7 @@ public partial class JobAdminPage : ComponentBase, IDisposable
         _jobListFiltered!.Remove(Job);
         StateHasChanged();
     }
+
     void HandleAdd()
     {
         _editJob = new Job()
@@ -134,6 +135,7 @@ public partial class JobAdminPage : ComponentBase, IDisposable
     public void Dispose()
     {
         TearDownForm();
+        GC.SuppressFinalize(this);
     }
 }
 

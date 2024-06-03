@@ -18,6 +18,11 @@ namespace TaskMeta.Shared.Utilities
             int diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
             return date.AddDays(-1 * diff).ToDateOnly();
         }
+        public static DateOnly EndOfWeek(this DateTime date)
+        {
+            int diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
+            return date.AddDays(7 - diff - 1).ToDateOnly();
+        }
         public static DateOnly? ToDateOnly(this DateTime? dateTime)
         {
             if (dateTime == null) return null;

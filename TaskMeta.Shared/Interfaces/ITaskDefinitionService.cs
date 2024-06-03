@@ -4,5 +4,6 @@ using TaskMeta.Shared.Models;
 namespace TaskMeta.Shared.Interfaces;
 public interface ITaskDefinitionService : IEntityService<TaskDefinition>
 {
-    Task<List<TaskDefinition>> GetTaskDefinitionList();
+    Task<List<TaskDefinition>> GetList();
+    Task<List<TaskDefinition>> GetListByUser(string userId);
 }

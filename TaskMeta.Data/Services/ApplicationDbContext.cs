@@ -60,7 +60,7 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasKey(e => e.Id).HasName("PK__TaskActivities");
 
-            entity.HasOne(d => d.TaskWeek).WithMany(p => p.TaskActivities)
+            entity.HasOne(d => d.TaskWeek).WithMany(p => p.TaskActivityList)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TaskActivities_TaskWeeks");
         });

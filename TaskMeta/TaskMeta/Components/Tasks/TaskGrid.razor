@@ -1,4 +1,7 @@
-﻿@if (taskActivities != null && taskWeek != null)
+﻿@using TaskMeta.Shared.Models
+@rendermode InteractiveServer
+
+@if (_taskActivityList != null && _taskWeek != null)
 {
 
     <table class="taskChart">
@@ -12,14 +15,13 @@
             <th>F</th>
             <th>S</th>
         </tr>
-        @if (TaskDefinitions != null)
+        @if (TaskDefinitionList != null)
         {
-            for (int s = 1; s <= TaskDefinitions!.Count; s++)
+            foreach (TaskDefinition taskDefinition in TaskDefinitionList)
             {
                 <tr>
                     <td>
                         @{
-                            var taskDefinition = TaskDefinitions!.Where(t => t.Sequence == s).FirstOrDefault();
                             if (taskDefinition != null)
                             {
                                 <span>@taskDefinition.Description</span>
@@ -29,20 +31,15 @@
                     @for (int d = 0; d < 7; d++)
                     {
                         {
-                            DateOnly currentDay = taskWeek.WeekStartDate.AddDays(d);
-                            
-                            var task = taskActivities!.Where(t => t.Sequence == s && t.TaskDate == currentDay).FirstOrDefault();
+                            DateOnly currentDay = _taskWeek.WeekStartDate.AddDays(d);
+
+                            var task = _taskActivityList!.Where(t => t.TaskDefinitionId == taskDefinition!.Id && t.TaskDate == currentDay).FirstOrDefault();
                             {
-                                <td>
-                                    @if (task != null)
-                                    {
-                                        <FluentCheckbox @bind-Value="task.Complete" ReadOnly="@locked" Class="checkbox" Style="--base-height-multiplier: 20;" bind-Value:afterChange="@(()=>HandleCheckChange(task))" />
-                                    }
-                                    else
-                                    {
-                                        <FluentCheckbox Disabled Style="--base-height-multiplier: 20;" CheckStateChanged="()=>HandleCheckChange(s, currentDay)" />
-                                    }
-                                </td>
+                                if(task != null)
+                                {<td>
+                                    <FluentCheckbox @bind-value="task!.Complete" ReadOnly="@locked" 
+                                    Class="checkbox" Style="--base-height-multiplier: 20;" bind-value:after="@(()=>HandleChange(task!))" />
+                                </td>}
                             }
                         }
                     }
@@ -53,13 +50,13 @@
     <hr />
     <FluentGrid>
         <FluentGridItem xs="6">
-        <strong>Total: </strong> @taskWeek.Value.ToString("C")
+            <strong>Total: </strong> @_taskWeek.Value.ToString("C")
         </FluentGridItem>
         <FluentGridItem xs="6">
-        @if (CanApprove)
-        {
-            <FluentButton @onclick="HandleApprove">Approve</FluentButton>
-        }
+            @if (CanApprove)
+            {
+                <FluentButton @onclick="HandleApprove">Approve</FluentButton>
+            }
         </FluentGridItem>
     </FluentGrid>
 

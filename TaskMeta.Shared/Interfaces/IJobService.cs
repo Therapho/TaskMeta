@@ -4,5 +4,6 @@ namespace TaskMeta.Shared.Interfaces;
 
 public interface IJobService : IEntityService<Job>
 {
-    Task<List<Job>> GetIncompleteJobs();
+    Task<List<Job>> GetCurrentJobs();
+    Task<List<Job>> GetCurrentJobs(ApplicationUser user);
 }

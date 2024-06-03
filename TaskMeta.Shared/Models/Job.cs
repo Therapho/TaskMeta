@@ -19,7 +19,7 @@ public partial class Job
     public string Description { get; set; }
 
     public DateOnly DateAssigned { get; set; }
-
+    public DateOnly? DateCompleted { get; set; }
     public DateOnly DateDue { get; set; }
 
     [Required]

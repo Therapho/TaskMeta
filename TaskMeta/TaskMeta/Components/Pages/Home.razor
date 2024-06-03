@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
 <PageTitle>Home</PageTitle>
+@rendermode InteractiveServer
 
 @if (!loggedIn)
 {
@@ -29,7 +30,7 @@
             {
                 NavigationManager.NavigateTo("/summary");
             }
-            else NavigationManager.NavigateTo("/tasklist");
+            else NavigationManager.NavigateTo("/checklist");
         }
         await base.OnInitializedAsync();
 

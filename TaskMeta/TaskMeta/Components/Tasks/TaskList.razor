@@ -1,8 +1,6 @@
 ﻿@page "/tasks/list"
+@using JobMeta.Components.Jobs
 @using Microsoft.AspNetCore.Authorization
-@using TaskMeta.Data.Services
-@using TaskMeta.Shared.Models
-@using TaskMeta.Shared.Interfaces
 
 @namespace TaskMeta.Components.Tasks
 
@@ -15,17 +13,15 @@
 <FluentStack Orientation="Orientation.Vertical">
     <FluentCard class="Panel">
         <FluentStack Orientation="Orientation.Vertical">
-            @if(taskActivities != null)
+            @if(TaskActivities != null)
             {
-                foreach (var taskActivity in taskActivities)
+                foreach (var taskActivity in TaskActivities)
                 {
-                    <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" ReadOnly="@locked"
+                    <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" ReadOnly="@Locked"
                     @bind-value:after="()=>HandleChange(taskActivity)" />
                 }
             }
         </FluentStack>
     </FluentCard>
-    <FluentCard Class="panel" >
-        <strong>Total:</strong> @totalValue.ToString("C")
-    </FluentCard>
+ 
 </FluentStack>

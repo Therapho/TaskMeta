@@ -27,6 +27,6 @@ public partial class TaskActivity
     public DateOnly TaskDate { get; set; }
 
     [ForeignKey("TaskWeekId")]
-    [InverseProperty("TaskActivities")]
+    [InverseProperty("TaskActivityList")]
     public virtual TaskWeek TaskWeek { get; set; }
 }

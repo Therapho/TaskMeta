@@ -22,5 +22,5 @@ public partial class TaskWeek
     public string UserId { get; set; }
 
     [InverseProperty("TaskWeek")]
-    public virtual ICollection<TaskActivity> TaskActivities { get; set; } = new List<TaskActivity>();
+    public virtual ICollection<TaskActivity> TaskActivityList { get; set; } = new List<TaskActivity>();
 }

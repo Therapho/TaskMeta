@@ -32,7 +32,7 @@ namespace TaskMeta.Components.Tasks
 
         protected override async Task OnInitializedAsync()
         {
-            _taskDefinitionList = await TaskDefinitionService!.GetTaskDefinitionList();
+            _taskDefinitionList = await TaskDefinitionService!.GetList();
             _contributors = await UserService!.GetContributors();
             if (State?.SelectedUser != null && _taskDefinitionList != null)
             {
@@ -133,6 +133,7 @@ namespace TaskMeta.Components.Tasks
         public void Dispose()
         {
             TearDownForm();
+            GC.SuppressFinalize(this);
         }
     }
 }
