@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using TaskMeta.Data.Services;
 using TaskMeta.Shared;
-using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Components.Transactions
@@ -15,9 +13,6 @@ namespace TaskMeta.Components.Transactions
         [Parameter]
         public ApplicationUser? CallingUser { get; set; }
 
-        [Inject]
-        public IFundService? FundService { get; set; }
-
         [Parameter]
         public EventCallback OnClose { get; set; }
 
@@ -25,18 +20,19 @@ namespace TaskMeta.Components.Transactions
         public EditMode EditMode { get; set; }
 
         [Parameter]
-        public EventCallback OnSave { get; set; }
+        public EventCallback<Transaction> OnSave { get; set; }
 
-        Transaction transaction = new();
-        List<Fund>? fundList;
+        readonly Transaction transaction = new();
+
+        [Parameter]
+        public List<Fund>? FundList { get; set; }
 
         private EditContext? editContext;
         private ValidationMessageStore? messageStore;
 
         protected override async Task OnInitializedAsync()
         {
-            fundList = await FundService!.GetFundsByUser(User!.Id);
-            fundList.Insert(0, new Fund { Id = 0, Name = "Select Fund" });
+            FundList!.Insert(0, new Fund { Id = 0, Name = "Select Fund" });
             //editContext = new(transaction);
 
             await base.OnInitializedAsync();
@@ -123,24 +119,24 @@ namespace TaskMeta.Components.Transactions
         void HandleTargetFundChanged(string newValue)
         {
             int fundId = int.Parse(newValue);
-            var targetFund = fundList!.FirstOrDefault(f => f.Id == fundId);
+            var targetFund = FundList!.FirstOrDefault(f => f.Id == fundId);
             transaction.TargetFund = targetFund;
         }
         void HandleSourceFundChanged(string newValue)
         {
             int fundId = int.Parse(newValue);
-            var sourceFund = fundList!.FirstOrDefault(f => f.Id == fundId);
+            var sourceFund = FundList!.FirstOrDefault(f => f.Id == fundId);
             transaction.SourceFund = sourceFund;
         }
         async void HandleSave()
         {
             if (editContext!.Validate())
             {
-                await FundService!.Process(transaction);
+                
                 await OnClose.InvokeAsync();
                 if (OnSave.HasDelegate)
                 {
-                    await OnSave.InvokeAsync();
+                    await OnSave.InvokeAsync(transaction);
                 }
             }
 

@@ -10,13 +10,10 @@ namespace TaskMeta.Components.Jobs;
 public partial class JobAdminPage : ComponentBase, IDisposable
 {
     [Inject]
-    public IUserService? UserService { get; set; }
-
-    [Inject]
     public State? State { get; set; }
 
     [Inject]
-    public IJobService? JobService { get; set; }
+    public IUnitOfWork? UnitOfWork { get; set; }
 
     private List<ApplicationUser>? _contributorList;
     private List<ApplicationUser>? _userList;
@@ -29,8 +26,8 @@ public partial class JobAdminPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _jobList = await JobService!.GetCurrentJobs();
-        _contributorList = await UserService!.GetContributors();
+        _jobList = await UnitOfWork!.JobRepository!.GetCurrentJobs();
+        _contributorList = await UnitOfWork!.UserRepository!.GetContributors();
         _userList = [.. _contributorList];
         _userList.Insert(0, new ApplicationUser() { UserName = "Assign to user...." });
         if (State?.SelectedUser != null && _jobList != null)
@@ -88,12 +85,13 @@ public partial class JobAdminPage : ComponentBase, IDisposable
         else _jobListFiltered = _jobList;
         StateHasChanged();
     }
-    async void HandleDelete(Job Job)
-    {
-        await JobService!.DeleteAsync(Job.Id);
-        _jobListFiltered!.Remove(Job);
-        StateHasChanged();
-    }
+    //async void HandleDelete(Job Job)
+    //{
+    //    UnitOfWork!.JobRepository!.Delete(Job);
+    //    await UnitOfWork!.SaveChanges();
+    //    _jobListFiltered!.Remove(Job);
+    //    StateHasChanged();
+    //}
 
     void HandleAdd()
     {
@@ -110,9 +108,9 @@ public partial class JobAdminPage : ComponentBase, IDisposable
     {
         if (_editJob?.Id == 0)
         {
-            await JobService!.AddAsync(_editJob, false);
+            UnitOfWork!.JobRepository!.Add(_editJob);
+            await UnitOfWork!.SaveChanges();
         }
-        await JobService!.Commit();
         _editJob = null;
         StateHasChanged();
 

@@ -23,7 +23,7 @@
             </FluentStack>
             @if (editMode != EditMode.None)
             {
-                <TransactionForm User="@State!.SelectedUser" CallingUser="@loggedInUser"
+                <TransactionForm User="@State!.SelectedUser" CallingUser="@loggedInUser" FundList="@_fundList"
                                  OnClose="HandleFormClose" EditMode="@editMode" OnSave="HandleTransactionSaved" />
             }
             <hr />

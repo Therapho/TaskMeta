@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using TaskMeta.Data.Services;
+using TaskMeta.Data.Repositories;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
@@ -8,18 +8,13 @@ namespace TaskMeta.Components.Transactions
 {
 
     public partial class TransactionPage :ComponentBase
-    {
-        [Inject]
-        public IUserService? UserService { get; set; }
+    {      
 
         [Inject]
         public State? State { get; set; }
 
         [Inject]
-        public ITransactionLogService? TransactionLogService { get; set; }
-
-        [Inject]
-        public IFundService? FundService { get; set; }
+        public IUnitOfWork? UnitOfWork { get; set; }
 
         private bool isAdmin;
         private List<ApplicationUser>? contributorList;
@@ -28,32 +23,35 @@ namespace TaskMeta.Components.Transactions
 
         EditMode editMode = EditMode.None;
         private ApplicationUser? loggedInUser;
+        private List<Fund>? _fundList;
 
         protected override async Task OnInitializedAsync()
         {
             
-            loggedInUser = await UserService!.GetCurrentUser();
+            loggedInUser = await UnitOfWork!.UserRepository!.GetCurrentUser();
             if (loggedInUser == null) throw new InvalidOperationException("User is null");
-            isAdmin = await UserService!.IsAdmin(loggedInUser);
+            isAdmin = await UnitOfWork!.UserRepository!.IsAdmin(loggedInUser);
             if (!isAdmin)
             {
                LoadTransactions(loggedInUser);
             }
             else
             {
-                contributorList = await UserService!.GetContributors();
+                contributorList = await UnitOfWork!.UserRepository!.GetContributors();
                 if (State?.SelectedUser != null)
                 {
                     LoadTransactions(State.SelectedUser);
+                    _fundList = await UnitOfWork!.FundRepository!.GetFundsByUser(State!.SelectedUser!.Id);
                 }
             }
 
+            
             await base.OnInitializedAsync();
         }
 
         private void LoadTransactions(ApplicationUser user)
         {
-            transactionQuery = TransactionLogService!.QueryTransactionsByUser(user.Id);
+            transactionQuery = UnitOfWork!.TransactionLogRepository!.QueryTransactionsByUser(user.Id);
         }
 
         void HandleUserSelected(ApplicationUser user)
@@ -81,8 +79,11 @@ namespace TaskMeta.Components.Transactions
             editMode = EditMode.None;
             StateHasChanged();
         }
-        void HandleTransactionSaved()
+        async void HandleTransactionSaved(Transaction transaction)
         {
+            UnitOfWork!.Process(transaction);
+            await UnitOfWork!.SaveChanges();
+
             LoadTransactions(State!.SelectedUser!);
             StateHasChanged();
         }

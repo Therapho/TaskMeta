@@ -6,7 +6,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using TaskMeta.Components;
 using TaskMeta.Components.Account;
 using TaskMeta.Data;
-using TaskMeta.Data.Services;
+using TaskMeta.Data.Repositories;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
@@ -54,7 +54,7 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 // Add Application Insights logging
 //builder.Services.AddApplicationInsightsTelemetry();
 //builder.Services.AddSnapshotCollector();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<State>();
 
 builder.Services.AddDataAccessLayer();

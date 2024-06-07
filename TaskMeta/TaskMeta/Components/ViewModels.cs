@@ -1,4 +1,6 @@
-﻿using TaskMeta.Components.Pages.ViewModels;
+﻿using TaskMeta.Components.Jobs;
+using TaskMeta.Components.Views;
+using TaskMeta.Components.Tasks;
 
 namespace TaskMeta.ViewModels
 {
@@ -8,7 +10,10 @@ namespace TaskMeta.ViewModels
         {
             services
                 .AddScoped<DailyChecklistViewModel>()
-                .AddScoped<SummaryViewModel>();
+                .AddScoped<SummaryViewModel>()
+                .AddScoped<TaskGridViewModel>()
+                .AddScoped<JobChecklistViewModel>();
+
 
             return services;
         }

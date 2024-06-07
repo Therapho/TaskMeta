@@ -8,11 +8,12 @@
 
   <ItemGroup>
     <Compile Remove="Models\**" />
-    <Compile Remove="Repositories\**" />
     <EmbeddedResource Remove="Models\**" />
-    <EmbeddedResource Remove="Repositories\**" />
     <None Remove="Models\**" />
-    <None Remove="Repositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Repositories\UnitOfWorkFactory.cs" />
   </ItemGroup>
 
   <ItemGroup>

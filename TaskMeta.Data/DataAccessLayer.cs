@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TaskMeta.Shared.Interfaces;
-using TaskMeta.Data.Services;
+using TaskMeta.Data.Repositories;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace TaskMeta.Data
@@ -10,12 +10,13 @@ namespace TaskMeta.Data
         public static IServiceCollection AddDataAccessLayer(this IServiceCollection services)
         {
             services
-                .AddScoped<ITaskActivityService, TaskActivityService>()
-                .AddScoped<ITaskDefinitionService, TaskDefinitionService>()
-                .AddScoped<ITaskWeekService, TaskWeekService>()
-                .AddScoped<IFundService, FundService>()
-                .AddScoped<ITransactionLogService, TransactionLogService>()
-                .AddScoped<IJobService, JobService>();
+                .AddScoped<ITaskActivityRepository, TaskActivityRepository>()
+                .AddScoped<ITaskDefinitionRepository, TaskDefinitionRepository>()
+                .AddScoped<ITaskWeekRepository, TaskWeekRepository>()
+                .AddScoped<IFundRepository, FundRepository>()
+                .AddScoped<ITransactionLogRepository, TransactionLogRepository>()
+                .AddScoped<IJobRepository, JobRepository>()
+                .AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
             
         }

@@ -23,4 +23,8 @@ public partial class TaskWeek
 
     [InverseProperty("TaskWeek")]
     public virtual ICollection<TaskActivity> TaskActivityList { get; set; } = new List<TaskActivity>();
+
+    [ForeignKey("UserId")]
+    [InverseProperty("UserTaskWeeks")]
+    public virtual ApplicationUser User { get; set; }
 }

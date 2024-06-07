@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.FluentUI.AspNetCore.Components;
-using TaskMeta.Components.Transactions;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 
 namespace TaskMeta.Components.Tasks
@@ -13,13 +10,10 @@ namespace TaskMeta.Components.Tasks
     public partial class TaskAdminPage : ComponentBase, IDisposable
     {
         [Inject]
-        public IUserService? UserService { get; set; }
-
-        [Inject]
         public State? State { get; set; }
 
         [Inject]
-        public ITaskDefinitionService? TaskDefinitionService { get; set; }
+        public IUnitOfWork? UnitOfWork { get; set; }
 
         private List<ApplicationUser>? _contributors;
 
@@ -32,8 +26,8 @@ namespace TaskMeta.Components.Tasks
 
         protected override async Task OnInitializedAsync()
         {
-            _taskDefinitionList = await TaskDefinitionService!.GetList();
-            _contributors = await UserService!.GetContributors();
+            _taskDefinitionList = await UnitOfWork!.TaskDefinitionRepository!.GetList();
+            _contributors = await UnitOfWork!.UserRepository!.GetContributors();
             if (State?.SelectedUser != null && _taskDefinitionList != null)
             {
                 _taskDefinitionListFiltered = _taskDefinitionList!.Where(t => t.UserId == State.SelectedUser.Id).ToList();
@@ -85,12 +79,14 @@ namespace TaskMeta.Components.Tasks
             else _taskDefinitionListFiltered = _taskDefinitionList;
             StateHasChanged();
         }
-        async void HandleDelete(TaskDefinition taskDefinition)
-        {
-            await TaskDefinitionService!.DeleteAsync(taskDefinition.Id);
-            _taskDefinitionListFiltered!.Remove(taskDefinition);
-            StateHasChanged();
-        }
+        //async void HandleDelete(TaskDefinition taskDefinition)
+        //{
+        //    UnitOfWork!.TaskDefinitionRepository!.Delete(taskDefinition);
+        //    await UnitOfWork!.SaveChanges();
+
+        //    _taskDefinitionListFiltered!.Remove(taskDefinition);
+        //    StateHasChanged();
+        //}
         void HandleAdd()
         {
             _editTask = new TaskDefinition();
@@ -102,9 +98,10 @@ namespace TaskMeta.Components.Tasks
         {
             if(_editTask?.Id == 0)
             {
-                await TaskDefinitionService!.AddAsync(_editTask, false);
+                UnitOfWork!.TaskDefinitionRepository!.Add(_editTask);
+                await UnitOfWork!.SaveChanges();
             }
-            await TaskDefinitionService!.Commit();
+           
             _editTask = null;
             StateHasChanged();
 
@@ -115,11 +112,12 @@ namespace TaskMeta.Components.Tasks
             _editTask = null;
             StateHasChanged();
         }
-        void HandleUpdateActive(TaskDefinition task, bool value)
+        async void HandleUpdateActive(TaskDefinition task, bool value)
         {
 
             task.Active = value;
-            TaskDefinitionService!.Commit();
+            UnitOfWork!.TaskDefinitionRepository!.Update(task);
+            await UnitOfWork!.SaveChanges();
             
         }
         void TearDownForm()

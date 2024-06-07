@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Diagnostics;
-using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
 
@@ -18,10 +16,10 @@ public partial class JobChecklist : ComponentBase
 
     public bool locked = false;
 
-   
+
 
     private async void HandleChange(Job job)
-    {        
+    {
         await OnChange.InvokeAsync(job);
     }
 }

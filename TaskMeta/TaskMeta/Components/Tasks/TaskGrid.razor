@@ -1,7 +1,9 @@
-﻿@using TaskMeta.Shared.Models
+﻿@using TaskMeta.MVVM
+@using TaskMeta.Shared.Models
+@inherits ViewBase<TaskGridViewModel>
 @rendermode InteractiveServer
 
-@if (_taskActivityList != null && _taskWeek != null)
+@if (ViewModel?.TaskActivityList != null && ViewModel.TaskWeek != null)
 {
 
     <table class="taskChart">
@@ -15,9 +17,9 @@
             <th>F</th>
             <th>S</th>
         </tr>
-        @if (TaskDefinitionList != null)
+        @if (ViewModel.TaskDefinitionList != null)
         {
-            foreach (TaskDefinition taskDefinition in TaskDefinitionList)
+            foreach (TaskDefinition taskDefinition in ViewModel.TaskDefinitionList)
             {
                 <tr>
                     <td>
@@ -31,14 +33,15 @@
                     @for (int d = 0; d < 7; d++)
                     {
                         {
-                            DateOnly currentDay = _taskWeek.WeekStartDate.AddDays(d);
+                            DateOnly currentDay = ViewModel.TaskWeek.WeekStartDate.AddDays(d);
 
-                            var task = _taskActivityList!.Where(t => t.TaskDefinitionId == taskDefinition!.Id && t.TaskDate == currentDay).FirstOrDefault();
+                            var task = ViewModel.TaskActivityList!.Where(t => t.TaskDefinitionId == taskDefinition!.Id && t.TaskDate == currentDay).FirstOrDefault();
                             {
                                 if(task != null)
                                 {<td>
-                                    <FluentCheckbox @bind-value="task!.Complete" ReadOnly="@locked" 
-                                    Class="checkbox" Style="--base-height-multiplier: 20;" bind-value:after="@(()=>HandleChange(task!))" />
+                                    <FluentCheckbox @bind-value="task!.Complete" ReadOnly="@ViewModel.Locked" 
+                                    Class="checkbox" Style="--base-height-multiplier: 20;" 
+                                    @bind-value:after="(()=>ViewModel!.HandleChange(task!))" />
                                 </td>}
                             }
                         }
@@ -47,18 +50,8 @@
             }
         }
     </table>
-    <hr />
-    <FluentGrid>
-        <FluentGridItem xs="6">
-            <strong>Total: </strong> @_taskWeek.Value.ToString("C")
-        </FluentGridItem>
-        <FluentGridItem xs="6">
-            @if (CanApprove)
-            {
-                <FluentButton @onclick="HandleApprove">Approve</FluentButton>
-            }
-        </FluentGridItem>
-    </FluentGrid>
+ 
 
 }
+
 

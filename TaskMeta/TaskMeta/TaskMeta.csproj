@@ -44,5 +44,10 @@
   <ItemGroup>
     <_GlobalJsonStartingDir Remove="Data\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Components\Jobs\JobChecklist.razor.cs" />
+    <Compile Remove="Components\Tasks\TaskGrid.razor.cs" />
+    <Compile Remove="MVVM\ComponentBase.cs" />
+  </ItemGroup>
 
 </Project>

@@ -18,12 +18,9 @@ public partial class FundList : ComponentBase, IDisposable
 
     [SupplyParameterFromForm]
     private Fund? EditFund { get; set; }
-  
-
+      
     [Inject]
-    public IUserService? UserService { get; set; }
-    [Inject]
-    public IFundService? FundService { get; set; }
+    public IUnitOfWork? UnitOfWork { get; set; }
     [Inject]
     public IDialogService? DialogService { get; set; }
     [Inject]
@@ -45,8 +42,8 @@ public partial class FundList : ComponentBase, IDisposable
     }
     protected override async Task OnParametersSetAsync()
     {
-        var user = await UserService!.GetCurrentUser() ?? throw new InvalidOperationException("User is null");
-        isAdmin = await UserService!.IsAdmin(user);
+        var user = await UnitOfWork!.UserRepository!.GetCurrentUser() ?? throw new InvalidOperationException("User is null");
+        isAdmin = await UnitOfWork!.UserRepository!.IsAdmin(user);
 
         if (!isAdmin)
         {
@@ -55,7 +52,7 @@ public partial class FundList : ComponentBase, IDisposable
         }
         else
         {
-            contributors = await UserService!.GetContributors();
+            contributors = await UnitOfWork!.UserRepository!.GetContributors();
             if (State?.SelectedUser != null) await LoadFunds(State.SelectedUser);
         }
         await base.OnParametersSetAsync();
@@ -69,7 +66,7 @@ public partial class FundList : ComponentBase, IDisposable
 
     private async Task LoadFunds(ApplicationUser user)
     {
-        fundList = await FundService!.GetFundsByUser(user.Id);
+        fundList = await UnitOfWork!.FundRepository!.GetFundsByUser(user.Id);
         RecalculatePage();
     }
     private void HandleAddFund(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
@@ -98,13 +95,15 @@ public partial class FundList : ComponentBase, IDisposable
 
         if (EditFund!.Id == 0)
         {
-            await FundService!.AddAsync(EditFund);
+            UnitOfWork!.FundRepository!.Add(EditFund);
+            await UnitOfWork!.SaveChanges();
             fundList!.Add(EditFund);
         }
         else
         {            
             
-            await FundService!.UpdateAsync(EditFund);
+            UnitOfWork!.FundRepository!.Update(EditFund);
+            await UnitOfWork!.SaveChanges();
         }
         
         ClearEdit();
@@ -122,7 +121,8 @@ public partial class FundList : ComponentBase, IDisposable
         DialogResult? result = await dialog.Result;
         if (result != null && !result.Cancelled)
         {
-            await FundService!.DeleteAsync(fund.Id);
+            UnitOfWork!.FundRepository!.Delete(fund);
+            await UnitOfWork!.SaveChanges();
             fundList!.Remove(fund);
             RecalculatePage();
         }

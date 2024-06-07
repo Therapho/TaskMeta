@@ -11,6 +11,8 @@ namespace TaskMeta.Shared.Models
 
         [InverseProperty("User")]
         public virtual ICollection<Job> JobUsers { get; set; } = [];
+        [InverseProperty("User")]
+        public virtual ICollection<TaskWeek> UserTaskWeeks { get; set; } = [];
 
     }
 

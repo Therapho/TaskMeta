@@ -1,0 +1,17 @@
+﻿@page "/checklist"
+@using TaskMeta.Components.Jobs
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Tasks
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Contributor")]
+
+<h3>Daily Checklist</h3>
+<PageTitle>TaskMeta - Daily Checklist</PageTitle>
+<FluentStack Orientation="Orientation.Vertical">
+
+    <TaskList TaskActivities="ViewModel!.TaskActivityList" OnChange="HandleTaskChange"/>
+    <JobChecklist JobList="ViewModel!.JobList" OnChange="HandleJobChange" />
+    <FluentCard Class="panel">
+        <strong>Total:</strong> @ViewModel.TotalValue.ToString("C")
+    </FluentCard>
+</FluentStack>
