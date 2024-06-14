@@ -9,13 +9,13 @@ namespace TaskMeta.Components.ViewModels
     public class TransactionListViewModel (IUnitOfWork unitOfWork, ApplicationState state)
         : ViewModelBase( unitOfWork,  state)
     {
-        public IQueryable<TransactionLog>? TransactionQuery { get; set; }
+        public List<TransactionLog>? TransactionList { get; set; }
 
         public PaginationState Pagination = new() { ItemsPerPage = 10 };
 
         public void Load(ApplicationUser user)
         {
-            TransactionQuery = UnitOfWork!.TransactionLogRepository!.QueryTransactionsByUser(user.Id);
+            TransactionList = UnitOfWork!.TransactionLogRepository!.GetTransactionsByUser(user.Id, 1, 20);
             StateHasChanged!();
         }
     }

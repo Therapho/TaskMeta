@@ -9,15 +9,17 @@ namespace TaskMeta.Shared.Models.Repositories
         ILogger<TransactionLog> logger)
         : RepositoryBase<TransactionLog>(applicationDbContext, cacheProvider, logger), ITransactionLogRepository
     {
-        public IQueryable<TransactionLog> QueryTransactionsByUser(string id)
+        public List<TransactionLog> GetTransactionsByUser(string id, int page, int pageSize)
         {
             var query = Context.TransactionLogs.Where(x => x.TargetUserId == id)
                 .Include(t => t.Category)
                 .Include(t => t.SourceFund)
                 .Include(t => t.TargetFund)
                 .Include(t => t.TargetUser)
-                .Include(t => t.CallingUser);
-            return query!;
+                .Include(t => t.CallingUser)
+                .Skip((page-1) * pageSize)
+                .Take(pageSize);
+            return query.ToList();
         }
 
         /// <summary>

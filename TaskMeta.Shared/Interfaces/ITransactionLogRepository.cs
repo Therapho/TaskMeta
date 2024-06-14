@@ -4,7 +4,7 @@ namespace TaskMeta.Shared.Interfaces
 {
     public interface ITransactionLogRepository : IRepositoryBase<TransactionLog>
     {
-        IQueryable<TransactionLog> QueryTransactionsByUser(string id);
+        List<TransactionLog> GetTransactionsByUser(string id, int page, int pageSize);
         void LogTransaction(Transaction transaction);
         void Deposit(Transaction transaction);
         void Withdraw(Transaction transaction);
