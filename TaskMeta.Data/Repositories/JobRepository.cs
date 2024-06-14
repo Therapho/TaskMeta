@@ -5,11 +5,11 @@ using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
 
-namespace TaskMeta.Data.Repositories;
+namespace TaskMeta.Shared.Models.Repositories;
 
 
-public class JobRepository(ApplicationDbContext applicationDbContext,
-    ILogger<Job> logger) : RepositoryBase<Job>(applicationDbContext, logger), IJobRepository
+public class JobRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider,
+    ILogger<Job> logger) : RepositoryBase<Job>(applicationDbContext, cacheProvider, logger), IJobRepository
 {
 
 

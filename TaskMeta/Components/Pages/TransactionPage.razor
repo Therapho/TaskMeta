@@ -1,0 +1,42 @@
+﻿@page "/transactions"
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Controllers
+@using TaskMeta.Components.Views
+@using TaskMeta.MVVM
+@using TaskMeta.Shared
+@using TaskMeta.Shared.Models
+
+@rendermode InteractiveServer
+@attribute [Authorize]
+@inherits PageBase<TransactionController>
+
+<h3>Transactions</h3>
+<PageTitle>TaskMeta - Transactions</PageTitle>
+<FluentStack Orientation="Orientation.Vertical">
+
+    <FluentCard>
+        <UserSelector ViewModel="Controller!.UserSelectorViewModel" />
+        <hr />
+        @if (Controller!.State.IsAdmin && Controller!.State!.SelectedUser != null)
+        {
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentButton OnClick="Controller.HandleDeposit"
+                              Appearance="@(Controller.EditMode == Constants.EditMode.Deposit?Appearance.Accent:Appearance.Neutral)">Deposit</FluentButton>
+                <FluentButton OnClick="Controller.HandleWithdraw"
+                              Appearance="@(Controller.EditMode == Constants.EditMode.Withdraw?Appearance.Accent:Appearance.Neutral)">Withdraw</FluentButton>
+                <FluentButton OnClick="Controller.HandleTransfer"
+                              Appearance="@(Controller.EditMode == Constants.EditMode.Transfer?Appearance.Accent:Appearance.Neutral)">Transfer</FluentButton>
+            </FluentStack>
+            @if (Controller.EditMode != Constants.EditMode.None)
+            {
+                <TransactionForm ViewModel="Controller.TransactionFormViewModel" OnClose="Controller.HandleFormClose"/>
+            }
+            <hr />
+        }
+        <TransactionList ViewModel="Controller.TransactionListViewModel" />
+    </FluentCard>
+
+</FluentStack>
+@code {
+
+}

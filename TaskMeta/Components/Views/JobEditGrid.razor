@@ -1,0 +1,87 @@
+﻿@using TaskMeta.MVVM
+@using TaskMeta.Components.ViewModels
+@rendermode InteractiveServer
+@inherits ViewBase<JobEditGridViewModel>
+@if (ViewModel?.JobListFiltered != null)
+{
+    <EditForm OnValidSubmit="ViewModel!.HandleSave" FormName="JobForm" EditContext="ViewModel!.EditContext">
+        <div class="table">
+            <div class="row topLabel">
+                <div class="cell">Description</div>
+                <div class="cell">Value</div>
+                <div class="cell">User</div>
+                <div class="cell">Date Due</div>
+                <div class="cell">Date Assigned</div>
+                <div class="cell">&nbsp;</div>
+            </div>
+
+            @foreach (var job in ViewModel.JobListFiltered!)
+            {
+                @if (ViewModel.EditJob != null && ViewModel.EditJob == job)
+                {
+                    <div class="row">
+                        <div class="cell">
+                            <div class="sideLabel">Description</div>
+                            <FluentTextField @bind-Value="job.Description" form="JobForm" Style="width:100%;min-width:180px" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Value</div>
+                            <FluentTextField InputMode="InputMode.Decimal" @bind-Value="job.ValueString" Style="width:100%;min-width:100px" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">User</div>
+                            <FluentSelect Items="ViewModel.UserList" OptionText="@(u=>u.UserName)"
+                                          OptionValue="@(u=>u.Id)" @bind-Value="job.UserId" Style="width:100%;" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Date Due</div>
+                            <FluentDatePicker @bind-Value="job.DateTimeDue" Style="width:100%;min-width:130px" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Date Assigned</div>
+                            @job.DateAssigned
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())" />
+                            <FluentButton OnClick="@(()=>ViewModel.HandleCancel())" IconStart="@(new Icons.Regular.Size24.EditOff())" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="cell">
+                            <div class="sideLabel">Description</div>
+                            @job.Description
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Value</div>
+                            @job.Value.ToString("C")
+                        </div>
+
+                        <div class="cell">
+                            <div class="sideLabel">User</div>
+                            @job.User?.UserName
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Date Due</div>
+                            @job.DateDue
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Date Assigned</div>
+                            @job.DateAssigned
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton IconStart="@(new Icons.Regular.Size24.Edit())" OnClick="@(()=>ViewModel.HandleEdit(job))" />
+                            <FluentButton IconStart="@(new Icons.Regular.Size24.Delete())" OnClick="@(()=>ViewModel.HandleDelete(job))" />
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </EditForm>
+    <hr/>
+    <div><FluentButton OnClick="ViewModel.HandleAdd">Add</FluentButton></div>
+}
+
+

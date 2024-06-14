@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Data.Repositories;
-public class TaskDefinitionRepository(ApplicationDbContext applicationDbContext,
+namespace TaskMeta.Shared.Models.Repositories;
+public class TaskDefinitionRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider,
     ILogger<TaskDefinition> logger) :
-    RepositoryBase<TaskDefinition>(applicationDbContext, logger), ITaskDefinitionRepository
+    RepositoryBase<TaskDefinition>(applicationDbContext, cacheProvider, logger), ITaskDefinitionRepository
 {
     /// <summary>
     /// Retrieves the queryable collection of task definitions.

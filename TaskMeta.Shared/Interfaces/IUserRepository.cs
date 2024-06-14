@@ -4,7 +4,7 @@ namespace TaskMeta.Shared.Interfaces;
 
 public interface IUserRepository
 {
-    Task<ApplicationUser> GetCurrentUser();
+    Task<ApplicationUser?> GetCurrentUser();
     Task<bool> IsAdmin();
     Task<bool> IsAdmin(ApplicationUser user);
     Task<bool> IsLoggedIn();

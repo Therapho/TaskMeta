@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TaskMeta.Shared.Interfaces;
-using TaskMeta.Data.Repositories;
+using TaskMeta.Shared.Models.Repositories;
 using Microsoft.FluentUI.AspNetCore.Components;
+using TaskMeta.Shared.Models.Providers;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace TaskMeta.Data
+namespace TaskMeta.Shared.Models
 {
     public static class DataAccessLayer
     {
@@ -16,7 +18,10 @@ namespace TaskMeta.Data
                 .AddScoped<IFundRepository, FundRepository>()
                 .AddScoped<ITransactionLogRepository, TransactionLogRepository>()
                 .AddScoped<IJobRepository, JobRepository>()
-                .AddScoped<IUnitOfWork, UnitOfWork>();
+                .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<ICacheProvider, CacheProvider>()
+                .AddScoped<IMemoryCache, MemoryCache>();
             return services;
             
         }

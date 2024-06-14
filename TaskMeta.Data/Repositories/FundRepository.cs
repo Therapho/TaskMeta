@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Data.Repositories;
+namespace TaskMeta.Shared.Models.Repositories;
 
-public class FundRepository(ApplicationDbContext applicationDbContext, ILogger<Fund> logger) :
-    RepositoryBase<Fund>(applicationDbContext, logger), IFundRepository
+public class FundRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider, ILogger<Fund> logger) :
+    RepositoryBase<Fund>(applicationDbContext, cacheProvider, logger), IFundRepository
 {
 
     /// <summary>
@@ -13,11 +14,11 @@ public class FundRepository(ApplicationDbContext applicationDbContext, ILogger<F
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of funds.</returns>
-    public Task<List<Fund>> GetFundsByUser(string userId)
+    public async Task<List<Fund>> GetFundsByUser(string userId)
     {
         try
         {
-            return Task.FromResult(Context.Funds.Where(f => f.UserId == userId).ToList());
+            return await Context.Funds.Where(f => f.UserId == userId).ToListAsync();
         }
         catch (Exception ex)
         {

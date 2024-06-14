@@ -1,0 +1,23 @@
+﻿@using TaskMeta.Components.ViewModels
+@using TaskMeta.MVVM
+
+@inherits ViewBase<WeekSelectorViewModel>
+
+@if (ViewModel?.CurrentWeek != null)
+{
+    <FluentCard>
+
+        <div class="column">
+            <FluentButton @onclick="ViewModel.HandlePreviousWeekClicked" Disabled=@(ViewModel.PreviousWeek==null)>Previous Week</FluentButton>
+        </div>
+
+        <div class="column">
+            <strong>@ViewModel.CurrentWeek!.WeekStartDate.ToString("D")</strong>
+        </div>
+
+        <div class="column">
+            <FluentButton OnClick="ViewModel.HandleNextWeekClicked" Disabled=@(ViewModel.NextWeek == null)>Next Week</FluentButton>
+        </div>
+
+    </FluentCard>
+}

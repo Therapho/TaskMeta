@@ -1,0 +1,67 @@
+﻿@using TaskMeta.MVVM
+@using TaskMeta.Shared.Models
+@using TaskMeta.Components.ViewModels
+@inherits ViewBase<TaskGridViewModel>
+@rendermode InteractiveServer
+
+@if (ViewModel?.TaskActivityList != null && ViewModel.TaskWeek != null)
+{
+
+    <table class="taskChart">
+        <tr>
+            <th> </th>
+            <th>S</th>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>T</th>
+            <th>F</th>
+            <th>S</th>
+        </tr>
+        @if (ViewModel.TaskDefinitionList != null)
+        {
+            foreach (TaskDefinition taskDefinition in ViewModel.TaskDefinitionList)
+            {
+                <tr>
+                    <td>
+                        @{
+                            if (taskDefinition != null)
+                            {
+                                <span>@taskDefinition.Description</span>
+                            }
+                        }
+                    </td>
+                    @for (int d = 0; d < 7; d++)
+                    {
+                        {
+                            DateOnly currentDay = ViewModel.TaskWeek.WeekStartDate.AddDays(d);
+
+                            var task = ViewModel.TaskActivityList!.Where(t => t.TaskDefinitionId == taskDefinition!.Id && t.TaskDate == currentDay).FirstOrDefault();
+                            {
+                                if(task != null)
+                                {<td>
+                                    <FluentCheckbox @bind-value="task!.Complete" ReadOnly="@ViewModel.Locked" 
+                                    Class="checkbox" Style="--base-height-multiplier: 20;" 
+                                    @bind-value:after="(()=>ViewModel!.HandleChange(task!))" />
+                                </td>}
+                            }
+                        }
+                    }
+                </tr>
+            }
+        }
+    </table>
+}
+
+
+@code
+{
+    [Parameter]
+    public Action? OnChange { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        ViewModel!.OnChange = OnChange;
+    }
+}

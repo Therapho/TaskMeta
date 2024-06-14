@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Data.Repositories;
+namespace TaskMeta.Shared.Models.Repositories;
 
-public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ILogger<TaskWeek> logger)
-    : RepositoryBase<TaskWeek>(applicationDbContext, logger), ITaskWeekRepository
+public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider, ILogger<TaskWeek> logger) :
+    RepositoryBase<TaskWeek>(applicationDbContext, cacheProvider, logger), ITaskWeekRepository
 {
 
 
@@ -24,11 +24,18 @@ public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ILogg
     /// <returns>The TaskWeek object if found, otherwise null.</returns>
     public async Task<TaskWeek?> Get(string userId, DateOnly weekStart)
     {
+        var key = Key("U", userId, "D", weekStart);
+        var result = CacheProvider.Get<TaskWeek>(key);
+        if (result != null) return result;
 
-        var currentWeek = await Context.Set<TaskWeek>()
-            .Where(x => x.WeekStartDate == weekStart && x.UserId == userId).FirstOrDefaultAsync();
+        var query = Context.Set<TaskWeek>()
+            .Where(x => x.WeekStartDate == weekStart && x.UserId == userId)
+            .Include(w => w.User);
 
-        return currentWeek;
+        result = await query.FirstOrDefaultAsync();
+        CacheProvider.Set(key, result, 10);
+
+        return result;
     }
     public async Task<(TaskWeek? previousWeek, TaskWeek? nextWeek)> GetAdjacent(TaskWeek currentTaskWeek)
     {
@@ -42,8 +49,15 @@ public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ILogg
 
     public async Task<List<TaskActivity>?> GetByDate(TaskWeek taskWeek, DateOnly dateOnly)
     {
+        var key = ListKey("TW", taskWeek, "D", dateOnly);
+        var result = CacheProvider.Get<List<TaskActivity>>(key);
+        if (result != null) return result;
+
         var query = Context.Set<TaskActivity>()
             .Where(t => t.TaskWeekId == taskWeek.Id && t.TaskDate == dateOnly);
-        return await query.ToListAsync();
+        result = await query.ToListAsync();
+        CacheProvider.Set(key, result, 10);
+
+        return result;
     }
 }

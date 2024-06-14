@@ -1,0 +1,65 @@
+﻿@using TaskMeta.Components.ViewModels
+@using TaskMeta.MVVM
+@using TaskMeta.Shared
+@inherits ViewBase<TransactionFormViewModel>
+
+<FluentCard>
+    <EditForm OnValidSubmit="@ViewModel!.HandleSave" FormName="deposit" EditContext="@ViewModel.EditContext">
+        
+        <FluentGrid> 
+            @if (ViewModel.EditMode == Constants.EditMode.Transfer || ViewModel.EditMode == Constants.EditMode.Withdraw)
+            {
+                <FluentGridItem xs="12" md="6">
+                    <FluentSelect Value="@ViewModel!.Transaction.SourceFund?.Id.ToString()"  
+                        Label="Source Fund" Items="@ViewModel.FundList" ValueChanged="@ViewModel.HandleSourceFundChanged"
+                        OptionText="@(f=>f.Name)" OptionValue="@(f=>f.Id.ToString())" Style="width:100%" />
+                    
+                </FluentGridItem>
+                
+                <FluentGridItem xs="12" md="6">
+                    <FluentLabel>Balance</FluentLabel>
+                    @ViewModel.Transaction.SourceFund?.Balance.ToString("C")
+                </FluentGridItem>
+            }
+            @if (ViewModel.EditMode == Constants.EditMode.Transfer || ViewModel.EditMode == Constants.EditMode.Deposit)
+            {
+                <FluentGridItem xs="12" md="6">
+                    <FluentSelect Value="@ViewModel.Transaction.TargetFund?.Id.ToString()" Label="Target Fund" 
+                        Items="@ViewModel.FundList" ValueChanged="ViewModel.HandleTargetFundChanged"
+                            OptionText="@(f=>f.Name)" OptionValue="@(f=>f.Id.ToString())" Style="width:100%" />
+                    
+                </FluentGridItem>
+                <FluentGridItem xs="12" md="6">
+                    <FluentLabel>Balance</FluentLabel>
+                    @ViewModel.Transaction.TargetFund?.Balance.ToString("C")
+                </FluentGridItem>
+            }
+            <FluentGridItem xs="12" md="3">
+                <FluentNumberField Label="Amount" @bind-Value="@ViewModel.Transaction.Amount" Style="width:100%" />
+                
+            </FluentGridItem>
+            <FluentGridItem xs="12" md="9">
+                <FluentTextField Label="Description" @bind-Value="@ViewModel.Transaction.Description" Style="width:100%" />
+                
+            </FluentGridItem>
+            <FluentGridItem xs="12" md="12">
+                <FluentButton Type="ButtonType.Submit" ButtonType="Primary">Save</FluentButton>
+                <FluentButton OnClick="@ViewModel.HandleCancel">Cancel</FluentButton>
+            </FluentGridItem>
+            <FluentGridItem xs="12">
+                <ValidationSummary For="@(() => ViewModel.Transaction)" />
+            </FluentGridItem>
+        </FluentGrid>
+    </EditForm>
+</FluentCard>
+@code
+{
+    [Parameter]
+    public Action? OnClose { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        ViewModel!.OnClose = OnClose;    
+    }
+}

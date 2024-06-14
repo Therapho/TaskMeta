@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Controllers
+@using TaskMeta.Components.Views
+@using TaskMeta.MVVM
+@using TaskMeta.Shared.Models
+
+@inherits PageBase<SummaryPageController>
+@page "/summary"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<PageTitle>TaskMeta - Summary</PageTitle>
+<h3>Summary</h3>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentCard>
+        <UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller.HandleUserSelected" />
+        <hr />
+        <TaskGrid ViewModel="Controller!.TaskGridViewModel" OnChange="Controller.HandleChange" />
+        <JobChecklist ViewModel="Controller!.JobChecklistViewModel" OnChange="Controller.HandleChange"/>
+    </FluentCard>
+    <WeekSelector ViewModel="Controller!.WeekSelectorViewModel" />
+
+    <hr />
+    <FluentGrid>
+        @if (Controller!.TaskWeek != null)
+        {
+            <FluentGridItem xs="6">
+                <strong>Total: </strong> @Controller!.TaskWeek!.Value.ToString("C")
+            </FluentGridItem>
+        }
+        <FluentGridItem xs="6">
+            @if (Controller!.CanApprove)
+            {
+                <FluentButton @onclick="Controller!.HandleApprove">Approve</FluentButton>
+            }
+        </FluentGridItem>
+    </FluentGrid>
+</FluentStack>

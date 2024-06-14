@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Data.Repositories;
+namespace TaskMeta.Shared.Models.Repositories;
 
 public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

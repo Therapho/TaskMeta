@@ -3,10 +3,11 @@ using Microsoft.Extensions.Logging;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Data.Repositories
+namespace TaskMeta.Shared.Models.Repositories
 {
-    public class TransactionLogRepository(ApplicationDbContext applicationDbContext, ILogger<TransactionLog> logger)
-        : RepositoryBase<TransactionLog>(applicationDbContext, logger), ITransactionLogRepository
+    public class TransactionLogRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider, 
+        ILogger<TransactionLog> logger)
+        : RepositoryBase<TransactionLog>(applicationDbContext, cacheProvider, logger), ITransactionLogRepository
     {
         public IQueryable<TransactionLog> QueryTransactionsByUser(string id)
         {

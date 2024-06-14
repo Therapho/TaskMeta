@@ -5,9 +5,9 @@ using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace TaskMeta.Data.Repositories;
-public class TaskActivityRepository(ApplicationDbContext applicationDbContext, ILogger<TaskActivity> logger)
-    : RepositoryBase<TaskActivity>(applicationDbContext, logger), ITaskActivityRepository
+namespace TaskMeta.Shared.Models.Repositories;
+public class TaskActivityRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider, ILogger<TaskActivity> logger)
+    : RepositoryBase<TaskActivity>(applicationDbContext, cacheProvider, logger), ITaskActivityRepository
 {
 
 
@@ -66,13 +66,22 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
 
         if (taskWeek != null)
         {
-            var set = Context.TaskActivities.Where(t => t.TaskWeekId == taskWeek.Id);
-            list = await set.OrderBy(t => t.Sequence).OrderBy(t => t.TaskDate).ToListAsync();
+            try
+            {
+                var set = Context.TaskActivities.Where(t => t.TaskWeekId == taskWeek.Id);
+                list = await set.OrderBy(t => t.Sequence).OrderBy(t => t.TaskDate).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while retrieving TaskActivities by task week");
+                throw;
+            }
         }
 
         return list!;
     }
 
+    /// <summary>
     /// Retrieves a list of TaskActivities for a specific date and user.
     /// </summary>
     /// <param name="date">The date to filter the TaskActivities.</param>

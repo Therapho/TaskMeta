@@ -5,7 +5,7 @@ using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
 
-namespace TaskMeta.Data.Repositories;
+namespace TaskMeta.Shared.Models.Repositories;
 
 public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository taskDefinitionRepository,
     IJobRepository jobRepository, ITaskActivityRepository taskActivityRepository,

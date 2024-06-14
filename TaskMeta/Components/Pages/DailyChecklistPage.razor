@@ -1,0 +1,20 @@
+﻿@page "/checklist"
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Controllers
+@using TaskMeta.Components.Views
+@using TaskMeta.MVVM
+
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Contributor")]
+@inherits PageBase<DailyChecklistPageController>
+
+<h3>Daily Checklist</h3>
+<PageTitle>TaskMeta - Daily Checklist</PageTitle>
+<FluentStack Orientation="Orientation.Vertical">
+
+    <TaskList ViewModel="Controller!.TaskListViewModel"/>
+    <JobChecklist ViewModel="Controller!.JobChecklistViewModel" />
+    <FluentCard Class="panel">
+        <strong>Total:</strong> @Controller!.TaskWeek!.Value.ToString("C")
+    </FluentCard>
+</FluentStack>

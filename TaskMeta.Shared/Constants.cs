@@ -14,5 +14,12 @@
             public const int Draft = 1;
             public const int Accepted = 2;
         }
+        public enum EditMode
+        {
+            None,
+            Deposit,
+            Withdraw,
+            Transfer
+        }
     }
 }
