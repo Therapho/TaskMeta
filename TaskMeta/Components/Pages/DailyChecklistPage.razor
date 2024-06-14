@@ -12,9 +12,12 @@
 <PageTitle>TaskMeta - Daily Checklist</PageTitle>
 <FluentStack Orientation="Orientation.Vertical">
 
-    <TaskList ViewModel="Controller!.TaskListViewModel"/>
+    <TaskList ViewModel="Controller!.TaskListViewModel" />
     <JobChecklist ViewModel="Controller!.JobChecklistViewModel" />
-    <FluentCard Class="panel">
-        <strong>Total:</strong> @Controller!.TaskWeek!.Value.ToString("C")
-    </FluentCard>
+    @if (Controller?.TaskWeek != null)
+    {
+        <FluentCard Class="panel">
+            <strong>Total:</strong> @Controller!.TaskWeek!.Value.ToString("C")
+        </FluentCard>
+    }
 </FluentStack>

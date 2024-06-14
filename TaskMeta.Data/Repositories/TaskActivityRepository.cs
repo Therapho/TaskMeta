@@ -87,13 +87,12 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
     /// <param name="date">The date to filter the TaskActivities.</param>
     /// <param name="user">The user to filter by.</param>
     /// <returns>A list of TaskActivities filtered by date and user.</returns>
-    public List<TaskActivity> GetListByDate(DateOnly date, ApplicationUser user)
+    public List<TaskActivity> GetListByDate(DateOnly date, TaskWeek taskWeek)
     {
-        Guard.IsNotNull(user);
         try
         {
             var set = Context.TaskActivities
-                .Where(t => t.TaskDate == date && t.TaskWeek.UserId == user.Id);
+                .Where(t => t.TaskDate == date && t.TaskWeek.Id == taskWeek.Id);
             return set.OrderBy(t => t.Sequence).ToList();
         }
         catch (Exception ex)

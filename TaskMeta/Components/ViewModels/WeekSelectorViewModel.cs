@@ -13,8 +13,6 @@ public class WeekSelectorViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     public TaskWeek? PreviousWeek { get; set; }
     public Action<TaskWeek>? OnChange { get; set; }
 
-
-
     public void Load(TaskWeek? currentWeek)
     {
         Guard.IsNotNull(currentWeek);
@@ -27,18 +25,8 @@ public class WeekSelectorViewModel(IUnitOfWork unitOfWork, ApplicationState stat
         (PreviousWeek, NextWeek) = UnitOfWork.TaskWeekRepository.GetAdjacent(CurrentWeek!);
         StateHasChanged!();
     }
-    public void HandlePreviousWeekClicked()
-    {
-        OnChange!(PreviousWeek!);
-        SetCurrentWeek(PreviousWeek);
-
-    }
-    public void HandleNextWeekClicked()
-    {
-        OnChange!(NextWeek!);
-         SetCurrentWeek(NextWeek);
-
-    }
+    public void HandlePreviousWeekClicked() => OnChange!(PreviousWeek!);
+    public void HandleNextWeekClicked() => OnChange!(NextWeek!);
 
 
 }

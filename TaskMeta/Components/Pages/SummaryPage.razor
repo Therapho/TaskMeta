@@ -14,13 +14,15 @@
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentCard>
-        <UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller.HandleUserSelected" />
-        <hr />
+        @if (Controller!.State.IsAdmin)
+        {
+            <UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller.HandleUserSelected" />
+            <hr />
+        }
         <TaskGrid ViewModel="Controller!.TaskGridViewModel" OnChange="Controller.HandleChange" />
         <JobChecklist ViewModel="Controller!.JobChecklistViewModel" OnChange="Controller.HandleChange"/>
     </FluentCard>
     <WeekSelector ViewModel="Controller!.WeekSelectorViewModel" />
-
     <hr />
     <FluentGrid>
         @if (Controller!.TaskWeek != null)

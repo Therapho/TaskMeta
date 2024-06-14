@@ -15,8 +15,11 @@
 <FluentStack Orientation="Orientation.Vertical">
 
     <FluentCard>
-        <UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller.HandleUserSelected" />
-        <hr />
+        @if (Controller!.State.IsAdmin)
+        {
+            <UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller.HandleUserSelected" />
+            <hr />
+        }
         @if (Controller!.State.IsAdmin && Controller!.State!.SelectedUser != null)
         {
             <FluentStack Orientation="Orientation.Horizontal">

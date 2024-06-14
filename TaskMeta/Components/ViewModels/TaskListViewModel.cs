@@ -13,7 +13,7 @@ public class TaskListViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
 
     internal void Load(TaskWeek taskWeek)
     {
-        TaskActivityList = UnitOfWork.TaskActivityRepository.GetListByTaskWeek(taskWeek);
+        TaskActivityList = UnitOfWork.TaskActivityRepository.GetListByDate(DateTime.Now.ToDateOnly(), taskWeek);
     }
 
     public void HandleChange(TaskActivity taskActivity)

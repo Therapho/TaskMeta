@@ -48,7 +48,8 @@ namespace TaskMeta.Components.Controllers
                 }
             }
             WeekSelectorViewModel!.OnChange += HandleTaskWeekChange;
-            await UserSelectorViewModel!.Load();
+            
+            if(State!.IsAdmin) await UserSelectorViewModel!.Load();
         }
         public void HandleUserSelected(ApplicationUser user)
         {

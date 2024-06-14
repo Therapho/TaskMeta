@@ -17,7 +17,7 @@ namespace TaskMeta.Components.Controllers
         {
             await base.Load();
             TaskWeek = UnitOfWork.GetOrCreateCurrentWeek(State.CurrentUser!);
-            TaskListViewModel.Load(TaskWeek);
+            TaskListViewModel.Load(TaskWeek!);
             JobChecklistViewModel.Load(TaskWeek!);
         }
     }
