@@ -37,7 +37,7 @@ public class JobEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState state
             JobListFiltered = _jobList;
         }
         _selectedUser = selectedUser!;
-
+        StateHasChanged!();
     }
 
     private void SetupForm(Job Job)
@@ -96,6 +96,7 @@ public class JobEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState state
             UserId = _selectedUser?.Id
         };
         _jobList!.Add(EditJob);
+        JobListFiltered!.Add(EditJob);
         SetupForm(EditJob);
         StateHasChanged!();
     }

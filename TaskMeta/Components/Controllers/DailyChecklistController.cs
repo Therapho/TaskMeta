@@ -6,7 +6,7 @@ using TaskMeta.Components.ViewModels;
 
 namespace TaskMeta.Components.Controllers
 {
-    public class DailyChecklistPageController(IUnitOfWork unitOfWork, ApplicationState state, JobChecklistViewModel jobChecklistViewModel,
+    public class DailyChecklistController(IUnitOfWork unitOfWork, ApplicationState state, JobChecklistViewModel jobChecklistViewModel,
         TaskListViewModel taskListViewModel) : ControllerBase(unitOfWork, state)
     {
         public TaskWeek? TaskWeek { get; set; }

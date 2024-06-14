@@ -9,7 +9,7 @@ using TaskMeta.Components.ViewModels;
 
 namespace TaskMeta.Components.Controllers;
 
-public class FundListController(IUnitOfWork unitOfWork, ApplicationState state, IDialogService dialogService, UserSelectorViewModel userSelectorViewModel)
+public class FundAdminController(IUnitOfWork unitOfWork, ApplicationState state, IDialogService dialogService, UserSelectorViewModel userSelectorViewModel)
     : ControllerBase(unitOfWork, state), IDisposable
 {
 
@@ -42,7 +42,7 @@ public class FundListController(IUnitOfWork unitOfWork, ApplicationState state, 
         }
     }
 
-    private async void HandleUserSelected(ApplicationUser user)
+    public async void HandleUserSelected(ApplicationUser user)
     {
         State!.SelectedUser = user;
         await LoadFunds(user);

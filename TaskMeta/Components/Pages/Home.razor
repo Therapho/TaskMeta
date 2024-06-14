@@ -1,7 +1,39 @@
 ﻿@page "/"
-
+@using TaskMeta.Shared.Interfaces
+@inject NavigationManager NavigationManager
+@inject IUserRepository UserService
 <PageTitle>Home</PageTitle>
+@rendermode InteractiveServer
 
-<h1>Hello, world!</h1>
+@if (!loggedIn)
+{
+    <FluentButton @onclick="RedirectToLogin">Go to Login</FluentButton>
+}
 
-Welcome to your new app.
+
+@code {
+    bool loggedIn;
+
+
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/Account/Login");
+    }
+
+
+    override protected async Task OnInitializedAsync()
+    {
+        loggedIn = await UserService.IsLoggedIn();
+        if (loggedIn)
+        {
+            if(await UserService.IsAdmin())
+            {
+                NavigationManager.NavigateTo("/summary", true);
+            }
+            else NavigationManager.NavigateTo("/checklist");
+        }
+        await base.OnInitializedAsync();
+
+    }
+
+}

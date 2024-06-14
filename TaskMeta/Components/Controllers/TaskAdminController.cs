@@ -75,7 +75,7 @@ namespace TaskMeta.Components.Controllers
             StateHasChanged!();
         }
 
-        private void HandleUserSelected(ApplicationUser user)
+        public void HandleUserSelected(ApplicationUser user)
         {
             State!.SelectedUser = user;
             if (user != null) TaskDefinitionListFiltered = TaskDefinitionList!.Where(t => t.UserId == user.Id).ToList();

@@ -23,13 +23,16 @@ public class TransactionController(IUnitOfWork unitOfWork, ApplicationState stat
         if (!State.IsAdmin)
         {
             TransactionListViewModel.Load(State!.CurrentUser!);
+            
         }
         else
         {            
+            await UserSelectorViewModel.Load();
             if (State?.SelectedUser != null)
             {
                 TransactionListViewModel.Load(State.SelectedUser);                
             }
+
         }
         await Task.CompletedTask;
     }
@@ -38,29 +41,36 @@ public class TransactionController(IUnitOfWork unitOfWork, ApplicationState stat
     {
         State!.SelectedUser = user;
         TransactionListViewModel.Load(user);
+        EditMode = Constants.EditMode.None;
+        StateHasChanged!();
     }
 
-    public void HandleDeposit()
+    public async void HandleDeposit()
     {
         EditMode = Constants.EditMode.Deposit;
+
+        await TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
         StateHasChanged!();
     }
 
-    public void HandleWithdraw()
+    public async void HandleWithdraw()
     {
         EditMode = Constants.EditMode.Withdraw;
+        await TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
         StateHasChanged!();
     }
 
-    public void HandleTransfer()
+    public async void HandleTransfer()
     {
         EditMode = Constants.EditMode.Transfer;
+        await TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
         StateHasChanged!();
     }
 
     public void HandleFormClose()
     {
         EditMode = Constants.EditMode.None;
+        TransactionListViewModel.Load(State.SelectedUser!);
         StateHasChanged!();
     }
 

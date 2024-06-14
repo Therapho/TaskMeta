@@ -18,7 +18,7 @@ public class FundRepository(ApplicationDbContext applicationDbContext, ICachePro
     {
         try
         {
-            return await Context.Funds.Where(f => f.UserId == userId).ToListAsync();
+            return Context.Funds.Where(f => f.UserId == userId).ToList();
         }
         catch (Exception ex)
         {

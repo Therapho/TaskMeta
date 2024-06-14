@@ -16,6 +16,7 @@ namespace TaskMeta.Components.ViewModels
         public void Load(ApplicationUser user)
         {
             TransactionQuery = UnitOfWork!.TransactionLogRepository!.QueryTransactionsByUser(user.Id);
+            StateHasChanged!();
         }
     }
 }

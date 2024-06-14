@@ -11,7 +11,7 @@
 <h3>Task Administration</h3>
 <PageTitle>TaskMeta - Task Administration</PageTitle>
 
-<UserSelector ViewModel="Controller!.UserSelectorViewModel" CanClear="true" />
+<UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller!.HandleUserSelected" CanClear="true" />
 <hr />
     @if (Controller!.TaskDefinitionListFiltered != null)
 {

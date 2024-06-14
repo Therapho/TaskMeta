@@ -5,11 +5,12 @@
         public static IServiceCollection AddPageControllers(this IServiceCollection services)
         {
             services
-                .AddScoped<DailyChecklistPageController>()
+                .AddScoped<DailyChecklistController>()
                 .AddScoped<SummaryPageController>()
-                .AddScoped<JobAdminPageController>()
-                .AddScoped<FundListController>()
-                .AddScoped<TransactionController>();
+                .AddScoped<JobAdminController>()
+                .AddScoped<FundAdminController>()
+                .AddScoped<TransactionController>()
+                .AddScoped<TaskAdminController>();
 
             return services;
         }

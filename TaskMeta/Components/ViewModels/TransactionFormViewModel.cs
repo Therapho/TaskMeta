@@ -13,23 +13,25 @@ namespace TaskMeta.Components.ViewModels
         public Action? OnClose { get; set; }
         public Constants.EditMode EditMode { get; set; }
         public Action<Transaction>? OnSave { get; set; }
-        public readonly Transaction Transaction = new();
+        public Transaction? Transaction;
         public List<Fund>? FundList { get; set; }
 
         public EditContext? EditContext;
         private ValidationMessageStore? messageStore;
 
-        public async Task Load(ApplicationUser selectedUser)
+        public async Task Load(ApplicationUser selectedUser, Constants.EditMode editMode)
         {
             FundList = await UnitOfWork!.FundRepository!.GetFundsByUser(State!.SelectedUser!.Id);
             FundList!.Insert(0, new Fund { Id = 0, Name = "Select Fund" });
+            EditMode = editMode;
+            TearDownForm();
             SetupForm();
         }
 
         private void SetupForm()
         {
 
-            //Transaction = new Transaction();
+            Transaction = new Transaction();
             switch (EditMode)
             {
 
@@ -102,23 +104,24 @@ namespace TaskMeta.Components.ViewModels
         {
             int fundId = int.Parse(newValue);
             var targetFund = FundList!.FirstOrDefault(f => f.Id == fundId);
-            Transaction.TargetFund = targetFund;
+            Transaction!.TargetFund = targetFund;
         }
 
         public void HandleSourceFundChanged(string newValue)
         {
             int fundId = int.Parse(newValue);
             var sourceFund = FundList!.FirstOrDefault(f => f.Id == fundId);
-            Transaction.SourceFund = sourceFund;
+            Transaction!.SourceFund = sourceFund;
         }
 
         public async void HandleSave()
         {
             if (EditContext!.Validate())
             {
-                UnitOfWork!.Process(Transaction);
+                UnitOfWork!.Process(Transaction!);
                 await UnitOfWork!.SaveChanges();
 
+                TearDownForm();
                 OnClose?.Invoke();
             }
 
@@ -126,15 +129,21 @@ namespace TaskMeta.Components.ViewModels
 
         public void HandleCancel()
         {
+            TearDownForm();
             OnClose?.Invoke();
         }
 
-        public void Dispose()
-        {
+        private void TearDownForm()
+        {             
             if (EditContext != null)
             {
                 EditContext.OnValidationRequested -= HandleValidationRequested;
             }
+        }
+
+        public void Dispose()
+        {
+            TearDownForm();
             GC.SuppressFinalize(this);
         }
     }

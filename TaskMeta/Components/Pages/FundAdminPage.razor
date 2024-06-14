@@ -6,13 +6,13 @@
 
 @rendermode InteractiveServer
 @attribute [Authorize]
-@inherits PageBase<FundListController>
+@inherits PageBase<FundAdminController>
 <PageTitle>Task Meta - Fund List</PageTitle>
 <h3>Fund List</h3>
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentCard>
-        <UserSelector ViewModel="Controller!.UserSelectorViewModel"/>
+        <UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller.HandleUserSelected"/>
         <hr />
         @if (Controller!.FundList != null)
         {

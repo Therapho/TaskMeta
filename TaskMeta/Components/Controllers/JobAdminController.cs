@@ -7,7 +7,7 @@ using TaskMeta.Components.ViewModels;
 
 namespace TaskMeta.Components.Controllers;
 
-public class JobAdminPageController(IUnitOfWork unitOfWork, JobEditGridViewModel jobEditGridViewModel, UserSelectorViewModel userSelectorViewModel,
+public class JobAdminController(IUnitOfWork unitOfWork, JobEditGridViewModel jobEditGridViewModel, UserSelectorViewModel userSelectorViewModel,
     ApplicationState state) : ControllerBase(unitOfWork, state)
 {
     public JobEditGridViewModel? JobEditGridViewModel { get; private set; } = jobEditGridViewModel;
@@ -22,14 +22,11 @@ public class JobAdminPageController(IUnitOfWork unitOfWork, JobEditGridViewModel
         {
             await JobEditGridViewModel!.Load(State!.SelectedUser);
         }
-
-
         await base.Load();
     }
     public async void HandleUserSelected(ApplicationUser user)
     {
         Guard.IsNotNull(user);
         await JobEditGridViewModel!.Load(user!);
-
     }
 }
