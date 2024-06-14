@@ -18,11 +18,11 @@ public class JobChecklistViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     /// Loads the jobs for the specified user.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
-    public async Task Load(TaskWeek taskWeek)
+    public void Load(TaskWeek taskWeek)
     {
         if (taskWeek == null) return;
         TaskWeek = taskWeek;
-        JobList = await UnitOfWork!.JobRepository.GetCurrentJobs(TaskWeek!.User);
+        JobList = UnitOfWork!.JobRepository.GetCurrentJobs(TaskWeek!.User);
         StateHasChanged!();
     }
 
@@ -30,13 +30,11 @@ public class JobChecklistViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     /// Updates the specified job.
     /// </summary>
     /// <param name="job">The job that has changed.</param>
-    public async void HandleChange(Job job)
+    public void HandleChange(Job job)
     {
         job.DateCompleted = job.Complete ? DateTime.Now.ToDateOnly() : null;
-
-        UnitOfWork!.JobRepository.Update(job);
-        UnitOfWork!.TaskWeekRepository.UpdateValue(TaskWeek!, job.Value, job.Complete);
-        await UnitOfWork!.SaveChanges();
+        UnitOfWork!.UpdateJob(job);
+        
         OnChange?.Invoke();
     }
 }

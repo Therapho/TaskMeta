@@ -33,27 +33,27 @@ public class FundAdminController(IUnitOfWork unitOfWork, ApplicationState state,
         if (!State.IsAdmin)
         {
 
-            await LoadFunds(State!.CurrentUser!);
+            LoadFunds(State!.CurrentUser!);
         }
         else
         {
             contributors = await UnitOfWork!.UserRepository!.GetContributors();
-            if (State?.SelectedUser != null) await LoadFunds(State.SelectedUser);
+            if (State?.SelectedUser != null) LoadFunds(State.SelectedUser);
         }
     }
 
-    public async void HandleUserSelected(ApplicationUser user)
+    public void HandleUserSelected(ApplicationUser user)
     {
         State!.SelectedUser = user;
-        await LoadFunds(user);
+        LoadFunds(user);
 
     }
 
-    private async Task LoadFunds(ApplicationUser user)
+    private void LoadFunds(ApplicationUser user)
     {
         Guard.IsNotNull(user);
 
-        FundList = await UnitOfWork!.FundRepository!.GetFundsByUser(user.Id);
+        FundList = UnitOfWork!.FundRepository!.GetFundsByUser(user.Id);
         RecalculatePage();
     }
     public void HandleAddFund(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
@@ -75,20 +75,18 @@ public class FundAdminController(IUnitOfWork unitOfWork, ApplicationState state,
     {
         SetupEdit(fund);
     }
-    public async void HandleSaveFund()
+    public void HandleSaveFund()
     {
         EditMode = false;
 
         if (EditFund!.Id == 0)
         {
-            UnitOfWork!.FundRepository!.Add(EditFund);
-            await UnitOfWork!.SaveChanges();
+            UnitOfWork!.AddFund(EditFund);
         }
         else
         {
 
-            UnitOfWork!.FundRepository!.Update(EditFund);
-            await UnitOfWork!.SaveChanges();
+            UnitOfWork!.UpdateFund(EditFund);
         }
 
         ClearEdit();
@@ -106,8 +104,7 @@ public class FundAdminController(IUnitOfWork unitOfWork, ApplicationState state,
         DialogResult? result = await dialog.Result;
         if (result != null && !result.Cancelled)
         {
-            UnitOfWork!.FundRepository!.Delete(fund);
-            await UnitOfWork!.SaveChanges();
+            UnitOfWork!.DeleteFund(fund);
             FundList!.Remove(fund);
             RecalculatePage();
         }

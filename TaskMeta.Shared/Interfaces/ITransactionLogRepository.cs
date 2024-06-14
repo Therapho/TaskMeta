@@ -6,5 +6,7 @@ namespace TaskMeta.Shared.Interfaces
     {
         IQueryable<TransactionLog> QueryTransactionsByUser(string id);
         void LogTransaction(Transaction transaction);
+        void Deposit(Transaction transaction);
+        void Withdraw(Transaction transaction);
     }
 }

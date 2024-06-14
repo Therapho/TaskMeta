@@ -18,7 +18,7 @@ namespace TaskMeta.Shared.Models.Repositories
             var user = _cacheProvider.Get<ApplicationUser>("CurrentUser");
             if (user != null) return user;
 
-            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync() ?? throw new InvalidOperationException("Unable to get authentication state.");
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync      () ?? throw new InvalidOperationException("Unable to get authentication state.");
             user = await _userManager.GetUserAsync(authState!.User);
 
             return user;

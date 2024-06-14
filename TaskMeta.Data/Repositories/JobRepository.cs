@@ -17,7 +17,7 @@ public class JobRepository(ApplicationDbContext applicationDbContext, ICacheProv
     /// Retrieves a list of jobs that are not overdue or completed in previous weeks
     /// </summary>
     /// <returns>A list of incomplete jobs.</returns>
-    public async Task<List<Job>> GetCurrentJobs()
+    public List<Job> GetCurrentJobs()
     {
         try
         {
@@ -25,7 +25,7 @@ public class JobRepository(ApplicationDbContext applicationDbContext, ICacheProv
             var endOfWeek = DateTime.Now.EndOfWeek();
 
             var query = Context.Jobs.Where(j => j.Complete == false);
-            return await query.ToListAsync();
+            return query.ToList();
         }
         catch (Exception ex)
         {
@@ -37,7 +37,7 @@ public class JobRepository(ApplicationDbContext applicationDbContext, ICacheProv
     /// Retrieves a list of jobs that are not marked complete.
     /// </summary>
     /// <returns>A list of incomplete jobs.</returns>
-    public async Task<List<Job>> GetCurrentJobs(ApplicationUser user)
+    public List<Job> GetCurrentJobs(ApplicationUser user)
     {
         try
         {
@@ -52,7 +52,7 @@ public class JobRepository(ApplicationDbContext applicationDbContext, ICacheProv
                     ) 
                     && j.DateDue >= endOfWeek && j.UserId == user.Id
             );
-            return await query.ToListAsync();
+            return query.ToList();
         }
         catch (Exception ex)
         {

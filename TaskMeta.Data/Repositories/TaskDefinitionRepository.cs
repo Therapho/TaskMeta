@@ -13,14 +13,14 @@ public class TaskDefinitionRepository(ApplicationDbContext applicationDbContext,
     /// Retrieves the queryable collection of task definitions.
     /// </summary>
     /// <returns>The queryable collection of task definitions.</returns>
-    public async Task<List<TaskDefinition>> GetList()
+    public List<TaskDefinition> GetList()
     {
         try
         {
-            var result = await Context.TaskDefinitions
+            var result = Context.TaskDefinitions
                 .Include(t => t.User)
                 .OrderBy(t => t.Sequence)
-                .ToListAsync();
+                .ToList();
             return result;
         }
         catch (Exception ex)
@@ -35,16 +35,16 @@ public class TaskDefinitionRepository(ApplicationDbContext applicationDbContext,
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <returns>The queryable collection of task definitions filtered by user.</returns>
-    public async Task<List<TaskDefinition>> GetListByUser(ApplicationUser user)
+    public List<TaskDefinition> GetListByUser(ApplicationUser user)
     {
         Guard.IsNotNull(user);
         try
         {
-            var result = await Context.TaskDefinitions
+            var result = Context.TaskDefinitions
                 .Include(t => t.User)
                 .Where(t => t.UserId == user.Id || t.UserId == null)
                 .OrderBy(t => t.Sequence)
-                .ToListAsync();
+                .ToList();
             return result;
         }
         catch (Exception ex)

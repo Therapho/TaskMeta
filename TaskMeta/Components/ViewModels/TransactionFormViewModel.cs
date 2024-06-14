@@ -19,9 +19,9 @@ namespace TaskMeta.Components.ViewModels
         public EditContext? EditContext;
         private ValidationMessageStore? messageStore;
 
-        public async Task Load(ApplicationUser selectedUser, Constants.EditMode editMode)
+        public void Load(ApplicationUser selectedUser, Constants.EditMode editMode)
         {
-            FundList = await UnitOfWork!.FundRepository!.GetFundsByUser(State!.SelectedUser!.Id);
+            FundList = UnitOfWork!.FundRepository!.GetFundsByUser(State!.SelectedUser!.Id);
             FundList!.Insert(0, new Fund { Id = 0, Name = "Select Fund" });
             EditMode = editMode;
             TearDownForm();
@@ -114,12 +114,11 @@ namespace TaskMeta.Components.ViewModels
             Transaction!.SourceFund = sourceFund;
         }
 
-        public async void HandleSave()
+        public void HandleSave()
         {
             if (EditContext!.Validate())
             {
-                UnitOfWork!.Process(Transaction!);
-                await UnitOfWork!.SaveChanges();
+                UnitOfWork!.ProcessTransaction(Transaction!);
 
                 TearDownForm();
                 OnClose?.Invoke();

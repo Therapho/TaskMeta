@@ -14,12 +14,21 @@ public interface IUnitOfWork
     IUserRepository UserRepository { get; }
     #endregion
 
-    Task SaveChanges();
     
     #region Compound Actions
-    Task AcceptWeek(TaskWeek taskWeek);
-    Task<TaskWeek> GetOrCreateCurrentWeek(ApplicationUser user);
-    void Process(Transaction transaction);
+    void AcceptWeek(TaskWeek taskWeek);
+    void AddFund(Fund editFund);
+    void AddJob(Job Job);
+    void AddTaskDefinition(TaskDefinition taskDefinition);
+    void DeleteFund(Fund fund);
+    void DeleteJob(Job job);
+    TaskWeek GetOrCreateCurrentWeek(ApplicationUser user);
+    void ProcessTransaction(Transaction transaction);
+    void UpdateFund(Fund fund);
+    void UpdateJob(Job job);
+    void UpdateTaskActivity(TaskActivity taskActivity);
+    void UpdateTaskDefinition(TaskDefinition task);
+    void UpdateTaskWeekValue(TaskWeek taskWeek, decimal value, bool complete);
     #endregion
 
 }

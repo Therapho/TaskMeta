@@ -22,7 +22,7 @@ public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ICach
     /// <param name="userId">The ID of the user.</param>
     /// <param name="weekStart">The start date of the week.</param>
     /// <returns>The TaskWeek object if found, otherwise null.</returns>
-    public async Task<TaskWeek?> Get(string userId, DateOnly weekStart)
+    public TaskWeek? Get(string userId, DateOnly weekStart)
     {
         var key = Key("U", userId, "D", weekStart);
         var result = CacheProvider.Get<TaskWeek>(key);
@@ -32,22 +32,22 @@ public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ICach
             .Where(x => x.WeekStartDate == weekStart && x.UserId == userId)
             .Include(w => w.User);
 
-        result = await query.FirstOrDefaultAsync();
+        result = query.FirstOrDefault();
         CacheProvider.Set(key, result, 10);
 
         return result;
     }
-    public async Task<(TaskWeek? previousWeek, TaskWeek? nextWeek)> GetAdjacent(TaskWeek currentTaskWeek)
+    public (TaskWeek? previousWeek, TaskWeek? nextWeek) GetAdjacent(TaskWeek currentTaskWeek)
     {
         DateOnly previousStartDate = currentTaskWeek.WeekStartDate.AddDays(-7);
         DateOnly nextStartDate = currentTaskWeek.WeekStartDate.AddDays(7);
 
-        var previousWeek = await Get(currentTaskWeek.UserId, previousStartDate);
-        var nextWeek = await Get(currentTaskWeek.UserId, nextStartDate);
+        var previousWeek = Get(currentTaskWeek.UserId, previousStartDate);
+        var nextWeek = Get(currentTaskWeek.UserId, nextStartDate);
         return (previousWeek, nextWeek);
     }
 
-    public async Task<List<TaskActivity>?> GetByDate(TaskWeek taskWeek, DateOnly dateOnly)
+    public List<TaskActivity>? GetByDate(TaskWeek taskWeek, DateOnly dateOnly)
     {
         var key = ListKey("TW", taskWeek, "D", dateOnly);
         var result = CacheProvider.Get<List<TaskActivity>>(key);
@@ -55,7 +55,7 @@ public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ICach
 
         var query = Context.Set<TaskActivity>()
             .Where(t => t.TaskWeekId == taskWeek.Id && t.TaskDate == dateOnly);
-        result = await query.ToListAsync();
+        result = query.ToList();
         CacheProvider.Set(key, result, 10);
 
         return result;

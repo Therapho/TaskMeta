@@ -4,6 +4,6 @@ namespace TaskMeta.Shared.Interfaces;
 
 public interface IJobRepository : IRepositoryBase<Job>
 {
-    Task<List<Job>> GetCurrentJobs();
-    Task<List<Job>> GetCurrentJobs(ApplicationUser user);
+    List<Job> GetCurrentJobs();
+    List<Job> GetCurrentJobs(ApplicationUser user);
 }

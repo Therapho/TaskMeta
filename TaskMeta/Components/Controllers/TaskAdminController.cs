@@ -23,7 +23,7 @@ namespace TaskMeta.Components.Controllers
         public async override Task Load()
         {
             await base.Load();
-            TaskDefinitionList = await UnitOfWork!.TaskDefinitionRepository!.GetList();
+            TaskDefinitionList = UnitOfWork!.TaskDefinitionRepository!.GetList();
             Contributors = await UnitOfWork!.UserRepository!.GetContributors();
             UpdateFilter();
 
@@ -93,12 +93,11 @@ namespace TaskMeta.Components.Controllers
             StateHasChanged!();
         }
 
-        public async void HandleSave()
+        public void HandleSave()
         {
             if (EditTask?.Id == 0)
             {
-                UnitOfWork!.TaskDefinitionRepository!.Add(EditTask);
-                await UnitOfWork!.SaveChanges();
+                UnitOfWork!.AddTaskDefinition(EditTask);
             }
 
             EditTask = null;
@@ -117,12 +116,11 @@ namespace TaskMeta.Components.Controllers
             StateHasChanged!();
         }
 
-        public async void HandleUpdateActive(TaskDefinition task, bool value)
+        public void HandleUpdateActive(TaskDefinition task, bool value)
         {
 
             task.Active = value;
-            UnitOfWork!.TaskDefinitionRepository!.Update(task);
-            await UnitOfWork!.SaveChanges();
+            UnitOfWork!.UpdateTaskDefinition(task);
 
         }
 

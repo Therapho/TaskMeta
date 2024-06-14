@@ -15,9 +15,10 @@ namespace TaskMeta.Components.Controllers
 
         public override async Task Load()
         {
-            TaskWeek = await UnitOfWork.GetOrCreateCurrentWeek(State.CurrentUser!);
-            await TaskListViewModel.Load(TaskWeek);
-            await JobChecklistViewModel.Load(TaskWeek!);
+            await base.Load();
+            TaskWeek = UnitOfWork.GetOrCreateCurrentWeek(State.CurrentUser!);
+            TaskListViewModel.Load(TaskWeek);
+            JobChecklistViewModel.Load(TaskWeek!);
         }
     }
 }

@@ -45,25 +45,25 @@ public class TransactionController(IUnitOfWork unitOfWork, ApplicationState stat
         StateHasChanged!();
     }
 
-    public async void HandleDeposit()
+    public void HandleDeposit()
     {
         EditMode = Constants.EditMode.Deposit;
 
-        await TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
+        TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
         StateHasChanged!();
     }
 
-    public async void HandleWithdraw()
+    public void HandleWithdraw()
     {
         EditMode = Constants.EditMode.Withdraw;
-        await TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
+        TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
         StateHasChanged!();
     }
 
-    public async void HandleTransfer()
+    public void HandleTransfer()
     {
         EditMode = Constants.EditMode.Transfer;
-        await TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
+        TransactionFormViewModel.Load(State!.SelectedUser!, EditMode);
         StateHasChanged!();
     }
 

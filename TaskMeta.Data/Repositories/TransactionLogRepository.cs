@@ -40,7 +40,26 @@ namespace TaskMeta.Shared.Models.Repositories
                 PreviousAmount = transaction.PreviousAmount
             };
 
-            Add(transactionLog);
+            AddJob(transactionLog);
+        }
+        public void Withdraw(Transaction transaction)
+        {
+            var sourceFund = transaction.SourceFund!;
+            if (sourceFund.Balance < transaction.Amount)
+            {
+                throw new InvalidOperationException("Insufficient funds.");
+            }
+            transaction.PreviousAmount = sourceFund.Balance;
+            sourceFund.Balance -= transaction.Amount;
+            LogTransaction(transaction);
+        }
+
+        public void Deposit(Transaction transaction)
+        {
+            var targetFund = transaction.TargetFund!;
+            transaction.PreviousAmount = targetFund.Balance;
+            targetFund.Balance += transaction.Amount;
+            LogTransaction(transaction);
         }
     }
 }

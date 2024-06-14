@@ -15,11 +15,11 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
     /// Adds a list of TaskActivities asynchronously.
     /// </summary>
     /// <param name="taskActivityList">The list of TaskActivities to add.</param>
-    public async Task Add(List<TaskActivity> taskActivityList)
+    public void Add(List<TaskActivity> taskActivityList)
     {
         try
         {
-            await Context.TaskActivities.AddRangeAsync([.. taskActivityList]);
+            Context.TaskActivities.AddRangeAsync([.. taskActivityList]);
 
         }
         catch (Exception ex)
@@ -28,7 +28,7 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
             throw;
         }
     }
-    public async Task CreateForWeek(TaskWeek taskWeek, List<TaskDefinition> taskDefinitionList)
+    public void CreateForWeek(TaskWeek taskWeek, List<TaskDefinition> taskDefinitionList)
     {
 
         for (int day = 0; day < 7; day++)
@@ -55,12 +55,12 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
                 list.Add(taskActivity);
             }
 
-            await Add(list);
+            Add(list);
 
         }
     }
 
-    public async Task<List<TaskActivity>> GetListByTaskWeek(TaskWeek taskWeek)
+    public List<TaskActivity> GetListByTaskWeek(TaskWeek taskWeek)
     {
         List<TaskActivity>? list = null;
 
@@ -69,7 +69,7 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
             try
             {
                 var set = Context.TaskActivities.Where(t => t.TaskWeekId == taskWeek.Id);
-                list = await set.OrderBy(t => t.Sequence).OrderBy(t => t.TaskDate).ToListAsync();
+                list = set.OrderBy(t => t.Sequence).OrderBy(t => t.TaskDate).ToList();
             }
             catch (Exception ex)
             {
@@ -87,14 +87,14 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
     /// <param name="date">The date to filter the TaskActivities.</param>
     /// <param name="user">The user to filter by.</param>
     /// <returns>A list of TaskActivities filtered by date and user.</returns>
-    public async Task<List<TaskActivity>> GetListByDate(DateOnly date, ApplicationUser user)
+    public List<TaskActivity> GetListByDate(DateOnly date, ApplicationUser user)
     {
         Guard.IsNotNull(user);
         try
         {
             var set = Context.TaskActivities
                 .Where(t => t.TaskDate == date && t.TaskWeek.UserId == user.Id);
-            return await set.OrderBy(t => t.Sequence).ToListAsync();
+            return set.OrderBy(t => t.Sequence).ToList();
         }
         catch (Exception ex)
         {

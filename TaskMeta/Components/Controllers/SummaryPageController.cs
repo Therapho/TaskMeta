@@ -37,49 +37,47 @@ namespace TaskMeta.Components.Controllers
             if (!State.IsAdmin)
             {
                 SelectedUser = State.CurrentUser;
-                await LoadThisWeek(SelectedUser!);
+                LoadThisWeek(SelectedUser!);
             }
             else
             {
                 ContributorList = await UnitOfWork!.UserRepository!.GetContributors();
                 if (SelectedUser != null)
                 {
-                    await LoadThisWeek(SelectedUser!);
+                    LoadThisWeek(SelectedUser!);
                 }
             }
             WeekSelectorViewModel!.OnChange += HandleTaskWeekChange;
             await UserSelectorViewModel!.Load();
         }
-        public async void HandleUserSelected(ApplicationUser user)
+        public void HandleUserSelected(ApplicationUser user)
         {
             SelectedUser = user;
-            await LoadThisWeek(SelectedUser!);
+            LoadThisWeek(SelectedUser!);
         }
-        private async Task LoadThisWeek(ApplicationUser user)
+        private void LoadThisWeek(ApplicationUser user)
         {
-            var taskWeek = await UnitOfWork.GetOrCreateCurrentWeek(user);
-            await UnitOfWork.SaveChanges();
-            await LoadTaskWeek(taskWeek);
+            var taskWeek = UnitOfWork.GetOrCreateCurrentWeek(user);
+            LoadTaskWeek(taskWeek);
 
         }
-        public async void HandleTaskWeekChange(TaskWeek taskWeek)
+        public void HandleTaskWeekChange(TaskWeek taskWeek)
         {
-            await LoadTaskWeek(taskWeek);
+            LoadTaskWeek(taskWeek);
 
         }
-        private async Task LoadTaskWeek(TaskWeek taskWeek)
+        private void LoadTaskWeek(TaskWeek taskWeek)
         {
-            await TaskGridViewModel!.Load(taskWeek);
-            await JobChecklistViewModel!.Load(taskWeek);
-            await WeekSelectorViewModel!.Load(taskWeek);
+            TaskGridViewModel!.Load(taskWeek);
+            JobChecklistViewModel!.Load(taskWeek);
+            WeekSelectorViewModel!.Load(taskWeek);
             TaskWeek = taskWeek;
             StateHasChanged!();
         }
 
-        public async void HandleApprove()
+        public void HandleApprove()
         {
-            await UnitOfWork!.AcceptWeek(TaskWeek!);
-            await UnitOfWork!.SaveChanges();
+            UnitOfWork!.AcceptWeek(TaskWeek!);            
 
             StateHasChanged!();
         }

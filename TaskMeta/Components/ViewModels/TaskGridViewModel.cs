@@ -15,21 +15,20 @@ public class TaskGridViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
     public List<TaskDefinition>? TaskDefinitionList { get; private set; }
     public Action? OnChange { get; set; }
 
-    public async Task Load(TaskWeek taskWeek)
+    public void Load(TaskWeek taskWeek)
     {
         Guard.IsNotNull(taskWeek);
         TaskWeek = taskWeek;
 
-        TaskDefinitionList = await UnitOfWork.TaskDefinitionRepository.GetListByUser(TaskWeek.User);
-        TaskActivityList = await UnitOfWork.TaskActivityRepository.GetListByTaskWeek(TaskWeek);
+        TaskDefinitionList = UnitOfWork.TaskDefinitionRepository.GetListByUser(TaskWeek.User);
+        TaskActivityList = UnitOfWork.TaskActivityRepository.GetListByTaskWeek(TaskWeek);
         Locked = TaskWeek.StatusId == Constants.Status.Accepted || !State.IsAdmin;
         StateHasChanged!();
     }
-    public async void HandleChange(TaskActivity task)
+    public void HandleChange(TaskActivity task)
     {
         UnitOfWork!.TaskActivityRepository!.Update(task);
-        UnitOfWork!.TaskWeekRepository!.UpdateValue(TaskWeek!, task.Value, task.Complete);
-        await UnitOfWork!.SaveChanges();
+        UnitOfWork!.UpdateTaskWeekValue(TaskWeek!, task.Value, task.Complete);
         OnChange?.Invoke();
     }
 

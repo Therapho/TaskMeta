@@ -11,7 +11,7 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
     IJobRepository jobRepository, ITaskActivityRepository taskActivityRepository,
     ITaskWeekRepository taskWeekRepository, IFundRepository fundRepository,
     ITransactionLogRepository transactionLogRepository, IUserRepository userRepository, ILogger<IUnitOfWork> logger)
-        :   IUnitOfWork
+        : IUnitOfWork
 {
     private ApplicationDbContext Context { get; set; } = context;
     public ITaskDefinitionRepository TaskDefinitionRepository { get; private set; } = taskDefinitionRepository;
@@ -23,19 +23,18 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
     public IUserRepository UserRepository { get; private set; } = userRepository;
     public ILogger Logger { get; private set; } = logger;
 
-    public async Task SaveChanges()
+    public void SaveChanges()
     {
-        await Context.SaveChangesAsync();
+        Context.SaveChanges();
     }
 
-    
-    public async Task<TaskWeek> GetOrCreateCurrentWeek(ApplicationUser user)
+    public TaskWeek GetOrCreateCurrentWeek(ApplicationUser user)
     {
         Guard.IsNotNull(user);
 
         var currentWeekStart = Tools.StartOfWeek(DateTime.Now);
 
-        var currentWeek = await TaskWeekRepository.Get(user.Id, currentWeekStart);
+        var currentWeek = TaskWeekRepository.Get(user.Id, currentWeekStart);
         if (currentWeek == null)
         {
             currentWeek = new TaskWeek()
@@ -45,11 +44,12 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
                 StatusId = 1,
                 Value = 0
             };
-            TaskWeekRepository.Add(currentWeek);
-            await TaskActivityRepository.CreateForWeek(currentWeek, await TaskDefinitionRepository.GetList());
-       
+            TaskWeekRepository.AddJob(currentWeek);
+            TaskActivityRepository.CreateForWeek(currentWeek, TaskDefinitionRepository.GetList());
+
         }
         currentWeek.User = user;
+        SaveChanges();
 
         return currentWeek;
     }
@@ -57,10 +57,10 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
     /// </summary>
     /// <param name="taskWeek">The TaskWeek object to accept.</param>
     /// <param name="commit">A flag indicating whether to commit the changes to the database. Default is true.</param>
-    public async Task AcceptWeek(TaskWeek taskWeek)
+    public void AcceptWeek(TaskWeek taskWeek)
     {
         // Get the list of funds associated with the user
-        List<Fund> fundList = await FundRepository.GetFundsByUser(taskWeek.UserId);
+        List<Fund> fundList = FundRepository.GetFundsByUser(taskWeek.UserId);
 
         // Iterate through each fund and perform the necessary operations
         foreach (var fund in fundList)
@@ -84,7 +84,7 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
                 Date = DateTime.Now,
                 Description = "Weekly deposit from accepted tasks."
             };
-            TransactionLogRepository.Add(transactionLog);
+            TransactionLogRepository.AddJob(transactionLog);
 
             // Update the fund balance by adding the deposit amount
             fund.Balance += depositAmount;
@@ -94,52 +94,103 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
         // Update the status of the task week to "Accepted"
         taskWeek.StatusId = 2;
         TaskWeekRepository.Update(taskWeek);
+        SaveChanges();
 
     }
     /// <summary>
     /// Processes a transaction by updating the balances of the associated funds.
     /// </summary>
     /// <param name="transaction">The transaction to be processed.</param>
-    public void Process(Transaction transaction)
+    public void ProcessTransaction(Transaction transaction)
     {
         switch (transaction.CategoryId)
         {
             case Constants.Category.Deposit:
                 {
-                    Deposit(transaction);
+                    TransactionLogRepository.Deposit(transaction);
                     break;
                 }
             case Constants.Category.Withdrawal:
                 {
-                    Withdraw(transaction);
+                    TransactionLogRepository.Withdraw(transaction);
                     break;
                 }
             case Constants.Category.Transfer:
                 {
-                    Deposit(transaction);
-                    Withdraw(transaction);
+                    TransactionLogRepository.Deposit(transaction);
+                    TransactionLogRepository.Withdraw(transaction);
                     break;
                 }
         }
+        SaveChanges();
     }
 
-    private void Withdraw(Transaction transaction)
+    public void AddTaskDefinition(TaskDefinition taskDefinition)
     {
-        var sourceFund = transaction.SourceFund!;
-        if (sourceFund.Balance < transaction.Amount)
-        {
-            throw new InvalidOperationException("Insufficient funds.");
-        }
-        transaction.PreviousAmount = sourceFund.Balance;
-        sourceFund.Balance -= transaction.Amount;
-        TransactionLogRepository!.LogTransaction(transaction);
+        TaskDefinitionRepository.AddJob(taskDefinition);
+        SaveChanges();
     }
 
-    private void Deposit(Transaction transaction)
+    public void UpdateJob(Job job, TaskWeek taskWeek)
     {
-        var targetFund = transaction.TargetFund!;
-        transaction.PreviousAmount = targetFund.Balance;
-        targetFund.Balance += transaction.Amount;
-        TransactionLogRepository!.LogTransaction(transaction);
+        JobRepository.Update(job);
+        TaskWeekRepository.UpdateValue(taskWeek!, job.Value, job.Complete);
+        SaveChanges();
+    }
+
+    public void UpdateTaskDefinition(TaskDefinition task)
+    {
+        TaskDefinitionRepository.Update(task);
+        SaveChanges();
+    }
+
+    public void AddFund(Fund fund)
+    {
+        FundRepository.AddJob(fund);
+        SaveChanges();
+    }
+
+    public void AddJob(Job job)
+    {
+        JobRepository.AddJob(job);
+        SaveChanges();
+    }
+
+    public void DeleteFund(Fund fund)
+    {
+        FundRepository.Delete(fund);
+        SaveChanges();
+    }
+
+    public void DeleteJob(Job job)
+    {
+        JobRepository.Delete(job);
+        SaveChanges();
+    }
+
+
+
+    public void UpdateFund(Fund editFund)
+    {
+        FundRepository.Update(editFund);
+        SaveChanges();
+    }
+
+    public void UpdateJob(Job job)
+    {
+        JobRepository.Update(job);
+        SaveChanges();
+    }
+
+    public void UpdateTaskActivity(TaskActivity taskActivity)
+    {
+        TaskActivityRepository.Update(taskActivity);
+        SaveChanges();
+    }
+
+    public void UpdateTaskWeekValue(TaskWeek taskWeek, decimal value, bool complete)
+    {
+        TaskWeekRepository.UpdateValue(taskWeek, value, complete);
+        SaveChanges();
     }
 }

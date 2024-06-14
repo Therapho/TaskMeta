@@ -12,13 +12,13 @@ namespace TaskMeta.Shared.Models.Repositories
         protected ICacheProvider CacheProvider { get; private set; } = cacheProvider;
         protected ILogger Logger { get; private set; } = logger;
 
-        public async Task<List<E>> GetAll()
+        public List<E> GetAll()
         {
             try
             {
 
                 var set = Context.Set<E>();
-                return await set.ToListAsync<E>();
+                return set.ToList<E>();
             }
             catch (Exception ex)
             {
@@ -27,22 +27,22 @@ namespace TaskMeta.Shared.Models.Repositories
             }
         }
 
-        public async Task<List<E>> GetAll(int expiration)
+        public List<E> GetAll(int expiration)
         {
             string key = ListKey();
             var result = CacheProvider.Get<List<E>>(key);
 
             if (result != null) return result;
-            result = await GetAll();
+            result = GetAll();
             CacheProvider.Set(key, result, expiration);
             return result;
         }
 
-        public async Task<E?> GetById(int id)
+        public E? GetById(int id)
         {
             try
             {
-                return await Context.Set<E>().FindAsync(id);
+                return Context.Set<E>().Find(id);
             }
             catch (Exception ex)
             {
@@ -51,18 +51,18 @@ namespace TaskMeta.Shared.Models.Repositories
                 throw;
             }
         }
-        public async Task<E?> GetById(int id, int expiration)
+        public E? GetById(int id, int expiration)
         {
             string key = Key("ID",id);
             var result = CacheProvider.Get<E>(key);
 
-            result ??= await GetById(id);
+            result ??= GetById(id);
             CacheProvider.Set(key, result, expiration);
 
             return result;
         }
 
-        public void Add(E entity)
+        public void AddJob(E entity)
         {
             try
             {

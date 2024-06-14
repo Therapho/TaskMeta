@@ -4,11 +4,11 @@ namespace TaskMeta.Shared.Interfaces;
 public interface IRepositoryBase<E> where E : class
 {
 
-    void Add(E entity);
+    void AddJob(E entity);
     void Delete(E entity);
-    Task<List<E>> GetAll();
-    Task<List<E>> GetAll(int expiration);
-    Task<E?> GetById(int id);
+    List<E> GetAll();
+    List<E> GetAll(int expiration);
+    E? GetById(int id);
     void Update(E entity);
 
 }

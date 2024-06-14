@@ -14,7 +14,7 @@ public class FundRepository(ApplicationDbContext applicationDbContext, ICachePro
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of funds.</returns>
-    public async Task<List<Fund>> GetFundsByUser(string userId)
+    public List<Fund> GetFundsByUser(string userId)
     {
         try
         {

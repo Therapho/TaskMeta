@@ -9,7 +9,7 @@ namespace TaskMeta.Shared.Interfaces
 {
     public interface IFundRepository : IRepositoryBase<Fund>
     {
-        Task<List<Fund>> GetFundsByUser(string userId);
+        List<Fund> GetFundsByUser(string userId);
        
     }
 }
