@@ -8,11 +8,12 @@ public class PageBase<C> : ComponentBase where C : ControllerBase
     public C? Controller { get; set; }
     protected override void OnInitialized()
     {
-        Controller!.StateHasChanged = StateHasChanged;
+        
         base.OnInitialized();
     }
     protected override async Task OnParametersSetAsync()
     {
+        Controller!.StateHasChanged = StateHasChanged;
         await Controller!.Load();
         await base.OnParametersSetAsync();
     }

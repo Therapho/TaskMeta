@@ -16,7 +16,7 @@ public class UserSelectorViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     public async Task Load()
     {
         ContributorList = await UnitOfWork!.UserRepository!.GetContributors();
-        StateHasChanged!();
+        //StateHasChanged!();
     }
 
     public void HandleUserSelected(ApplicationUser user)

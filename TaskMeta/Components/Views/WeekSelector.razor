@@ -1,4 +1,5 @@
 ﻿@using TaskMeta.Components.ViewModels
+@using TaskMeta.Shared.Models
 @using TaskMeta.MVVM
 
 @inherits ViewBase<WeekSelectorViewModel>
@@ -20,4 +21,15 @@
         </div>
 
     </FluentCard>
+}
+@code
+{
+    [Parameter]
+    public Action<TaskWeek>? OnChange { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ViewModel!.OnChange = OnChange;
+        base.OnInitialized();
+    }
 }

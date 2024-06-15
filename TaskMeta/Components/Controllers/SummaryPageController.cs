@@ -18,7 +18,6 @@ namespace TaskMeta.Components.Controllers
         public WeekSelectorViewModel WeekSelectorViewModel { get; set; } = weekSelectorViewModel;
 
         public TaskWeek? TaskWeek { get; private set; }
-        public List<ApplicationUser>? ContributorList { get; private set; }
         public ApplicationUser? SelectedUser { get => State?.SelectedUser; set => State!.SelectedUser = value; }
 
 
@@ -41,15 +40,13 @@ namespace TaskMeta.Components.Controllers
             }
             else
             {
-                ContributorList = await UnitOfWork!.UserRepository!.GetContributors();
+                await UserSelectorViewModel!.Load();
                 if (SelectedUser != null)
                 {
                     LoadThisWeek(SelectedUser!);
                 }
             }
-            WeekSelectorViewModel!.OnChange += HandleTaskWeekChange;
             
-            if(State!.IsAdmin) await UserSelectorViewModel!.Load();
         }
         public void HandleUserSelected(ApplicationUser user)
         {

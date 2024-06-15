@@ -22,7 +22,7 @@
         <TaskGrid ViewModel="Controller!.TaskGridViewModel" OnChange="Controller.HandleChange" />
         <JobChecklist ViewModel="Controller!.JobChecklistViewModel" OnChange="Controller.HandleChange"/>
     </FluentCard>
-    <WeekSelector ViewModel="Controller!.WeekSelectorViewModel" />
+    <WeekSelector ViewModel="Controller!.WeekSelectorViewModel" OnChange="Controller.HandleTaskWeekChange" />
     <hr />
     <FluentGrid>
         @if (Controller!.TaskWeek != null)
