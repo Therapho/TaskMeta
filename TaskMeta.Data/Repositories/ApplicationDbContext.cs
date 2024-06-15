@@ -6,9 +6,10 @@ using TaskMeta.Shared.Models;
 
 namespace TaskMeta.Shared.Models.Repositories;
 
-public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : 
+    IdentityDbContext<ApplicationUser>(options)
 {
-#if DEBUG
+#if DEBUG2
     public ApplicationDbContext() :base(BuildOptions())
     {
     }
@@ -20,11 +21,6 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Options;
     }
 #endif
-
-    public ApplicationDbContext(DbContextOptions<IdentityDbContext<ApplicationUser>> options)
-        : base(options)
-    {
-    }
 
     public virtual DbSet<Fund> Funds { get; set; }
 
