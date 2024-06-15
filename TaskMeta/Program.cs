@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -46,9 +47,19 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 
 //builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-
+var appInsightsConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
 // Add Application Insights logging
-//builder.Services.AddApplicationInsightsTelemetry();
+if (appInsightsConnectionString != null)
+{
+    var applicationInsightsServiceOptions = new ApplicationInsightsServiceOptions
+    {
+        EnableAdaptiveSampling = false,
+        ConnectionString = appInsightsConnectionString
+    };
+
+    builder.Services.AddApplicationInsightsTelemetry(applicationInsightsServiceOptions);
+}
+
 //builder.Services.AddSnapshotCollector();
 builder.Services.AddScoped<ApplicationState>()
     .AddDataAccessLayer()
