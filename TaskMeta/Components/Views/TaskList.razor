@@ -28,3 +28,14 @@
 
     </FluentStack>
 }
+@code
+{
+    [Parameter]
+    public Action? OnChange { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ViewModel!.OnChange = OnChange;
+       
+    }
+}

@@ -27,9 +27,12 @@
 
                 <Authorized>
                     <hr />
+                    <FluentLabel>Admin </FluentLabel>
+                    
                     <FluentNavLink Href="funds" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Money())" IconColor="Color.Accent">Funds</FluentNavLink>
-                    <FluentNavLink Href="tasks/admin" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListAdd())" IconColor="Color.Accent">Task Admin</FluentNavLink>
+                    <FluentNavLink Href="tasks/admin" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListAdd())" IconColor="Color.Accent">Tasks</FluentNavLink>
                     <FluentNavLink Href="jobs/admin" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TaskListSquarePerson ())" IconColor="Color.Accent">Jobs</FluentNavLink>
+                    <FluentNavLink Href="users/admin" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.PeopleList ())" IconColor="Color.Accent">Users</FluentNavLink>
                 </Authorized>
             </AuthorizeView>
             <AuthorizeView>

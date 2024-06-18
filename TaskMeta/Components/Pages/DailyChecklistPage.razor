@@ -12,7 +12,7 @@
 <PageTitle>TaskMeta - Daily Checklist</PageTitle>
 <FluentStack Orientation="Orientation.Vertical">
 
-    <TaskList ViewModel="Controller!.TaskListViewModel" />
+    <TaskList ViewModel="Controller!.TaskListViewModel" OnChange="Controller.HandleChange"/>
     <JobChecklist ViewModel="Controller!.JobChecklistViewModel" />
     @if (Controller?.TaskWeek != null)
     {

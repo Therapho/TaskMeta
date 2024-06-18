@@ -20,6 +20,10 @@ public interface IUnitOfWork
     void AddFund(Fund editFund);
     void AddJob(Job Job);
     void AddTaskDefinition(TaskDefinition taskDefinition);
+    Task AddUser(ApplicationUser user);
+    Task<string> UpdateUser(ApplicationUser user);
+    Task DeleteUser(ApplicationUser user);
+    Task<string> ResetPassword(ApplicationUser user);
     void DeleteFund(Fund fund);
     void DeleteJob(Job job);
     TaskWeek GetOrCreateCurrentWeek(ApplicationUser user);

@@ -35,11 +35,7 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
         {
             var currentDate = taskWeek.WeekStartDate.AddDays(day);
 
-            List<TaskActivity>? list;
-
-
-
-            list = [];
+            List<TaskActivity>? list = [];
             foreach (var taskDefinition in taskDefinitionList)
             {
                 TaskActivity taskActivity = new()
@@ -50,7 +46,7 @@ public class TaskActivityRepository(ApplicationDbContext applicationDbContext, I
                     Complete = false,
                     Value = taskDefinition.Value,
                     Description = taskDefinition.Description,
-                    TaskWeek = taskWeek
+                    TaskWeekId = taskWeek.Id
                 };
                 list.Add(taskActivity);
             }

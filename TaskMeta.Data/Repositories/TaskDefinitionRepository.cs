@@ -30,6 +30,24 @@ public class TaskDefinitionRepository(ApplicationDbContext applicationDbContext,
         }
     }
 
+    public List<TaskDefinition> GetList(ApplicationUser user)
+    {
+        try
+        {
+            var result = Context.TaskDefinitions
+                .Where(t => t.UserId == user.Id || t.UserId == null)
+                .Include(t => t.User)
+                .OrderBy(t => t.Sequence)
+                .ToList();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, $"An error occurred while getting task definition query.");
+            throw;
+        }
+    }
+
     /// <summary>
     /// Retrieves the queryable collection of task definitions filtered by user.
     /// </summary>

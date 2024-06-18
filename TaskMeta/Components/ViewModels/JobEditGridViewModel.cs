@@ -103,7 +103,7 @@ public class JobEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState state
     {
         if (EditJob?.Id == 0)
         {
-            UnitOfWork!.JobRepository!.AddJob(EditJob);
+            UnitOfWork!.JobRepository!.Add(EditJob);
         }
         EditJob = null;
         StateHasChanged!();

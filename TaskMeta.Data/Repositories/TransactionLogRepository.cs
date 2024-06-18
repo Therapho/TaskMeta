@@ -42,7 +42,7 @@ namespace TaskMeta.Shared.Models.Repositories
                 PreviousAmount = transaction.PreviousAmount
             };
 
-            AddJob(transactionLog);
+            Add(transactionLog);
         }
         public void Withdraw(Transaction transaction)
         {

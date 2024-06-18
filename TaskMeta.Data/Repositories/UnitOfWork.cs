@@ -44,12 +44,14 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
                 StatusId = 1,
                 Value = 0
             };
-            TaskWeekRepository.AddJob(currentWeek);
-            TaskActivityRepository.CreateForWeek(currentWeek, TaskDefinitionRepository.GetList());
+            TaskWeekRepository.Add(currentWeek);
+            SaveChanges();
+            TaskActivityRepository.CreateForWeek(currentWeek, TaskDefinitionRepository.GetList(user));
+            SaveChanges();
 
         }
         currentWeek.User = user;
-        SaveChanges();
+        
 
         return currentWeek;
     }
@@ -84,7 +86,7 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
                 Date = DateTime.Now,
                 Description = "Weekly deposit from accepted tasks."
             };
-            TransactionLogRepository.AddJob(transactionLog);
+            TransactionLogRepository.Add(transactionLog);
 
             // Update the fund balance by adding the deposit amount
             fund.Balance += depositAmount;
@@ -127,7 +129,7 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
 
     public void AddTaskDefinition(TaskDefinition taskDefinition)
     {
-        TaskDefinitionRepository.AddJob(taskDefinition);
+        TaskDefinitionRepository.Add(taskDefinition);
         SaveChanges();
     }
 
@@ -146,13 +148,13 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
 
     public void AddFund(Fund fund)
     {
-        FundRepository.AddJob(fund);
+        FundRepository.Add(fund);
         SaveChanges();
     }
 
     public void AddJob(Job job)
     {
-        JobRepository.AddJob(job);
+        JobRepository.Add(job);
         SaveChanges();
     }
 
@@ -192,5 +194,30 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
     {
         TaskWeekRepository.UpdateValue(taskWeek, value, complete);
         SaveChanges();
+    }
+    public async Task AddUser(ApplicationUser user)
+    {
+        Guard.IsNotNull(user);
+        Guard.IsNotNull(user.NewPassword);
+        await UserRepository.Add(user);
+    }   
+    public async Task DeleteUser(ApplicationUser user)
+    {
+        Guard.IsNotNull(user);
+        await UserRepository.Delete(user);
+    }
+    public async Task<string> UpdateUser(ApplicationUser user)
+    {
+        Guard.IsNotNull(user);
+        await UserRepository.Update(user);
+        if(!String.IsNullOrEmpty(user.NewPassword)) return await UserRepository.ResetPassword(user);
+        return string.Empty;
+
+    }
+    public async Task<String> ResetPassword(ApplicationUser user)
+    {
+        Guard.IsNotNull(user);
+        Guard.IsNotNull(user.NewPassword);
+        return await UserRepository.ResetPassword(user);
     }
 }

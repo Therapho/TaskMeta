@@ -11,10 +11,6 @@ public class ViewModelBase(IUnitOfWork unitOfWork, ApplicationState state)
     public IUnitOfWork UnitOfWork { get; private set; } = unitOfWork;
     public ApplicationState State { get; set; } = state;
     public Action? StateHasChanged { get; set; }
-    protected void PropertyChanged([CallerMemberName] string? name = null)
-    {
-        OnPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-    public event PropertyChangedEventHandler? OnPropertyChanged;
+   
 
 }

@@ -10,6 +10,7 @@ public class TaskListViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
 {
     public List<TaskActivity>? TaskActivityList { get; set; }
     public bool Locked { get; set; }
+    public Action? OnChange { get; set; }
 
     internal void Load(TaskWeek taskWeek)
     {
@@ -25,6 +26,6 @@ public class TaskListViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
         UnitOfWork.TaskWeekRepository.UpdateValue(taskWeek, taskActivity.Value, taskActivity.Complete);
         UnitOfWork.UpdateTaskActivity(taskActivity);
 
-        PropertyChanged(nameof(TaskActivity));
+        OnChange?.Invoke();
     }
 }

@@ -10,8 +10,8 @@
                 .AddScoped<JobAdminController>()
                 .AddScoped<FundAdminController>()
                 .AddScoped<TransactionController>()
-                .AddScoped<TaskAdminController>();
-
+                .AddScoped<TaskAdminController>()
+                .AddScoped<UserAdminController>();
             return services;
         }
     }

@@ -20,5 +20,9 @@ namespace TaskMeta.Components.Controllers
             TaskListViewModel.Load(TaskWeek!);
             JobChecklistViewModel.Load(TaskWeek!);
         }
+        public void HandleChange()
+        {
+            StateHasChanged!();
+        }
     }
 }

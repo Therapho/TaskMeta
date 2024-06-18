@@ -62,7 +62,7 @@ namespace TaskMeta.Shared.Models.Repositories
             return result;
         }
 
-        public void AddJob(E entity)
+        public void Add(E entity)
         {
             try
             {

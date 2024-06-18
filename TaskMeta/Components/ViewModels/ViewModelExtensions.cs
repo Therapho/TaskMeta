@@ -6,15 +6,16 @@ public static class ViewModelExtensions
 {
     public static IServiceCollection AddViewModels(this IServiceCollection services)
     {
-        services           
+        services
             .AddScoped<TaskGridViewModel>()
-            .AddScoped<JobChecklistViewModel>()            
+            .AddScoped<JobChecklistViewModel>()
             .AddScoped<JobEditGridViewModel>()
             .AddScoped<UserSelectorViewModel>()
             .AddScoped<WeekSelectorViewModel>()
-            .AddScoped<TaskListViewModel>()            
+            .AddScoped<TaskListViewModel>()
             .AddScoped<TransactionListViewModel>()
-            .AddScoped<TransactionFormViewModel>();
+            .AddScoped<TransactionFormViewModel>()
+            .AddScoped<UserEditGridViewModel>();
 
         return services;
     }

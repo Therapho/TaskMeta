@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
@@ -48,6 +51,33 @@ namespace TaskMeta.Shared.Models.Repositories
             
             var isLoggedIn = user != null;
             return isLoggedIn;
+        }
+
+        public async Task<List<ApplicationUser>>? GetAllUsers()
+        {
+            return await _userManager.Users.ToListAsync();
+        }
+        public async Task Delete(ApplicationUser user)
+        {
+            await _userManager.DeleteAsync(user);
+        }
+        public async Task Update(ApplicationUser user)
+        {            
+            await _userManager.UpdateAsync(user);
+        }
+        public async Task Add(ApplicationUser user)
+        {
+            await _userManager.CreateAsync(user);
+        
+        }
+        public async Task<string> ResetPassword(ApplicationUser user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, user.NewPassword!);
+            if (!result.Succeeded)
+                return string.Join(", ", result.Errors.Select(e => e.Description));
+            else return string.Empty;
+
         }
     }
 }

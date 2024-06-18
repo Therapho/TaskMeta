@@ -1,0 +1,12 @@
+﻿@page "/users/admin"
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Controllers
+@using TaskMeta.Components.Views
+@using TaskMeta.MVVM
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+@inherits PageBase<UserAdminController>
+
+<h3>User Management</h3>
+<PageTitle>TaskMeta - User Management</PageTitle>
+<UserEditGrid ViewModel="Controller!.UserEditGridViewModel"/>
