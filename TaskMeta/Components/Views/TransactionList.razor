@@ -1,0 +1,57 @@
+﻿@using TaskMeta.Components.ViewModels
+@using TaskMeta.MVVM
+@inherits ViewBase<TransactionListViewModel>
+
+@if (ViewModel?.TransactionList != null)
+{
+    <div class="table">
+        <div class="row topLabel">
+            <div class="cell">Description</div>
+            <div class="cell">Amount</div>
+            <div class="cell">Category</div>
+            <div class="cell">Source Fund</div>
+            <div class="cell">Target Fund</div>
+            <div class="cell">Previous Amount</div>
+            <div class="cell">Calling User</div>
+            <div class="cell">Date</div>
+        </div>
+        @foreach (var transaction in ViewModel!.TransactionList)
+        {
+            <div class="row">
+                <div class="cell">
+                    <div class="sideLabel">Description</div>
+                    @transaction.Description
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Amount</div>
+                    @transaction.Amount.ToString("C")
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Category</div>
+                    @transaction.Category.Name
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Source Fund</div>
+                    @(transaction.SourceFund == null ? "N/A" : transaction.SourceFund.Name)
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Target Fund</div>
+                    @(transaction.TargetFund == null ? "N/A" : transaction.TargetFund.Name)
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Previous Amount</div>
+                    @(transaction.PreviousAmount != null ? transaction.PreviousAmount.Value.ToString("C") : "")
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Calling User</div>
+                    @transaction.CallingUser.UserName
+                </div>
+                <div class="cell">
+                    <div class="sideLabel">Date</div>
+                    @transaction.Date
+                </div>
+            </div>
+        }
+    </div>
+}
+

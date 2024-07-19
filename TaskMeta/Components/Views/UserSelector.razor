@@ -1,0 +1,29 @@
+﻿@using TaskMeta.Components.ViewModels
+@using TaskMeta.MVVM
+@using TaskMeta.Shared.Models
+@inherits ViewBase<UserSelectorViewModel>
+
+@if (ViewModel!.ContributorList != null)
+{
+  <FluentStack Orientation="Orientation.Horizontal">
+    @foreach (var user in ViewModel!.ContributorList)
+    {
+        <FluentButton class="selector" Appearance="@(user==ViewModel.SelectedUser?Appearance.Accent:Appearance.Neutral)" 
+        @onclick="(()=>ViewModel.HandleUserSelected(user))" >@user!.UserName</FluentButton>
+    }
+    </FluentStack>
+}
+@code
+{
+    [Parameter]
+    public bool CanClear { get; set; }
+    [Parameter, EditorRequired]
+    public Action<ApplicationUser>? OnChange { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        ViewModel!.CanClear = CanClear;
+        ViewModel!.OnChange = OnChange;
+    }
+}

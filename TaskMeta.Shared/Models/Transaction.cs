@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskMeta.Shared.Interfaces;
 
-namespace TaskMeta.Shared.Models
+namespace TaskMeta.Shared.Models 
 {
-    public class Transaction
+    public class Transaction 
     {
         public string Description { get; set; } = string.Empty;
         public int CategoryId { get; set; }
@@ -18,6 +19,6 @@ namespace TaskMeta.Shared.Models
         public Fund? TargetFund { get; set; }
 
         public decimal PreviousAmount { get; set; }
-
+        
     }
 }

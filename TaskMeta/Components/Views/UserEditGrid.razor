@@ -1,0 +1,68 @@
+﻿@using TaskMeta.MVVM
+@using TaskMeta.Components.ViewModels
+@rendermode InteractiveServer
+@inherits ViewBase<UserEditGridViewModel>
+@if (ViewModel?.UserList != null)
+{
+    <EditForm OnValidSubmit="ViewModel!.HandleSave" FormName="UserForm" EditContext="ViewModel!.EditContext">
+        <div class="table">
+            <div class="row topLabel">
+                <div class="cell">Username</div>
+                <div class="cell">Email</div>
+                <div class="cell">New Password</div>
+                <div class="cell">&nbsp;</div>
+            </div>
+
+            @foreach (var user in ViewModel.UserList!)
+            {
+                @if (ViewModel.EditUser != null && ViewModel.EditUser == user)
+                {
+                    <div class="row">
+                        <div class="cell">
+                            <div class="sideLabel">Username</div>
+                            <FluentTextField @bind-Value="user.UserName" form="UserForm" Style="width:100%;min-width:180px" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Email</div>
+                            <FluentTextField InputMode="InputMode.Email" @bind-Value="user.Email" Style="width:100%;min-width:100px" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">New Password</div>                           
+                            <FluentTextField  @bind-Value="user.NewPassword" Style="width:100%;min-width:100px" />
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())" />
+                            <FluentButton OnClick="@(()=>ViewModel.HandleCancel())" IconStart="@(new Icons.Regular.Size24.EditOff())" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="cell">
+                            <div class="sideLabel">Username</div>
+                            @user.UserName
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Email</div>
+                            @user.Email
+                        </div>
+
+                        <div class="cell">
+                            <div class="sideLabel">Password</div>
+                            @user.NewPassword
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton IconStart="@(new Icons.Regular.Size24.Edit())" OnClick="@(()=>ViewModel.HandleEdit(user))" />
+                            <FluentButton IconStart="@(new Icons.Regular.Size24.Delete())" OnClick="@(()=>ViewModel.HandleDelete(user))" />
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </EditForm>
+    <hr/>
+    <div><FluentButton OnClick="ViewModel.HandleAdd">Add</FluentButton></div>
+}
+
+

@@ -1,0 +1,41 @@
+﻿@page "/tasks/list"
+@using TaskMeta.Components.ViewModels
+@using TaskMeta.Components.Views
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.MVVM
+
+@inherits ViewBase<TaskListViewModel>
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Contributor")]
+
+<PageTitle>Task Meta - Task List</PageTitle>
+<h3>Task List</h3>
+
+@if (ViewModel?.TaskActivityList != null)
+{
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentCard>
+            <FluentStack Orientation="Orientation.Vertical">
+
+                @foreach (var taskActivity in ViewModel.TaskActivityList)
+                {
+                <FluentCheckbox Label="@taskActivity.Description" @bind-value="@taskActivity.Complete" ReadOnly="@ViewModel.Locked"
+                                @bind-value:after="()=>ViewModel.HandleChange(taskActivity)" />
+                }
+
+            </FluentStack>
+        </FluentCard>
+
+    </FluentStack>
+}
+@code
+{
+    [Parameter]
+    public Action? OnChange { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ViewModel!.OnChange = OnChange;
+       
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "TaskMeta",
+  "short_name": "TaskMeta",
+  "id": "./",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#e0ffff",
+  "theme_color": "#6bc8f9",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "RCHTLogo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "RCHTLogo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

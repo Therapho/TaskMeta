@@ -1,36 +1,63 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskMeta.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TaskMeta.Shared.Interfaces;
+using TaskMeta.Shared.Models;
 
-namespace TaskMeta.Data.Repositories
+namespace TaskMeta.Shared.Models.Repositories;
+
+public class TaskWeekRepository(ApplicationDbContext applicationDbContext, ICacheProvider cacheProvider, ILogger<TaskWeek> logger) :
+    RepositoryBase<TaskWeek>(applicationDbContext, cacheProvider, logger), ITaskWeekRepository
 {
-    public class TaskWeekRepository : EntityRepository<TaskWeek>, ITaskWeekRepository
+
+
+    public void UpdateValue(TaskWeek taskWeek, decimal valueChange, bool add)
     {
-        public TaskWeekRepository(ApplicationDbContext context, ILogger<EntityRepository<TaskWeek>> logger) : base(context, logger)
-        {
-        }
-        public async Task<TaskWeek> GetCurrent()
-        {
-            // Get first dateonly of the current week
-            var currentDate = DateTime.Now.Date;
-            var currentWeekStart = DateOnly.FromDateTime( currentDate.AddDays(-(int)currentDate.DayOfWeek));
+        taskWeek.Value = add ? taskWeek.Value + valueChange : taskWeek.Value - valueChange;
+        Update(taskWeek);
 
-            var currentWeek = Context.Set<TaskWeek>().Where(x => x.WeekStartDate == currentWeekStart).FirstOrDefault();
+    }
+    /// <summary>
+    /// Retrieves a TaskWeek object based on the provided user ID and week start date.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="weekStart">The start date of the week.</param>
+    /// <returns>The TaskWeek object if found, otherwise null.</returns>
+    public TaskWeek? Get(string userId, DateOnly weekStart)
+    {
+        var key = Key("U", userId, "D", weekStart);
+        var result = CacheProvider.Get<TaskWeek>(key);
+        if (result != null) return result;
 
-            if (currentWeek == null)
-            {
-                currentWeek = new TaskWeek()
-                {
-                    WeekStartDate = currentWeekStart,
-                    UserId = ""
-                };
-                await AddAsync(currentWeek);
-            }
-            return currentWeek;
-        }
+        var query = Context.Set<TaskWeek>()
+            .Where(x => x.WeekStartDate == weekStart && x.UserId == userId)
+            .Include(w => w.User);
+
+        result = query.FirstOrDefault();
+        CacheProvider.Set(key, result, 10);
+
+        return result;
+    }
+    public (TaskWeek? previousWeek, TaskWeek? nextWeek) GetAdjacent(TaskWeek currentTaskWeek)
+    {
+        DateOnly previousStartDate = currentTaskWeek.WeekStartDate.AddDays(-7);
+        DateOnly nextStartDate = currentTaskWeek.WeekStartDate.AddDays(7);
+
+        var previousWeek = Get(currentTaskWeek.UserId, previousStartDate);
+        var nextWeek = Get(currentTaskWeek.UserId, nextStartDate);
+        return (previousWeek, nextWeek);
+    }
+
+    public List<TaskActivity>? GetByDate(TaskWeek taskWeek, DateOnly dateOnly)
+    {
+        var key = ListKey("TW", taskWeek, "D", dateOnly);
+        var result = CacheProvider.Get<List<TaskActivity>>(key);
+        if (result != null) return result;
+
+        var query = Context.Set<TaskActivity>()
+            .Where(t => t.TaskWeekId == taskWeek.Id && t.TaskDate == dateOnly);
+        result = query.ToList();
+        CacheProvider.Set(key, result, 10);
+
+        return result;
     }
 }

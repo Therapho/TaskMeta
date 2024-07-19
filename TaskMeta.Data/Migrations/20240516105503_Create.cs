@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TaskMeta.Data.Migrations
+namespace TaskMeta.Shared.Models.Migrations
 {
     /// <inheritdoc />
     public partial class Create : Migration

@@ -2,11 +2,12 @@
 #nullable disable
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TaskMeta.Shared.Interfaces;
 
 namespace TaskMeta.Shared.Models;
 
 [Table("Status")]
-public partial class Status
+public partial class Status : IEntity
 {
     [Key]
     public int Id { get; set; }

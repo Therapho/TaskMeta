@@ -2,10 +2,11 @@
 #nullable disable
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TaskMeta.Shared.Interfaces;
 
 namespace TaskMeta.Shared.Models;
 
-public partial class TaskWeek
+public partial class TaskWeek : IEntity
 {
     [Key]
     public int Id { get; set; }
@@ -22,5 +23,9 @@ public partial class TaskWeek
     public string UserId { get; set; }
 
     [InverseProperty("TaskWeek")]
-    public virtual ICollection<TaskActivity> TaskActivities { get; set; } = new List<TaskActivity>();
+    public virtual ICollection<TaskActivity> TaskActivityList { get; set; } = new List<TaskActivity>();
+
+    [ForeignKey("UserId")]
+    [InverseProperty("UserTaskWeeks")]
+    public virtual ApplicationUser User { get; set; }
 }

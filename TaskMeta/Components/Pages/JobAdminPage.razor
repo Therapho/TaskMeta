@@ -1,0 +1,17 @@
+﻿@page "/jobs/admin"
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Controllers
+@using TaskMeta.Components.Views
+@using TaskMeta.MVVM
+
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+@inherits PageBase<JobAdminController>
+
+<PageTitle>JobMeta - Jobs Administration</PageTitle>
+<h3>Jobs Administration</h3>
+<UserSelector ViewModel="Controller!.UserSelectorViewModel" CanClear="true" OnChange="Controller.HandleUserSelected" />
+<hr />
+
+<JobEditGrid ViewModel="Controller!.JobEditGridViewModel"/>
+

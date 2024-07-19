@@ -2,10 +2,11 @@
 #nullable disable
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TaskMeta.Shared.Interfaces;
 
 namespace TaskMeta.Shared.Models;
 
-public partial class TaskDefinition
+public partial class TaskDefinition : IEntity
 {
     [Key]
     public int Id { get; set; }
@@ -21,11 +22,30 @@ public partial class TaskDefinition
 
     public bool? Active { get; set; }
 
-    [Required]
+
     [StringLength(450)]
     public string UserId { get; set; }
+
 
     [ForeignKey("UserId")]
     [InverseProperty("TaskDefinitionUsers")]
     public virtual ApplicationUser User { get; set; }
+    [NotMapped]
+    public string ValueString
+    {
+        get
+        {
+            return Value.ToString("0.00"); // Format the value with 2 decimal places
+        }
+        set
+        {
+            
+            decimal v = 0;
+            if (decimal.TryParse(value, out v))
+            {
+                Value = v;
+            }
+
+        }
+    }
 }

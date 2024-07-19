@@ -1,0 +1,96 @@
+﻿@page "/tasks/admin"
+@using Microsoft.AspNetCore.Authorization
+@using TaskMeta.Components.Controllers
+@using TaskMeta.Components.Views
+@using TaskMeta.MVVM
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
+@inherits PageBase<TaskAdminController>
+
+<h3>Task Administration</h3>
+<PageTitle>TaskMeta - Task Administration</PageTitle>
+
+<UserSelector ViewModel="Controller!.UserSelectorViewModel" OnChange="Controller!.HandleUserSelected" CanClear="true" />
+<hr />
+    @if (Controller!.TaskDefinitionListFiltered != null)
+{
+    <EditForm OnValidSubmit="Controller!.HandleSave" FormName="TaskForm" EditContext="Controller!.EditContext">
+
+        <div class="table">
+            <div class="row topLabel">
+                <div class="cell">Description</div>
+                <div class="cell">Value</div>
+                <div class="cell">Sequence</div>
+                <div class="cell">User</div>
+                <div class="cell">&nbsp;</div>
+            </div>
+
+            @foreach (var task in Controller!.TaskDefinitionListFiltered!)
+            {
+                @if (Controller!.EditTask != null && Controller!.EditTask == task)
+                {
+                    <div class="row">
+                        <div class="cell">
+                            <div class="sideLabel">Description</div>
+                            <FluentTextField @bind-Value="task.Description" form="TaskForm" Style="width:100%" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Value</div>
+                            <FluentTextField InputMode="InputMode.Decimal" @bind-Value="task.ValueString" Style="width:100%" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Sequence</div>
+                            <FluentNumberField @bind-Value="task.Sequence" Style="width:100%" />
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">User</div>
+                            <FluentSelect Items="Controller!.Contributors" OptionText="@(u=>u.UserName)"
+                                          OptionValue="@(u=>u.Id)" @bind-Value="task.UserId" Style="width:100%" />
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton Type="ButtonType.Submit" IconStart="@(new Icons.Regular.Size24.Checkmark())" />
+                            <FluentButton OnClick="@(()=>Controller!.HandleCancel())" IconStart="@(new Icons.Regular.Size24.EditOff())" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row @(!task.Active.GetValueOrDefault() ? "inactive" : "")">
+                        <div class="cell">
+                            <div class="sideLabel">Description</div>
+                            @task.Description
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Value</div>
+                            @task.Value.ToString("C")
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">Sequence</div>
+                            @task.Sequence
+                        </div>
+                        <div class="cell">
+                            <div class="sideLabel">User</div>
+                            @task.User?.UserName
+                        </div>
+                        <div class="buttonCell">
+                            <FluentButton IconStart="@(new Icons.Regular.Size24.Edit())" OnClick="@(()=>Controller!.HandleEdit(task))" />
+                            @if (task.Active.GetValueOrDefault())
+                            {
+                                <FluentButton IconStart="@(new Icons.Regular.Size24.EyeOff())" OnClick="@(()=>Controller!.HandleUpdateActive(task, false))" />
+                            }
+                            else
+                            {
+                                <FluentButton IconStart="@(new Icons.Regular.Size24.Eye())" OnClick="@(()=>Controller!.HandleUpdateActive(task,true))" />
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </EditForm>
+    <hr />
+    <div><FluentButton OnClick="Controller!.HandleAdd">Add</FluentButton></div>
+}
+
