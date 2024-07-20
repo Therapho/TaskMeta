@@ -14,7 +14,7 @@ public class TaskListViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
 
     internal void Load(TaskWeek taskWeek)
     {
-        TaskActivityList = UnitOfWork.TaskActivityRepository.GetListByDate(DateTime.Now.ToDateOnly(), taskWeek);
+        TaskActivityList = UnitOfWork.GetTaskActivityListByDate(DateTime.Now.ToDateOnly(), taskWeek);
     }
 
     public void HandleChange(TaskActivity taskActivity)
@@ -23,7 +23,7 @@ public class TaskListViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
         Guard.IsNotNull(taskActivity);
 
 
-        UnitOfWork.TaskWeekRepository.UpdateValue(taskWeek, taskActivity.Value, taskActivity.Complete);
+        UnitOfWork.UpdateTaskWeekValue(taskWeek, taskActivity.Value, taskActivity.Complete);
         UnitOfWork.UpdateTaskActivity(taskActivity);
 
         OnChange?.Invoke();

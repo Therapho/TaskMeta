@@ -10,8 +10,8 @@ public class ControllerBase(IUnitOfWork unitOfWork, ApplicationState state) : Vi
 
     public virtual async Task Load()
     {
-        State.CurrentUser = await UnitOfWork.UserRepository.GetCurrentUser();
-        State.IsAdmin = await UnitOfWork.UserRepository.IsAdmin();
+        State.CurrentUser = await UnitOfWork.GetCurrentUser();
+        State.IsAdmin = await UnitOfWork.IsAdmin();
         Loaded = true;
     }
 

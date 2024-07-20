@@ -22,7 +22,7 @@ public class WeekSelectorViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     private void SetCurrentWeek(TaskWeek? taskWeek)
     {
         CurrentWeek = taskWeek;
-        (PreviousWeek, NextWeek) = UnitOfWork.TaskWeekRepository.GetAdjacent(CurrentWeek!);
+        (PreviousWeek, NextWeek) = UnitOfWork.GetAdjacentTaskWeeks(CurrentWeek!);
         StateHasChanged!();
     }
     public void HandlePreviousWeekClicked() => OnChange!(PreviousWeek!);

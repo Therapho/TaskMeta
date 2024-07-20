@@ -21,7 +21,7 @@ namespace TaskMeta.Components.ViewModels
 
         public void Load(ApplicationUser selectedUser, Constants.EditMode editMode)
         {
-            FundList = UnitOfWork!.FundRepository!.GetFundsByUser(State!.SelectedUser!.Id);
+            FundList = UnitOfWork!.GetFundsByUser(State!.SelectedUser!.Id);
             FundList!.Insert(0, new Fund { Id = 0, Name = "Select Fund" });
             EditMode = editMode;
             TearDownForm();

@@ -17,10 +17,10 @@ public class UserEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState stat
 
     private ValidationMessageStore? messageStore;
 
-    public async Task Load()
+    public void Load()
     {
 
-        UserList = await UnitOfWork!.UserRepository!.GetAllUsers()!;
+        UserList = UnitOfWork!.GetAllUsers()!;
 
         StateHasChanged!();
     }
@@ -57,9 +57,9 @@ public class UserEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState stat
         StateHasChanged!();
     }
 
-    public async void HandleDelete(ApplicationUser User)
+    public void HandleDelete(ApplicationUser User)
     {
-        await UnitOfWork!.DeleteUser(User);
+        UnitOfWork!.DeleteUser(User);
         UserList!.Remove(User);
 
         StateHasChanged!();
@@ -72,15 +72,15 @@ public class UserEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState stat
         SetupForm(EditUser!);
         StateHasChanged!();
     }
-    public async void HandleSave()
+    public void HandleSave()
     {
         if (String.IsNullOrEmpty(EditUser?.Id))
         {
-            await UnitOfWork!.AddUser(EditUser!);
+           UnitOfWork!.AddUser(EditUser!);
         }
         else
         {
-            var message = await UnitOfWork!.UpdateUser(EditUser!);
+            var message = UnitOfWork!.UpdateUser(EditUser!);
             if (!string.IsNullOrEmpty(message)) messageStore?.Add(() => EditUser!.NewPassword!, message);
         }
         EditUser!.NewPassword = string.Empty;

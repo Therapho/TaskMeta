@@ -44,13 +44,14 @@ public class JobRepository(ApplicationDbContext applicationDbContext, ICacheProv
             Logger.LogInformation($"Retrieving current jobs for user...{user.UserName}");
             var endOfWeek = DateTime.Now.EndOfWeek();
             var startOfWeek = DateTime.Now.StartOfWeek();
+            var today = DateTime.Now.ToDateOnly();
 
             var query = Context.Jobs.Where
                 (j => 
                     (
                         (j.DateCompleted >= startOfWeek && j.DateCompleted <= endOfWeek) || j.DateCompleted == null
                     ) 
-                    && j.DateDue >= endOfWeek && j.UserId == user.Id
+                    && j.DateDue <= today && j.UserId == user.Id
             );
             return query.ToList();
         }

@@ -22,7 +22,7 @@ public class JobChecklistViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     {
         if (taskWeek == null) return;
         TaskWeek = taskWeek;
-        JobList = UnitOfWork!.JobRepository.GetCurrentJobs(TaskWeek!.User);
+        JobList = UnitOfWork!.GetCurrentJobs(TaskWeek!.User);
         StateHasChanged!();
     }
 

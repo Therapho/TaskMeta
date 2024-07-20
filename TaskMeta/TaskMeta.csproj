@@ -10,9 +10,17 @@
 
   <ItemGroup>
     <Compile Remove="Data\**" />
+    <Compile Remove="TaskMeta.Client\**" />
+    <Compile Remove="TaskMeta\**" />
     <Content Remove="Data\**" />
+    <Content Remove="TaskMeta.Client\**" />
+    <Content Remove="TaskMeta\**" />
     <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="TaskMeta.Client\**" />
+    <EmbeddedResource Remove="TaskMeta\**" />
     <None Remove="Data\**" />
+    <None Remove="TaskMeta.Client\**" />
+    <None Remove="TaskMeta\**" />
   </ItemGroup>
 
   <ItemGroup>

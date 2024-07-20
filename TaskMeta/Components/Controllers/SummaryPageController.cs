@@ -40,7 +40,7 @@ namespace TaskMeta.Components.Controllers
             }
             else
             {
-                await UserSelectorViewModel!.Load();
+                UserSelectorViewModel!.Load();
                 if (SelectedUser != null)
                 {
                     LoadThisWeek(SelectedUser!);

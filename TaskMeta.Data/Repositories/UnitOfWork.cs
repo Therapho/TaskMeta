@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
-using TaskMeta.Shared;
 using TaskMeta.Shared.Interfaces;
-using TaskMeta.Shared.Models;
 using TaskMeta.Shared.Utilities;
 
 namespace TaskMeta.Shared.Models.Repositories;
@@ -14,14 +12,14 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
         : IUnitOfWork
 {
     private ApplicationDbContext Context { get; set; } = context;
-    public ITaskDefinitionRepository TaskDefinitionRepository { get; private set; } = taskDefinitionRepository;
-    public IJobRepository JobRepository { get; private set; } = jobRepository;
-    public ITaskActivityRepository TaskActivityRepository { get; private set; } = taskActivityRepository;
-    public ITaskWeekRepository TaskWeekRepository { get; private set; } = taskWeekRepository;
-    public IFundRepository FundRepository { get; private set; } = fundRepository;
-    public ITransactionLogRepository TransactionLogRepository { get; private set; } = transactionLogRepository;
-    public IUserRepository UserRepository { get; private set; } = userRepository;
-    public ILogger Logger { get; private set; } = logger;
+    private ITaskDefinitionRepository TaskDefinitionRepository { get;  set; } = taskDefinitionRepository;
+    private IJobRepository JobRepository { get;  set; } = jobRepository;
+    private ITaskActivityRepository TaskActivityRepository { get;  set; } = taskActivityRepository;
+    private ITaskWeekRepository TaskWeekRepository { get;  set; } = taskWeekRepository;
+    private IFundRepository FundRepository { get;  set; } = fundRepository;
+    private ITransactionLogRepository TransactionLogRepository { get;  set; } = transactionLogRepository;
+    private IUserRepository UserRepository { get;  set; } = userRepository;
+    private ILogger Logger { get;  set; } = logger;
 
     public void SaveChanges()
     {
@@ -195,29 +193,94 @@ public class UnitOfWork(ApplicationDbContext context, ITaskDefinitionRepository 
         TaskWeekRepository.UpdateValue(taskWeek, value, complete);
         SaveChanges();
     }
-    public async Task AddUser(ApplicationUser user)
+    public void AddUser(ApplicationUser user)
     {
         Guard.IsNotNull(user);
         Guard.IsNotNull(user.NewPassword);
-        await UserRepository.Add(user);
+        UserRepository.Add(user);
     }   
-    public async Task DeleteUser(ApplicationUser user)
+    public void DeleteUser(ApplicationUser user)
     {
         Guard.IsNotNull(user);
-        await UserRepository.Delete(user);
+        UserRepository.Delete(user);
     }
-    public async Task<string> UpdateUser(ApplicationUser user)
+    public string UpdateUser(ApplicationUser user)
     {
         Guard.IsNotNull(user);
-        await UserRepository.Update(user);
-        if(!String.IsNullOrEmpty(user.NewPassword)) return await UserRepository.ResetPassword(user);
+        UserRepository.Update(user);
+        if(!String.IsNullOrEmpty(user.NewPassword)) return UserRepository.ResetPassword(user);
         return string.Empty;
 
     }
-    public async Task<String> ResetPassword(ApplicationUser user)
+    public String ResetPassword(ApplicationUser user)
     {
         Guard.IsNotNull(user);
         Guard.IsNotNull(user.NewPassword);
-        return await UserRepository.ResetPassword(user);
+        return UserRepository.ResetPassword(user);
+    }
+
+    public List<ApplicationUser>? GetContributors()
+    {
+        return UserRepository.GetContributors();
+    }
+
+    public List<Job>? GetCurrentJobs()
+    {
+        return JobRepository.GetCurrentJobs();
+    }
+
+    public List<TaskDefinition>? GetTaskDefinitionList()
+    {
+        return TaskDefinitionRepository.GetList();
+    }
+
+    public async Task<ApplicationUser?> GetCurrentUser()
+    {
+        return await UserRepository.GetCurrentUser();
+    }
+
+    public async Task<bool> IsAdmin()
+    {
+        return await UserRepository.IsAdmin();
+    }
+
+    public List<Job>? GetCurrentJobs(ApplicationUser user)
+    {
+        return JobRepository.GetCurrentJobs(user);
+    }
+
+    public List<ApplicationUser>? GetAllUsers()
+    {
+        return UserRepository.GetAllUsers();
+    }
+
+    public List<TransactionLog>? GetTransactionsByUser(string id, int page, int pageSize)
+    {
+        return TransactionLogRepository.GetTransactionsByUser(id, page, pageSize);
+    }
+
+    public (TaskWeek PreviousWeek, TaskWeek NextWeek) GetAdjacentTaskWeeks(TaskWeek taskWeek)
+    {
+        return TaskWeekRepository.GetAdjacent(taskWeek)!;
+    }
+
+    public List<TaskDefinition>? GetTaskDefinitionListByUser(ApplicationUser user)
+    {
+        return TaskDefinitionRepository.GetList(user);
+    }
+
+    public List<TaskActivity>? GetTaskDefinitionListByTaskWeek(TaskWeek taskWeek)
+    {
+        return TaskActivityRepository.GetListByTaskWeek(taskWeek);
+    }
+
+    public List<Fund>? GetFundsByUser(string id)
+    {
+        return FundRepository.GetFundsByUser(id);
+    }
+
+    public List<TaskActivity>? GetTaskActivityListByDate(DateOnly dateOnly, TaskWeek taskWeek)
+    {
+        return TaskActivityRepository.GetListByDate(dateOnly, taskWeek);
     }
 }

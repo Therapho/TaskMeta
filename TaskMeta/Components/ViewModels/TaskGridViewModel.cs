@@ -20,14 +20,14 @@ public class TaskGridViewModel(IUnitOfWork unitOfWork, ApplicationState state) :
         Guard.IsNotNull(taskWeek);
         TaskWeek = taskWeek;
 
-        TaskDefinitionList = UnitOfWork.TaskDefinitionRepository.GetListByUser(TaskWeek.User);
-        TaskActivityList = UnitOfWork.TaskActivityRepository.GetListByTaskWeek(TaskWeek);
+        TaskDefinitionList = UnitOfWork.GetTaskDefinitionListByUser(TaskWeek.User);
+        TaskActivityList = UnitOfWork.GetTaskDefinitionListByTaskWeek(TaskWeek);
         Locked = TaskWeek.StatusId == Constants.Status.Accepted || !State.IsAdmin;
         StateHasChanged!();
     }
     public void HandleChange(TaskActivity task)
     {
-        UnitOfWork!.TaskActivityRepository!.Update(task);
+        UnitOfWork!.UpdateTaskActivity(task);
         UnitOfWork!.UpdateTaskWeekValue(TaskWeek!, task.Value, task.Complete);
         OnChange?.Invoke();
     }

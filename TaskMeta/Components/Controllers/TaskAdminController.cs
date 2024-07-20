@@ -23,8 +23,8 @@ namespace TaskMeta.Components.Controllers
         public async override Task Load()
         {
             await base.Load();
-            TaskDefinitionList = UnitOfWork!.TaskDefinitionRepository!.GetList();
-            Contributors = await UnitOfWork!.UserRepository!.GetContributors();
+            TaskDefinitionList = UnitOfWork!.GetTaskDefinitionList();
+            Contributors =  UnitOfWork!.GetContributors();
             UpdateFilter();
 
         }

@@ -19,12 +19,12 @@ public class JobEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState state
     private List<ApplicationUser>? _contributorList;
     private ApplicationUser? _selectedUser;
 
-    public async Task Load(ApplicationUser selectedUser)
+    public void Load(ApplicationUser selectedUser)
     {
         Guard.IsNotNull(selectedUser);
 
-        _jobList = UnitOfWork!.JobRepository!.GetCurrentJobs();
-        _contributorList = await UnitOfWork!.UserRepository!.GetContributors();
+        _jobList = UnitOfWork!.GetCurrentJobs(selectedUser);
+        _contributorList = UnitOfWork!.GetContributors();
         UserList = [.. _contributorList];
         UserList.Insert(0, new ApplicationUser() { UserName = "Assign to user...." });
 
@@ -103,7 +103,7 @@ public class JobEditGridViewModel(IUnitOfWork unitOfWork, ApplicationState state
     {
         if (EditJob?.Id == 0)
         {
-            UnitOfWork!.JobRepository!.Add(EditJob);
+            UnitOfWork!.AddJob(EditJob);
         }
         EditJob = null;
         StateHasChanged!();

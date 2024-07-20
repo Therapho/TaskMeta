@@ -13,20 +13,21 @@ public class JobAdminController(IUnitOfWork unitOfWork, JobEditGridViewModel job
     public JobEditGridViewModel? JobEditGridViewModel { get; private set; } = jobEditGridViewModel;
     public UserSelectorViewModel? UserSelectorViewModel { get; private set; } = userSelectorViewModel;
 
-    public override async Task Load()
+    public async override Task Load()
     {
+        await base.Load();
 
-        await UserSelectorViewModel!.Load();
+        UserSelectorViewModel!.Load();
 
         if (State!.SelectedUser != null)
         {
-            await JobEditGridViewModel!.Load(State!.SelectedUser);
+            JobEditGridViewModel!.Load(State!.SelectedUser);
         }
-        await base.Load();
+        
     }
-    public async void HandleUserSelected(ApplicationUser user)
+    public void HandleUserSelected(ApplicationUser user)
     {
         Guard.IsNotNull(user);
-        await JobEditGridViewModel!.Load(user!);
+        JobEditGridViewModel!.Load(user!);
     }
 }

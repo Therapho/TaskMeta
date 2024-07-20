@@ -13,9 +13,9 @@ public class UserSelectorViewModel(IUnitOfWork unitOfWork, ApplicationState stat
     public bool CanClear { get; set; }
     public ApplicationUser? SelectedUser { get => State?.SelectedUser; }
 
-    public async Task Load()
+    public void Load()
     {
-        ContributorList = await UnitOfWork!.UserRepository!.GetContributors();
+        ContributorList =  UnitOfWork!.GetContributors();
         //StateHasChanged!();
     }
 

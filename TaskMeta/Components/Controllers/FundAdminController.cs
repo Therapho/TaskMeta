@@ -32,12 +32,13 @@ public class FundAdminController(IUnitOfWork unitOfWork, ApplicationState state,
         await base.Load();
         if (!State.IsAdmin)
         {
-
+            
             LoadFunds(State!.CurrentUser!);
         }
         else
         {
-            contributors = await UnitOfWork!.UserRepository!.GetContributors();
+            //contributors = UnitOfWork!.GetContributors();
+            UserSelectorViewModel!.Load();
             if (State?.SelectedUser != null) LoadFunds(State.SelectedUser);
         }
     }
@@ -53,7 +54,7 @@ public class FundAdminController(IUnitOfWork unitOfWork, ApplicationState state,
     {
         Guard.IsNotNull(user);
 
-        FundList = UnitOfWork!.FundRepository!.GetFundsByUser(user.Id);
+        FundList = UnitOfWork!.GetFundsByUser(user.Id);
         RecalculatePage();
     }
     public void HandleAddFund(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)

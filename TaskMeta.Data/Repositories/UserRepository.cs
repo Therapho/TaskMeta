@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using TaskMeta.Shared.Interfaces;
 using TaskMeta.Shared.Models;
 
@@ -26,11 +27,12 @@ namespace TaskMeta.Shared.Models.Repositories
 
             return user;
         }
-        public async Task<List<ApplicationUser>> GetContributors()
+        public List<ApplicationUser> GetContributors()
         {
             var users = _cacheProvider.Get<List<ApplicationUser>>("Contributors");
             if (users != null) return users;
-            users = [..await _userManager.GetUsersInRoleAsync("Contributor")];
+            users = [.. Task.Run(()=>_userManager.GetUsersInRoleAsync("Contributor")).Result];
+            _cacheProvider.Set("Contributors", users);
             return users;
         }
         public async Task<bool> IsAdmin(ApplicationUser user)
@@ -53,27 +55,27 @@ namespace TaskMeta.Shared.Models.Repositories
             return isLoggedIn;
         }
 
-        public async Task<List<ApplicationUser>>? GetAllUsers()
+        public List<ApplicationUser>? GetAllUsers()
         {
-            return await _userManager.Users.ToListAsync();
+            return Task.Run(()=> _userManager.Users.ToListAsync()).Result;
         }
-        public async Task Delete(ApplicationUser user)
+        public void Delete(ApplicationUser user)
         {
-            await _userManager.DeleteAsync(user);
+            _userManager.DeleteAsync(user);
         }
-        public async Task Update(ApplicationUser user)
+        public void Update(ApplicationUser user)
         {            
-            await _userManager.UpdateAsync(user);
+            _userManager.UpdateAsync(user);
         }
-        public async Task Add(ApplicationUser user)
+        public void Add(ApplicationUser user)
         {
-            await _userManager.CreateAsync(user);
+            _userManager.CreateAsync(user);
         
         }
-        public async Task<string> ResetPassword(ApplicationUser user)
+        public string ResetPassword(ApplicationUser user)
         {
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, user.NewPassword!);
+            var token = Task.Run(()=> _userManager.GeneratePasswordResetTokenAsync(user)).Result;
+            var result = Task.Run(() => _userManager.ResetPasswordAsync(user, token, user.NewPassword!)).Result;
             if (!result.Succeeded)
                 return string.Join(", ", result.Errors.Select(e => e.Description));
             else return string.Empty;

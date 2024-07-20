@@ -12,7 +12,7 @@ namespace TaskMeta.Components.Controllers
         public override async Task Load()
         {
             await base.Load();
-            await UserEditGridViewModel.Load();
+            UserEditGridViewModel.Load();
             
 
         }

@@ -27,7 +27,7 @@ public class TransactionController(IUnitOfWork unitOfWork, ApplicationState stat
         }
         else
         {            
-            await UserSelectorViewModel.Load();
+            UserSelectorViewModel.Load();
             if (State?.SelectedUser != null)
             {
                 TransactionListViewModel.Load(State.SelectedUser);                

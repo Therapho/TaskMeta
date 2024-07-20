@@ -8,10 +8,10 @@ public interface IUserRepository
     Task<bool> IsAdmin();
     Task<bool> IsAdmin(ApplicationUser user);
     Task<bool> IsLoggedIn();
-    Task<List<ApplicationUser>> GetContributors();
-    Task<List<ApplicationUser>>? GetAllUsers();
-    Task Add(ApplicationUser user);
-    Task Delete(ApplicationUser user);
-    Task Update(ApplicationUser user);
-    Task<String> ResetPassword(ApplicationUser user);
+    List<ApplicationUser> GetContributors();
+    List<ApplicationUser>? GetAllUsers();
+    void Add(ApplicationUser user);
+    void Delete(ApplicationUser user);
+    void Update(ApplicationUser user);
+    String ResetPassword(ApplicationUser user);
 }
